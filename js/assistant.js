@@ -53,6 +53,10 @@ const Bestie = (() => {
 
   const has = (t, arr) => arr.some(w => t.includes(w));
 
+  /* Split into bare words. Without stripping punctuation, "leggings?" never
+     matches "leggings" and the whole search quietly misses. */
+  const words = t => t.toLowerCase().replace(/[^\w\s-]/g, ' ').split(/\s+/).filter(Boolean);
+
   /* ------------------------------------------------------------ extraction */
   function findCategory(t) {
     for (const [cat, words] of Object.entries(CATEGORY_WORDS)) {
@@ -136,7 +140,7 @@ const Bestie = (() => {
       if (!anyInStock(p)) s -= 3;
       // free-text words against blurb + name
       const hay = (p.name + ' ' + p.blurb + ' ' + p.details.join(' ')).toLowerCase();
-      t.split(/\s+/).filter(w => w.length > 4).forEach(w => {
+      words(t).filter(w => w.length > 4).forEach(w => {
         if (hay.includes(w)) { s += 1; signal++; }
       });
       if (signal && p.badge === 'Bestseller') s += 1;   // tie-break only, never a reason on its own
@@ -277,7 +281,9 @@ const Bestie = (() => {
     const askedSize = has(t, ['size', 'sizing', 'fit', 'measure', 'runs small', 'run small',
       'runs large', 'run large', 'runs big', 'run big', 'true to size', 'what size']);
     if (meas.bust || meas.waist || meas.hip) {
-      const subject = findProduct(t) || lastSubject;
+      let subject = findProduct(t) || lastSubject;
+      // Bust/waist/hip say nothing about a shoe or a handbag — don't pretend.
+      if (subject && (subject.fit === 'shoe' || subject.fit === 'one-size')) subject = null;
       const rec = recommendSize(meas, subject);
       if (!rec) return [text(`<p>Give me at least one of bust, waist or hip in cm and I'll size you properly.</p>`)];
       const given = [meas.bust && `bust ${meas.bust}`, meas.waist && `waist ${meas.waist}`, meas.hip && `hip ${meas.hip}`]
@@ -291,16 +297,26 @@ const Bestie = (() => {
       // A named category beats the running subject — "heels size 39" must not
       // answer about whatever we were just discussing.
       const askedCat = findCategory(t);
-      const carryOver = (askedCat && lastSubject && lastSubject.category !== askedCat)
-        ? PRODUCTS.find(p => p.category === askedCat && anyInStock(p))
-        : lastSubject;
+      let carryOver = lastSubject;
+      if (askedCat) {
+        const inCat = PRODUCTS.filter(p => p.category === askedCat && anyInStock(p));
+        const ws = words(t).filter(w => w.length > 3);
+        // A piece named in this message always wins — otherwise a follow-up
+        // like "and the leggings?" keeps answering about the jeans.
+        const named = inCat.find(p => ws.some(w => (p.name + ' ' + p.blurb).toLowerCase().includes(w)));
+        if (named) carryOver = named;
+        // Cold open, or they switched category: fall back to that category.
+        else if (!lastSubject || lastSubject.category !== askedCat) carryOver = inCat[0] || lastSubject;
+      }
       const subject = findProduct(t) || carryOver;
       if (subject) {
         lastSubject = subject;
         const fitLine = { small: 'runs a little small', large: 'runs large', relaxed: 'is cut relaxed', true: 'is true to size', 'one-size': 'is one size', shoe: 'uses standard EU shoe sizing' }[subject.fit] || 'is true to size';
         // fitNote often opens by restating the fit — drop that clause so the
         // reply doesn't say "runs small. Runs small."
-        const note = subject.fitNote.replace(/^(runs? (a little )?(small|large|big)|true to size|relaxed fit|one size|standard eu sizing)[.,]?\s*/i, '');
+        const note = subject.fitNote
+          .replace(/^(runs? (a little )?(small|large|big)|true to size|relaxed fit|one size|standard eu sizing)[.,]?\s*/i, '')
+          .replace(/^[\s—–-]+/, '');   // don't leave a dangling dash behind
         // Body measurements are meaningless for shoes and one-size pieces.
         const askMeasure = subject.fit !== 'shoe' && subject.fit !== 'one-size'
           ? `<p>Tell me your bust, waist and hip in cm and I'll pick your size exactly.</p>` : '';
@@ -422,6 +438,15 @@ const Bestie = (() => {
       out.push(text(`<p>The ${escapeHtml(named.name)} — great taste${who()}. ${escapeHtml(named.blurb)}</p>
         <p>${money(named.price)}. ${stockLine(named)}${sizeGapLine(named, t)}</p>`));
       out.push(cards([named]));
+      return out;
+    }
+
+    /* --- bare size follow-up: "do you have it in 40", "in M?" --- */
+    const bare = t.match(/\b(?:in|got|have|any)\s+(?:a\s+)?(xs|s|m|l|xl|3[5-9]|4[0-2])\b/i);
+    if (bare && lastSubject) {
+      const asked = /^\d+$/.test(bare[1]) ? bare[1] : bare[1].toUpperCase();
+      out.push(text(`<p>${escapeHtml(lastSubject.name)} — ${stockLine(lastSubject)}${sizeGapLine(lastSubject, ' ' + asked + ' ')}</p>`));
+      out.push(cards([lastSubject]));
       return out;
     }
 
