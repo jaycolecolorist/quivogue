@@ -189,12 +189,26 @@ p  { margin: 0 0 1em; }
 
 /* ---------------------------------------------------------------- header */
 .hdr {
-  position: sticky; top: 0; z-index: 50;
+  /* Must outrank .nav-scrim (54) AND .promo (60). The header is a stacking
+     context, so the drawer's z-index:55 is scoped inside it: anything above
+     the header paints over the drawer. Below the scrim and the drawer got
+     blurred; below the promo bar and the promo covered the drawer's top,
+     hiding its close button. */
+  position: sticky; top: 0; z-index: 62;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s, box-shadow .3s;
+}
+/* The frosted glass lives on a pseudo-element, NOT on .hdr itself.
+   backdrop-filter makes an element the containing block for its
+   position:fixed descendants — with it on .hdr, the mobile nav drawer was
+   being sized and positioned inside the header box and composited into its
+   blur, instead of being a full-height drawer over the page. */
+.hdr::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
   background: rgba(255, 250, 246, .82);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border-bottom: 1px solid transparent;
-  transition: border-color .3s, box-shadow .3s, background .3s;
 }
 .hdr.is-stuck { border-bottom-color: var(--line); box-shadow: var(--sh-1); }
 .hdr__inner {
@@ -218,6 +232,7 @@ p  { margin: 0 0 1em; }
 }
 .nav a:hover { background: var(--blush-100); color: var(--blush-600); }
 .nav a.is-active { background: var(--blush-100); color: var(--blush-600); font-weight: 600; }
+.nav__close { display: none; }
 
 .hdr__acts { display: flex; align-items: center; gap: 4px; }
 .icon-btn {
@@ -252,10 +267,20 @@ p  { margin: 0 0 1em; }
   }
   .nav.is-open { transform: none; visibility: visible; }
   .nav a { font-size: 1.1rem; padding: .75em 1em; }
+  .nav__close {
+    display: grid; place-items: center;
+    position: absolute; top: 18px; right: 18px;
+    width: 42px; height: 42px; border-radius: var(--r-pill);
+    color: var(--ink-2); background: var(--blush-50);
+    transition: background .2s, color .2s;
+  }
+  .nav__close:hover { background: var(--blush-100); color: var(--blush-600); }
   .burger { display: grid; }
   .nav-scrim {
-    position: fixed; inset: 0; background: rgba(43, 36, 48, .3);
-    backdrop-filter: blur(3px); opacity: 0; pointer-events: none;
+    /* Dim only — no backdrop-filter. Blur here composites the drawer into the
+       filtered layer on mobile Safari and softens the menu text. */
+    position: fixed; inset: 0; background: rgba(43, 36, 48, .38);
+    opacity: 0; pointer-events: none;
     transition: opacity .35s; z-index: 54;
   }
   .nav-scrim.is-on { opacity: 1; pointer-events: auto; }

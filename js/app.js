@@ -200,6 +200,7 @@ function buildChrome() {
         <span class="logo__sub">${CONFIG.tagline}</span>
       </a>
       <nav class="nav" id="nav">
+        <button class="nav__close" id="navClose" aria-label="Close menu">${ICON.close}</button>
         ${NAV_LINKS.map(([href, label]) =>
           `<a href="${href}" class="${href === here ? 'is-active' : ''}">${label}</a>`).join('')}
       </nav>
@@ -313,6 +314,8 @@ function wireChrome() {
     burger.setAttribute('aria-expanded', String(open));
   });
   navScrim.addEventListener('click', closeNav);
+  // The open drawer covers the burger, so it needs its own way out.
+  document.getElementById('navClose').addEventListener('click', closeNav);
   nav.addEventListener('click', e => { if (e.target.tagName === 'A') closeNav(); });
 
   const hdr = document.querySelector('.hdr');
