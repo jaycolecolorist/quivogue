@@ -205,7 +205,10 @@ p  { margin: 0 0 1em; }
    being sized and positioned inside the header box and composited into its
    blur, instead of being a full-height drawer over the page. */
 .hdr::before {
-  content: ''; position: absolute; inset: 0; z-index: -1;
+  /* z-index 0 + .hdr__inner above it, rather than a negative z-index —
+     iOS Safari can drop negative-z-index pseudo-elements entirely, which
+     would leave the header with no background at all. */
+  content: ''; position: absolute; inset: 0; z-index: 0;
   background: rgba(255, 250, 246, .82);
   backdrop-filter: blur(18px) saturate(1.4);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
@@ -214,6 +217,7 @@ p  { margin: 0 0 1em; }
 .hdr__inner {
   max-width: var(--wrap); margin-inline: auto; padding: 14px var(--gut);
   display: flex; align-items: center; gap: 20px;
+  position: relative; z-index: 1;   /* sits above the .hdr::before glass */
 }
 .logo { display: flex; flex-direction: column; line-height: 1; margin-right: auto; }
 .logo__name {
