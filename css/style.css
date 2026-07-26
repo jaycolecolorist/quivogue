@@ -257,7 +257,19 @@ p  { margin: 0 0 1em; }
 .icon-btn__count.is-on { transform: scale(1); }
 .burger { display: none; }
 
-@media (max-width: 900px) {
+/* At full size the header needs ~838px. Rather than fall back to a burger the
+   moment a desktop window narrows, tighten the nav so the full links survive
+   down to ~700px. Measured: this trims the nav from 466px to ~356px. */
+@media (max-width: 880px) and (min-width: 701px) {
+  .hdr__inner { gap: 12px; }
+  .logo__name { font-size: 1.3rem; }
+  .logo__sub { font-size: .55rem; letter-spacing: .14em; }
+  .nav { gap: 1px; }
+  .nav a { font-size: .86rem; padding: .5em .55em; }
+  .icon-btn { width: 38px; height: 38px; }
+}
+
+@media (max-width: 700px) {
   .nav {
     position: fixed; inset: 0 0 0 auto; width: min(84vw, 340px);
     background: var(--cream); flex-direction: column; gap: 2px;

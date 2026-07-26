@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shop — Gash Luxe</title>
-<meta name="description" content="Shop dresses, tops, skirts, sets, outerwear and accessories at Gash Luxe Kampala. Filter by size, colour, price and occasion.">
+<meta name="description" content="Shop dresses, tops, bottoms, sets, shoes and bags at Gash Luxe Kampala. Filter by size, colour, price and occasion.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202607262352">
+<link rel="stylesheet" href="css/style.css?v=202607270022">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -80,9 +80,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202607262352"></script>
-<script src="js/app.js?v=202607262352"></script>
-<script src="js/assistant.js?v=202607262352"></script>
+<script src="js/data.js?v=202607270022"></script>
+<script src="js/app.js?v=202607270022"></script>
+<script src="js/assistant.js?v=202607270022"></script>
 <script>
 const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured' };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
@@ -90,10 +90,19 @@ const PRICE_MAX = Math.max(...PRODUCTS.map(p => p.price));
 
 function pageInit() {
   const params = new URLSearchParams(location.search);
-  if (params.get('c')) state.cats = [params.get('c')];
-  if (params.get('occasion')) state.occs = [params.get('occasion')];
-  if (params.get('sort')) state.sort = params.get('sort');
-  if (params.get('sale') === 'wishlist') state.wishOnly = true;
+
+  // Only honour values that actually exist. Otherwise a stale link — or a
+  // renamed category like the old ?c=Skirts — lands on an empty rail titled
+  // with whatever the URL happened to say.
+  const CATS = [...new Set(PRODUCTS.map(p => p.category))];
+  const c = params.get('c');
+  if (c && CATS.includes(c)) state.cats = [c];
+
+  const occ = params.get('occasion');
+  if (occ && OCCASIONS.some(o => o.id === occ)) state.occs = [occ];
+
+  const sort = params.get('sort');
+  if (sort && ['featured', 'new', 'low', 'high', 'az'].includes(sort)) state.sort = sort;
 
   buildFilters();
   document.getElementById('sort').value = state.sort;
