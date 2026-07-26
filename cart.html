@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Bag — Gash Luxe</title>
+<meta name="description" content="Your Gash Luxe bag and checkout.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Home</a> / Your bag</p>
+
+    <div class="steps" id="steps">
+      <div class="step is-on" data-step="1"><b>1</b> Your bag</div>
+      <div class="step" data-step="2"><b>2</b> Delivery</div>
+      <div class="step" data-step="3"><b>3</b> Confirm</div>
+    </div>
+
+    <div id="checkoutRoot"></div>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+let step = 1;
+const order = { name: '', phone: '', region: 'kampala', address: '', note: '', pay: 'Mobile money' };
+
+function pageInit() {
+  render();
+  document.addEventListener('store:change', () => { if (step === 1) render(); });
+
+  /* Delegated once, on a node that survives every re-render — attaching
+     inside render() would stack a new listener each time the store changes. */
+  document.getElementById('checkoutRoot').addEventListener('click', e => {
+    const dec = e.target.closest('[data-dec]');
+    const inc = e.target.closest('[data-inc]');
+    if (dec) {
+      const i = Number(dec.dataset.dec);
+      Store.setQty(i, Store.cart[i].qty - 1);
+    }
+    if (inc) {
+      const i = Number(inc.dataset.inc);
+      const l = Store.cart[i];
+      const p = getProduct(l.id);
+      if (l.qty + 1 > (p.stock[l.size] || 0)) toast(`That's all we have in ${l.size}`);
+      else Store.setQty(i, l.qty + 1);
+    }
+  });
+}
+
+function setStep(n) {
+  step = n;
+  document.querySelectorAll('.step').forEach(el => {
+    const s = Number(el.dataset.step);
+    el.classList.toggle('is-on', s === n);
+    el.classList.toggle('is-done', s < n);
+  });
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function summaryHtml() {
+  const sub = Store.subtotal();
+  const ship = Store.shipping(order.region);
+  const left = CONFIG.freeShippingOver - sub;
+  const pct = Math.min(100, (sub / CONFIG.freeShippingOver) * 100);
+
+  return `<div class="summary">
+    <h3 style="margin-bottom:14px">Order summary</h3>
+    <div class="ship-bar"><div class="ship-bar__fill" style="width:${pct}%"></div></div>
+    <p style="font-size:.82rem;color:${left > 0 ? 'var(--ink-3)' : 'var(--success)'};font-weight:${left > 0 ? 400 : 600}">
+      ${left > 0 ? `${money(left)} away from free delivery ✨` : 'Free delivery unlocked 🎀'}
+    </p>
+    <div class="sum-row"><span>Subtotal</span><span>${money(sub)}</span></div>
+    <div class="sum-row"><span>Delivery ${order.region === 'upcountry' ? '(upcountry)' : '(Kampala)'}</span>
+      <span>${ship === 0 ? 'Free' : money(ship)}</span></div>
+    <div class="sum-row sum-row--total"><span>Total</span><span>${money(sub + ship)}</span></div>
+  </div>`;
+}
+
+function render() {
+  const root = document.getElementById('checkoutRoot');
+
+  if (!Store.cart.length && step < 4) {
+    root.innerHTML = `<div class="empty">
+      <div style="color:var(--blush-300);display:flex;justify-content:center;margin-bottom:10px">${ICON.bag}</div>
+      <h3>Your bag is empty</h3>
+      <p class="lede center" style="margin-top:8px">Let's find you something — the rail is right this way.</p>
+      <a class="btn btn--primary" href="shop.html">Shop new in</a>
+    </div>`;
+    document.getElementById('steps').hidden = true;
+    return;
+  }
+  document.getElementById('steps').hidden = false;
+
+  /* ---------------------------------------------------- 1. bag */
+  if (step === 1) {
+    root.innerHTML = `
+      <div class="cart-layout">
+        <div>
+          <div class="cart-list">${Store.cart.map(cartRow).join('')}</div>
+          <a class="link-arrow" href="shop.html" style="margin-top:18px;display:inline-flex">← Keep shopping</a>
+        </div>
+        <div>
+          ${summaryHtml()}
+          <button class="btn btn--primary btn--block" id="toStep2" style="margin-top:14px">Continue to delivery</button>
+          <p style="font-size:.78rem;color:var(--ink-4);text-align:center;margin-top:12px">
+            Nothing is charged here. You'll confirm payment with our team.
+          </p>
+        </div>
+      </div>`;
+
+    document.getElementById('toStep2').addEventListener('click', () => setStep(2));
+    return;
+  }
+
+  /* ---------------------------------------------------- 2. delivery */
+  if (step === 2) {
+    root.innerHTML = `
+      <div class="cart-layout">
+        <div class="info-card">
+          <h3 style="margin-bottom:14px">Where's it going?</h3>
+          <div class="field">
+            <label for="oName">Your name</label>
+            <input id="oName" value="${escapeHtml(order.name)}" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="oPhone">Phone number</label>
+            <input id="oPhone" value="${escapeHtml(order.phone)}" inputmode="tel" autocomplete="tel"
+                   placeholder="07XX XXX XXX" required>
+          </div>
+          <div class="field">
+            <label for="oRegion">Delivery area</label>
+            <select id="oRegion">
+              <option value="kampala" ${order.region === 'kampala' ? 'selected' : ''}>Kampala — ${money(CONFIG.kampalaDelivery)}</option>
+              <option value="upcountry" ${order.region === 'upcountry' ? 'selected' : ''}>Upcountry — ${money(CONFIG.upcountryDelivery)}</option>
+              <option value="pickup" ${order.region === 'pickup' ? 'selected' : ''}>I'll collect from the shop — free</option>
+            </select>
+          </div>
+          <div class="field" id="addrField" ${order.region === 'pickup' ? 'hidden' : ''}>
+            <label for="oAddr">Where should we drop it?</label>
+            <textarea id="oAddr" rows="3" placeholder="Area, road, any landmark that helps">${escapeHtml(order.address)}</textarea>
+          </div>
+          <div class="field">
+            <label for="oPay">How you'd like to pay</label>
+            <select id="oPay">
+              <option ${order.pay === 'Mobile money' ? 'selected' : ''}>Mobile money</option>
+              <option ${order.pay === 'Card on delivery' ? 'selected' : ''}>Card on delivery</option>
+              <option ${order.pay === 'Cash on collection' ? 'selected' : ''}>Cash on collection</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="oNote">Anything we should know? (optional)</label>
+            <textarea id="oNote" rows="2" placeholder="Gift wrap, a specific delivery time…">${escapeHtml(order.note)}</textarea>
+          </div>
+          <p class="pill-note" style="margin-top:16px">
+            ${ICON.check} Your details stay in this browser until you send the order yourself.
+          </p>
+        </div>
+        <div>
+          ${summaryHtml()}
+          <button class="btn btn--primary btn--block" id="toStep3" style="margin-top:14px">Review order</button>
+          <button class="btn btn--ghost btn--block" id="backTo1" style="margin-top:10px">Back to bag</button>
+        </div>
+      </div>`;
+
+    const region = document.getElementById('oRegion');
+    region.addEventListener('change', () => {
+      order.region = region.value;
+      document.getElementById('addrField').hidden = order.region === 'pickup';
+      // refresh just the summary so the delivery line stays honest
+      const s = document.querySelector('.summary');
+      s.outerHTML = summaryHtml();
+    });
+
+    document.getElementById('backTo1').addEventListener('click', () => setStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => {
+      order.name = document.getElementById('oName').value.trim();
+      order.phone = document.getElementById('oPhone').value.trim();
+      order.address = (document.getElementById('oAddr') || {}).value?.trim() || '';
+      order.note = document.getElementById('oNote').value.trim();
+      order.pay = document.getElementById('oPay').value;
+
+      if (!order.name || !order.phone) { toast('We need your name and number 💕'); return; }
+      if (order.region !== 'pickup' && !order.address) { toast('Where should we deliver it?'); return; }
+      setStep(3);
+    });
+    return;
+  }
+
+  /* ---------------------------------------------------- 3. confirm */
+  if (step === 3) {
+    const sub = Store.subtotal();
+    const ship = Store.shipping(order.region);
+    const ref = 'GL-' + Date.now().toString(36).slice(-5).toUpperCase();
+
+    const lines = Store.cart.map(l => {
+      const p = getProduct(l.id);
+      return `• ${p.name} — ${l.color}, ${l.size} ×${l.qty} — ${money(p.price * l.qty)}`;
+    }).join('\n');
+
+    const message =
+`Hi Gash Luxe! I'd like to place an order 💕
+
+Ref: ${ref}
+Name: ${order.name}
+Phone: ${order.phone}
+${order.region === 'pickup' ? 'Collecting from the shop' : `Deliver to (${order.region}): ${order.address}`}
+Paying by: ${order.pay}
+${order.note ? `Note: ${order.note}` : ''}
+
+${lines}
+
+Subtotal: ${money(sub)}
+Delivery: ${ship === 0 ? 'Free' : money(ship)}
+Total: ${money(sub + ship)}`;
+
+    root.innerHTML = `
+      <div class="cart-layout">
+        <div class="info-card">
+          <h3 style="margin-bottom:6px">One last look</h3>
+          <p style="font-size:.9rem;color:var(--ink-3)">
+            We don't take payment on this site, so nothing is charged here. Send your order to the team and
+            they'll confirm stock, total and payment with you directly.
+          </p>
+
+          <div style="margin-top:18px;border-top:1px solid var(--line);padding-top:14px">
+            ${Store.cart.map(l => {
+              const p = getProduct(l.id);
+              return `<div class="sum-row"><span>${escapeHtml(p.name)} · ${l.color} · ${l.size} ×${l.qty}</span>
+                      <span>${money(p.price * l.qty)}</span></div>`;
+            }).join('')}
+          </div>
+
+          <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+            <div class="sum-row"><span>Name</span><span>${escapeHtml(order.name)}</span></div>
+            <div class="sum-row"><span>Phone</span><span>${escapeHtml(order.phone)}</span></div>
+            <div class="sum-row"><span>${order.region === 'pickup' ? 'Collection' : 'Delivery'}</span>
+              <span style="text-align:right;max-width:60%">${order.region === 'pickup' ? 'From the shop, ' + CONFIG.address : escapeHtml(order.address)}</span></div>
+            <div class="sum-row"><span>Payment</span><span>${escapeHtml(order.pay)}</span></div>
+            <div class="sum-row"><span>Reference</span><span><strong>${ref}</strong></span></div>
+          </div>
+
+          <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+            ${CONFIG.whatsapp
+              ? `<a class="btn btn--primary" id="sendWa" target="_blank" rel="noopener"
+                    href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}">Send on WhatsApp</a>`
+              : ''}
+            <a class="btn ${CONFIG.whatsapp ? 'btn--ghost' : 'btn--primary'}" href="${CONFIG.instagram}"
+               target="_blank" rel="noopener" id="sendIg">Send via Instagram DM</a>
+            <button class="btn btn--soft" id="copyOrder">Copy order</button>
+          </div>
+          <p style="font-size:.78rem;color:var(--ink-4);margin-top:12px">
+            Keep your reference <strong>${ref}</strong> — quote it and the team can find your order instantly.
+          </p>
+        </div>
+
+        <div>
+          ${summaryHtml()}
+          <button class="btn btn--ghost btn--block" id="backTo2" style="margin-top:14px">Back to delivery</button>
+        </div>
+      </div>`;
+
+    document.getElementById('backTo2').addEventListener('click', () => setStep(2));
+    document.getElementById('copyOrder').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(message);
+        toast('Order copied — paste it into your DM ✨');
+      } catch { toast('Select the details above and copy them'); }
+    });
+    ['sendWa', 'sendIg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', () => {
+        // Instagram DMs can't be pre-filled from a link, so put the text on the
+        // clipboard on the way out rather than losing it.
+        navigator.clipboard?.writeText(message).catch(() => {});
+        setTimeout(() => { toast('Order copied to your clipboard too 💕'); }, 300);
+      });
+    });
+    return;
+  }
+}
+
+function cartRow(l, i) {
+  const p = getProduct(l.id);
+  if (!p) return '';
+  const max = p.stock[l.size] || 0;
+  return `<div class="cart-row">
+    <a class="cart-row__media" href="product.html?id=${p.id}">${media(p.id, p.name)}</a>
+    <div>
+      <a class="cart-row__name" href="product.html?id=${p.id}">${escapeHtml(p.name)}</a>
+      <div class="cart-row__meta">${l.color} · Size ${l.size}</div>
+      <div class="cart-row__meta" style="color:${max <= 2 ? 'var(--warn)' : 'var(--ink-4)'}">
+        ${max <= 2 ? `Only ${max} left in ${l.size}` : 'In stock'}
+      </div>
+      <div class="qty" style="margin-top:8px">
+        <button data-dec="${i}" aria-label="Decrease quantity">−</button>
+        <span>${l.qty}</span>
+        <button data-inc="${i}" aria-label="Increase quantity">+</button>
+      </div>
+    </div>
+    <div class="cart-row__right">
+      <strong>${money(p.price * l.qty)}</strong>
+      <button class="remove" data-remove="${i}">Remove</button>
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop — Gash Luxe</title>
+<meta name="description" content="Shop dresses, tops, skirts, sets, outerwear and accessories at Gash Luxe Kampala. Filter by size, colour, price and occasion.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Home</a> / Shop</p>
+    <div class="section-head">
+      <span class="kicker">the whole rail</span>
+      <h2 id="shopTitle">Shop everything</h2>
+      <p class="lede">Every piece we have in the shop right now. Sold-out sizes are marked honestly — no surprises at checkout.</p>
+    </div>
+
+    <div class="shop-layout">
+      <!-- ------------------------------------------------ filters -->
+      <aside class="filters" id="filters" aria-label="Filters">
+        <div class="filters__group">
+          <h4>Category</h4>
+          <div class="chips" id="fCat"></div>
+        </div>
+        <div class="filters__group">
+          <h4>Size</h4>
+          <div class="chips" id="fSize"></div>
+        </div>
+        <div class="filters__group">
+          <h4>Colour</h4>
+          <div class="chips" id="fColor"></div>
+        </div>
+        <div class="filters__group">
+          <h4>Occasion</h4>
+          <div class="chips" id="fOcc"></div>
+        </div>
+        <div class="filters__group">
+          <h4>Max price</h4>
+          <input class="range" type="range" id="fPrice" min="0" max="100" value="100" aria-label="Maximum price">
+          <div class="range-vals"><span id="priceMin"></span><span id="priceMax"></span></div>
+        </div>
+        <div class="filters__group">
+          <label style="display:flex;align-items:center;gap:9px;font-size:.9rem;cursor:pointer">
+            <input type="checkbox" id="fStock" style="accent-color:var(--blush-500);width:17px;height:17px">
+            In stock only
+          </label>
+          <button class="btn btn--soft btn--block" id="fClear" style="margin-top:16px">Clear filters</button>
+        </div>
+      </aside>
+
+      <!-- ------------------------------------------------ results -->
+      <div>
+        <div class="shop-bar">
+          <span class="shop-bar__count" id="count">—</span>
+          <button class="btn btn--ghost filter-toggle" id="filterToggle">Filters</button>
+          <label class="sr-only" for="sort">Sort by</label>
+          <select class="select" id="sort">
+            <option value="featured">Featured</option>
+            <option value="new">New in</option>
+            <option value="low">Price: low to high</option>
+            <option value="high">Price: high to low</option>
+            <option value="az">A – Z</option>
+          </select>
+        </div>
+        <div class="grid-products" id="grid"></div>
+        <div class="empty" id="empty" hidden>
+          <h3>Nothing matches that combination</h3>
+          <p class="lede center" style="margin-top:8px">Try loosening a filter — or ask Bestie and she'll find the closest thing on the rail.</p>
+          <button class="btn btn--primary" onclick="askBestie('Help me find something')">Ask Bestie ✨</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured' };
+const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
+const PRICE_MAX = Math.max(...PRODUCTS.map(p => p.price));
+
+function pageInit() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('c')) state.cats = [params.get('c')];
+  if (params.get('occasion')) state.occs = [params.get('occasion')];
+  if (params.get('sort')) state.sort = params.get('sort');
+  if (params.get('sale') === 'wishlist') state.wishOnly = true;
+
+  buildFilters();
+  document.getElementById('sort').value = state.sort;
+
+  document.getElementById('sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  document.getElementById('fStock').addEventListener('change', e => { state.inStock = e.target.checked; render(); });
+  document.getElementById('fPrice').addEventListener('input', e => {
+    const pct = Number(e.target.value) / 100;
+    state.maxPrice = pct >= 1 ? null : Math.round(PRICE_MIN + (PRICE_MAX - PRICE_MIN) * pct);
+    document.getElementById('priceMax').textContent = money(state.maxPrice ?? PRICE_MAX);
+    render();
+  });
+  document.getElementById('fClear').addEventListener('click', () => {
+    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false });
+    document.getElementById('fStock').checked = false;
+    document.getElementById('fPrice').value = 100;
+    document.getElementById('priceMax').textContent = money(PRICE_MAX);
+    document.querySelectorAll('.chip.is-on').forEach(c => c.classList.remove('is-on'));
+    history.replaceState(null, '', 'shop.html');
+    render();
+  });
+  document.getElementById('filterToggle').addEventListener('click', () => {
+    document.getElementById('filters').classList.toggle('is-open');
+  });
+
+  document.getElementById('priceMin').textContent = money(PRICE_MIN);
+  document.getElementById('priceMax').textContent = money(PRICE_MAX);
+  render();
+}
+
+function chipHost(id, values, key, renderLabel) {
+  const host = document.getElementById(id);
+  host.innerHTML = values.map(v => {
+    const val = typeof v === 'object' ? v.id : v;
+    const on = state[key].includes(val) ? 'is-on' : '';
+    return `<button class="chip ${on}" data-v="${escapeHtml(val)}">${renderLabel(v)}</button>`;
+  }).join('');
+  host.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const v = chip.dataset.v;
+    const i = state[key].indexOf(v);
+    if (i > -1) state[key].splice(i, 1); else state[key].push(v);
+    chip.classList.toggle('is-on');
+    render();
+  });
+}
+
+function buildFilters() {
+  const cats = [...new Set(PRODUCTS.map(p => p.category))];
+  chipHost('fCat', cats, 'cats', c => c);
+  // Derive the size chips from what is actually on the rail, so clothing
+  // sizes, shoe sizes and One Size all appear without being hard-coded.
+  const all = [...new Set(PRODUCTS.flatMap(productSizes))];
+  const order = [...SIZES, ...SHOE_SIZES, 'One Size'];
+  all.sort((a, b) => {
+    const ia = order.indexOf(String(a)), ib = order.indexOf(String(b));
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  });
+  chipHost('fSize', all, 'sizes', s => s);
+  const colors = [...new Set(PRODUCTS.flatMap(p => p.colors))];
+  chipHost('fColor', colors, 'colors', c =>
+    `<span class="chip--color"><i class="sw" style="background:${COLOR_SWATCHES[c]}"></i>${c}</span>`);
+  chipHost('fOcc', OCCASIONS, 'occs', o => o.label);
+}
+
+function filtered() {
+  let list = PRODUCTS.filter(p => {
+    if (state.cats.length && !state.cats.includes(p.category)) return false;
+    if (state.colors.length && !state.colors.some(c => p.colors.includes(c))) return false;
+    if (state.occs.length && !state.occs.some(o => p.occasions.includes(o))) return false;
+    if (state.maxPrice != null && p.price > state.maxPrice) return false;
+    if (state.inStock && !anyInStock(p)) return false;
+    if (state.sizes.length) {
+      const sizes = productSizes(p);
+      const match = state.sizes.some(s => sizes.includes(s) && (!state.inStock || inStock(p, s)));
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const rank = { Bestseller: 2, New: 1 };
+  const sorters = {
+    featured: (a, b) => (rank[b.badge] || 0) - (rank[a.badge] || 0) || a.name.localeCompare(b.name),
+    new: (a, b) => (b.badge === 'New' ? 1 : 0) - (a.badge === 'New' ? 1 : 0) || a.name.localeCompare(b.name),
+    low: (a, b) => a.price - b.price,
+    high: (a, b) => b.price - a.price,
+    az: (a, b) => a.name.localeCompare(b.name)
+  };
+  return list.sort(sorters[state.sort] || sorters.featured);
+}
+
+function render() {
+  const list = filtered();
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+
+  grid.innerHTML = list.map(productCard).join('');
+  empty.hidden = list.length > 0;
+  document.getElementById('count').textContent =
+    `${list.length} piece${list.length === 1 ? '' : 's'}${list.length !== PRODUCTS.length ? ` of ${PRODUCTS.length}` : ''}`;
+
+  const title = document.getElementById('shopTitle');
+  title.textContent = state.cats.length === 1 ? state.cats[0] : 'Shop everything';
+
+  syncCounts();
+  grid.querySelectorAll('.reveal').forEach(el => el.classList.add('is-in'));
+}
+</script>
+</body>
+</html>

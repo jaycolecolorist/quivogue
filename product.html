@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gash Luxe</title>
+<meta name="description" content="Product details at Gash Luxe Kampala — sizes, colours, fit notes and live stock.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<section class="section section--tight">
+  <div class="wrap" id="pdpRoot"></div>
+</section>
+
+<section class="section section--tight" id="relatedWrap" hidden>
+  <div class="wrap">
+    <div class="section-head section-head--row">
+      <div>
+        <span class="kicker">you'll probably also love</span>
+        <h2>Goes with this</h2>
+      </div>
+    </div>
+    <div class="grid-products" id="related"></div>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+let P = null, chosenSize = null, chosenColor = null;
+
+function pageInit() {
+  const id = new URLSearchParams(location.search).get('id');
+  P = getProduct(id);
+  const root = document.getElementById('pdpRoot');
+
+  if (!P) {
+    root.innerHTML = `<div class="empty">
+      <h3>We can't find that piece</h3>
+      <p class="lede center" style="margin-top:8px">It may have sold out and come off the rail.</p>
+      <a class="btn btn--primary" href="shop.html">Back to the shop</a>
+    </div>`;
+    return;
+  }
+
+  document.title = `${P.name} — Gash Luxe`;
+  chosenColor = P.colors[0];
+  chosenSize = productSizes(P).find(s => inStock(P, s)) || null;
+
+  root.innerHTML = renderPdp();
+  wirePdp();
+  renderRelated();
+  initAccordions(root);
+}
+
+function renderPdp() {
+  const sizes = productSizes(P);
+  const sold = !anyInStock(P);
+
+  return `
+  <p class="crumbs"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> /
+    <a href="shop.html?c=${encodeURIComponent(P.category)}">${P.category}</a> / ${escapeHtml(P.name)}</p>
+
+  <div class="pdp">
+    <!-- gallery -->
+    <div class="gallery">
+      <div class="gallery__main" id="galMain">${media(P.id, P.name)}</div>
+      <div class="gallery__thumbs" id="galThumbs">
+        ${['', '-2', '-3'].map((v, i) => `
+          <button class="gallery__thumb ${i === 0 ? 'is-on' : ''}" data-v="${v}" aria-label="View image ${i + 1}">
+            ${media(P.id, P.name, v)}
+          </button>`).join('')}
+      </div>
+    </div>
+
+    <!-- info -->
+    <div class="pdp__info">
+      <span class="card__cat">${P.category}</span>
+      <h1 style="font-size:clamp(1.6rem,3.2vw,2.2rem);margin:4px 0 0">${escapeHtml(P.name)}</h1>
+      <div class="pdp__price">${money(P.price)}</div>
+      <p class="lede" style="font-size:1rem">${escapeHtml(P.blurb)}</p>
+
+      ${sold ? `<div class="pill-note" style="background:var(--blush-100);color:var(--blush-600)">
+        Fully sold out right now — ask us on Instagram whether it's coming back</div>` : ''}
+
+      <!-- colour -->
+      <div class="opt">
+        <div class="opt__head">
+          <h4>Colour</h4><span id="colorLabel">${chosenColor}</span>
+        </div>
+        <div class="swatch-row" id="colorRow">
+          ${P.colors.map(c => `
+            <button class="swatch-btn ${c === chosenColor ? 'is-on' : ''}" data-c="${c}"
+                    style="background:${COLOR_SWATCHES[c] || '#ddd'}" aria-label="${c}"></button>`).join('')}
+        </div>
+      </div>
+
+      <!-- size -->
+      <div class="opt">
+        <div class="opt__head">
+          <h4>Size</h4>
+          <a href="size-guide.html" style="font-size:.84rem;color:var(--blush-600);text-decoration:underline">Size guide</a>
+        </div>
+        <div class="size-row" id="sizeRow">
+          ${sizes.map(s => `
+            <button class="size-btn ${!inStock(P, s) ? 'is-out' : ''} ${s === chosenSize ? 'is-on' : ''}"
+                    data-s="${s}" ${!inStock(P, s) ? 'disabled aria-disabled="true"' : ''}>${s}</button>`).join('')}
+        </div>
+        <p class="stock-note" id="stockNote"></p>
+      </div>
+
+      <!-- cta -->
+      <div class="pdp__cta">
+        <button class="btn btn--primary btn--lg" id="addBtn" ${sold ? 'disabled' : ''}>
+          ${sold ? 'Sold out' : 'Add to bag'}
+        </button>
+        <button class="btn btn--ghost btn--lg heart-inline" data-wish="${P.id}"
+                aria-label="Save to wishlist" style="position:static;width:auto;height:auto;border-radius:999px">
+          ${ICON.heart}
+        </button>
+      </div>
+
+      <button class="btn btn--soft btn--block" style="margin-top:10px"
+              onclick="askBestie('What size am I in the ${P.name.replace(/'/g, '')}?')">
+        Not sure on size? Ask Bestie ✨
+      </button>
+
+      <!-- details -->
+      <div class="acc">
+        <div class="acc__item is-open">
+          <button class="acc__btn" aria-expanded="true">The details ${ICON.plus}</button>
+          <div class="acc__panel"><div>
+            <ul>${P.details.map(d => `<li>${escapeHtml(d)}</li>`).join('')}</ul>
+            <p style="margin-top:10px">${escapeHtml(P.fabric)}</p>
+          </div></div>
+        </div>
+        <div class="acc__item">
+          <button class="acc__btn" aria-expanded="false">Fit &amp; sizing ${ICON.plus}</button>
+          <div class="acc__panel"><div>
+            <p>${escapeHtml(P.fitNote)}</p>
+            <p>Not sure? The <a href="size-guide.html" style="color:var(--blush-600);text-decoration:underline">size guide</a>
+               has the full measurement chart, or Bestie will work it out from your measurements.</p>
+          </div></div>
+        </div>
+        <div class="acc__item">
+          <button class="acc__btn" aria-expanded="false">Delivery &amp; exchanges ${ICON.plus}</button>
+          <div class="acc__panel"><div>
+            <p>Kampala ${money(CONFIG.kampalaDelivery)}, same or next day. Upcountry ${money(CONFIG.upcountryDelivery)}, 2–4 days.
+               Free over ${money(CONFIG.freeShippingOver)}.</p>
+            <p>Exchange within 7 days, unworn with tags. Earrings excluded for hygiene.</p>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function wirePdp() {
+  const main = document.getElementById('galMain');
+  /* Not every piece has three shots. Probe each variant and drop the thumbs
+     that have no image, rather than showing empty "photo coming" tiles. */
+  document.querySelectorAll('.gallery__thumb').forEach(t => {
+    const v = t.dataset.v;
+    if (!v) return;                       // the main shot always stays
+    const probe = new Image();
+    probe.onerror = () => t.remove();
+    probe.src = `photos/${P.id}${v}.jpg`;
+  });
+
+  document.getElementById('galThumbs').addEventListener('click', e => {
+    const t = e.target.closest('.gallery__thumb');
+    if (!t) return;
+    document.querySelectorAll('.gallery__thumb').forEach(x => x.classList.remove('is-on'));
+    t.classList.add('is-on');
+    main.innerHTML = media(P.id, P.name, t.dataset.v);
+  });
+
+  document.getElementById('colorRow').addEventListener('click', e => {
+    const b = e.target.closest('.swatch-btn');
+    if (!b) return;
+    chosenColor = b.dataset.c;
+    document.querySelectorAll('.swatch-btn').forEach(x => x.classList.remove('is-on'));
+    b.classList.add('is-on');
+    document.getElementById('colorLabel').textContent = chosenColor;
+  });
+
+  document.getElementById('sizeRow').addEventListener('click', e => {
+    const b = e.target.closest('.size-btn');
+    if (!b || b.disabled) return;
+    chosenSize = b.dataset.s;
+    document.querySelectorAll('.size-btn').forEach(x => x.classList.remove('is-on'));
+    b.classList.add('is-on');
+    updateStockNote();
+  });
+
+  document.getElementById('addBtn').addEventListener('click', () => {
+    if (!chosenSize) { toast('Pick a size first 💕'); return; }
+    if (Store.add(P.id, chosenSize, chosenColor, 1)) {
+      toast(`${P.name} (${chosenColor}, ${chosenSize}) is in your bag ✨`);
+      openDrawer('cart');
+    } else {
+      toast(`Only what's already in your bag is left in ${chosenSize}`);
+    }
+  });
+
+  updateStockNote();
+}
+
+function updateStockNote() {
+  const note = document.getElementById('stockNote');
+  if (!chosenSize) { note.textContent = ''; return; }
+  const n = P.stock[chosenSize] || 0;
+  note.className = 'stock-note ' + (n <= 2 ? 'low' : 'ok');
+  note.textContent = n === 0 ? `Sold out in ${chosenSize}`
+    : n <= 2 ? `Only ${n} left in ${chosenSize} — this one moves fast`
+    : `In stock in ${chosenSize}`;
+}
+
+function renderRelated() {
+  /* Related = shares an occasion, different piece. Prefer a different category
+     so it reads as a look rather than a duplicate. */
+  const scored = PRODUCTS
+    .filter(p => p.id !== P.id && anyInStock(p))
+    .map(p => {
+      let s = p.occasions.filter(o => P.occasions.includes(o)).length * 2;
+      if (p.category !== P.category) s += 2;
+      if (p.colors.some(c => P.colors.includes(c))) s += 1;
+      return { p, s };
+    })
+    .filter(x => x.s > 0)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 4)
+    .map(x => x.p);
+
+  if (!scored.length) return;
+  document.getElementById('relatedWrap').hidden = false;
+  const grid = document.getElementById('related');
+  grid.innerHTML = scored.map(productCard).join('');
+  grid.querySelectorAll('.reveal').forEach(el => el.classList.add('is-in'));
+  syncCounts();
+}
+</script>
+</body>
+</html>

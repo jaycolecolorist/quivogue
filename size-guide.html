@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Size Guide — Gash Luxe</title>
+<meta name="description" content="Gash Luxe size chart in cm and inches, how to measure yourself, and a size finder that reads your measurements.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Home</a> / Size guide</p>
+    <div class="section-head center">
+      <span class="kicker">get it right first time</span>
+      <h1>Size guide</h1>
+      <p class="lede">These are <strong>body</strong> measurements, not garment measurements. Measure yourself over your underwear, keep the tape snug but not tight, and breathe normally.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------- size finder -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="measure-card reveal">
+        <span class="kicker">no guessing</span>
+        <h2 style="font-size:1.5rem;margin-bottom:6px">Find your size</h2>
+        <p style="font-size:.92rem;color:var(--ink-3)">Pop your measurements in. If you pick a piece, we'll adjust for how that one actually fits.</p>
+
+        <div class="field-row" style="margin-top:18px">
+          <div class="field">
+            <label for="mBust">Bust (cm)</label>
+            <input type="number" id="mBust" inputmode="decimal" placeholder="88" min="60" max="160">
+          </div>
+          <div class="field">
+            <label for="mWaist">Waist (cm)</label>
+            <input type="number" id="mWaist" inputmode="decimal" placeholder="70" min="45" max="150">
+          </div>
+          <div class="field">
+            <label for="mHip">Hip (cm)</label>
+            <input type="number" id="mHip" inputmode="decimal" placeholder="96" min="60" max="170">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label for="mProduct">For a specific piece (optional)</label>
+          <select id="mProduct"></select>
+        </div>
+
+        <button class="btn btn--primary btn--block" id="mGo" style="margin-top:18px">Show me my size</button>
+        <div class="result" id="mResult" hidden></div>
+      </div>
+
+      <div class="bodymap reveal">
+        <svg viewBox="0 0 220 330" role="img" aria-label="Where to measure: bust across the fullest part, waist at the narrowest, hips at the fullest">
+          <defs>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--blush-100)"/>
+              <stop offset="100%" stop-color="var(--lilac-100)"/>
+            </linearGradient>
+          </defs>
+          <!-- silhouette -->
+          <path d="M110 22c11 0 19 9 19 20 0 8-4 14-8 17 14 4 27 12 31 24 5 15 6 32 4 47-1 9-3 18-5 25 3 26 6 52 5 78-1 26-5 52-9 76-1 6-6 9-12 9s-11-4-12-10c-4-23-8-46-13-69-5 23-9 46-13 69-1 6-6 10-12 10s-11-3-12-9c-4-24-8-50-9-76-1-26 2-52 5-78-2-7-4-16-5-25-2-15-1-32 4-47 4-12 17-20 31-24-4-3-8-9-8-17 0-11 8-20 19-20z"
+                fill="url(#bodyGrad)" stroke="var(--blush-200)" stroke-width="1.5"/>
+          <!-- bust -->
+          <line x1="42" y1="112" x2="178" y2="112" stroke="var(--blush-400)" stroke-width="1.6" stroke-dasharray="5 4"/>
+          <circle cx="42" cy="112" r="3" fill="var(--blush-400)"/><circle cx="178" cy="112" r="3" fill="var(--blush-400)"/>
+          <text class="lbl" x="42" y="104">BUST</text>
+          <!-- waist -->
+          <line x1="52" y1="158" x2="168" y2="158" stroke="var(--lilac-400)" stroke-width="1.6" stroke-dasharray="5 4"/>
+          <circle cx="52" cy="158" r="3" fill="var(--lilac-400)"/><circle cx="168" cy="158" r="3" fill="var(--lilac-400)"/>
+          <text class="lbl" x="52" y="150">WAIST</text>
+          <!-- hip -->
+          <line x1="40" y1="205" x2="180" y2="205" stroke="var(--blush-400)" stroke-width="1.6" stroke-dasharray="5 4"/>
+          <circle cx="40" cy="205" r="3" fill="var(--blush-400)"/><circle cx="180" cy="205" r="3" fill="var(--blush-400)"/>
+          <text class="lbl" x="40" y="197">HIPS</text>
+        </svg>
+        <div style="max-width:300px;margin-top:18px">
+          <p style="font-size:.9rem;color:var(--ink-2)"><strong>Bust</strong> — around the fullest part, tape level at the back.</p>
+          <p style="font-size:.9rem;color:var(--ink-2)"><strong>Waist</strong> — the narrowest point, usually just above the belly button.</p>
+          <p style="font-size:.9rem;color:var(--ink-2)"><strong>Hips</strong> — the fullest part, around 20 cm below your waist.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------- chart -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="section-head section-head--row reveal">
+      <div>
+        <span class="kicker">the numbers</span>
+        <h2>Size chart</h2>
+      </div>
+      <div class="unit-toggle" role="group" aria-label="Units">
+        <button id="unitCm" class="is-on">cm</button>
+        <button id="unitIn">inches</button>
+      </div>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="size">
+        <thead>
+          <tr><th>Size</th><th>UK</th><th>US</th><th>EU</th><th>Bust</th><th>Waist</th><th>Hip</th></tr>
+        </thead>
+        <tbody id="chartBody"></tbody>
+      </table>
+    </div>
+    <p style="font-size:.86rem;color:var(--ink-3);margin-top:14px">
+      Between two sizes? Go by the measurement that matters most for the piece — bust for a fitted top,
+      hip for a skirt. Every product page carries its own fit note.
+    </p>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------- fit notes -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">piece by piece</span>
+      <h2>How each piece fits</h2>
+      <p class="lede">Pulled straight from the rail. If it runs small, we say so.</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="size">
+        <thead><tr><th>Piece</th><th>Category</th><th>Fit</th><th>Note</th></tr></thead>
+        <tbody id="fitBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+let unit = 'cm';
+
+function pageInit() {
+  /* product picker */
+  const sel = document.getElementById('mProduct');
+  sel.innerHTML = '<option value="">Any piece — general sizing</option>' +
+    PRODUCTS.filter(p => p.fit !== 'one-size' && p.fit !== 'shoe')
+      .map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+
+  const preset = new URLSearchParams(location.search).get('id');
+  if (preset) sel.value = preset;
+
+  document.getElementById('mGo').addEventListener('click', findSize);
+  ['mBust', 'mWaist', 'mHip'].forEach(id =>
+    document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') findSize(); }));
+
+  document.getElementById('unitCm').addEventListener('click', () => setUnit('cm'));
+  document.getElementById('unitIn').addEventListener('click', () => setUnit('in'));
+
+  renderChart();
+  renderFits();
+}
+
+function setUnit(u) {
+  unit = u;
+  document.getElementById('unitCm').classList.toggle('is-on', u === 'cm');
+  document.getElementById('unitIn').classList.toggle('is-on', u === 'in');
+  renderChart();
+}
+
+function fmtRange(range) {
+  if (unit === 'cm') return `${range[0]}–${range[1]} cm`;
+  const a = (range[0] / 2.54).toFixed(1), b = (range[1] / 2.54).toFixed(1);
+  return `${a}–${b}"`;
+}
+
+function renderChart() {
+  document.getElementById('chartBody').innerHTML = SIZE_CHART.map(r => `
+    <tr>
+      <td>${r.size}</td><td>${r.uk}</td><td>${r.us}</td><td>${r.eu}</td>
+      <td>${fmtRange(r.bust)}</td><td>${fmtRange(r.waist)}</td><td>${fmtRange(r.hip)}</td>
+    </tr>`).join('');
+}
+
+function renderFits() {
+  const label = { small: 'Runs small', large: 'Runs large', relaxed: 'Cut relaxed', 'true': 'True to size', 'one-size': 'One size', shoe: 'EU shoe sizing' };
+  document.getElementById('fitBody').innerHTML = PRODUCTS.map(p => `
+    <tr>
+      <td><a href="product.html?id=${p.id}" style="color:var(--blush-600)">${escapeHtml(p.name)}</a></td>
+      <td>${p.category}</td>
+      <td>${label[p.fit] || 'True to size'}</td>
+      <td style="color:var(--ink-3)">${escapeHtml(p.fitNote)}</td>
+    </tr>`).join('');
+}
+
+/* Same maths the Style Assistant uses: nearest size band, then adjust for
+   the specific piece's fit. */
+function findSize() {
+  const bust = parseFloat(document.getElementById('mBust').value) || null;
+  const waist = parseFloat(document.getElementById('mWaist').value) || null;
+  const hip = parseFloat(document.getElementById('mHip').value) || null;
+  const box = document.getElementById('mResult');
+  box.hidden = false;
+
+  if (!bust && !waist && !hip) {
+    box.innerHTML = 'Pop in at least one measurement and we\'ll take it from there 💕';
+    return;
+  }
+
+  const scored = SIZE_CHART.map(row => {
+    let dist = 0;
+    const test = (v, range) => {
+      if (v == null) return;
+      if (v < range[0]) dist += range[0] - v;
+      else if (v > range[1]) dist += v - range[1];
+    };
+    test(bust, row.bust); test(waist, row.waist); test(hip, row.hip);
+    return { row, dist };
+  }).sort((a, b) => a.dist - b.dist);
+
+  let size = scored[0].row.size;
+  const exact = scored[0].dist === 0;
+  let note = '';
+
+  const p = getProduct(document.getElementById('mProduct').value);
+  if (p) {
+    const i = SIZES.indexOf(size);
+    if (p.fit === 'small' && i < SIZES.length - 1) {
+      size = SIZES[i + 1];
+      note = ` The ${p.name} runs small, so we've moved you up one.`;
+    } else if (p.fit === 'relaxed') {
+      note = ` The ${p.name} is cut relaxed — go down one if you want it neater.`;
+    } else {
+      note = ` The ${p.name} is true to size.`;
+    }
+  }
+
+  const stockLine = p
+    ? (inStock(p, size)
+        ? `<br><span style="color:var(--success);font-weight:600">In stock in ${size}.</span>
+           <a href="product.html?id=${p.id}" style="color:var(--blush-600);text-decoration:underline">Take me to it</a>`
+        : `<br><span style="color:var(--warn);font-weight:600">Sold out in ${size} right now</span> — ask us on
+           <a href="${CONFIG.instagram}" target="_blank" rel="noopener" style="color:var(--blush-600);text-decoration:underline">Instagram</a>
+           whether it's coming back.`)
+    : '';
+
+  box.innerHTML = `You're a <strong>${size}</strong>${exact ? '' : ' (closest match)'}.${note}${stockLine}
+    <br><br><span style="font-size:.86rem;color:var(--ink-3)">Still unsure? Ask Bestie — she'll talk it through.</span>`;
+}
+</script>
+</body>
+</html>

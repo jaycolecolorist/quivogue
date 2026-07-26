@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact &amp; FAQ — Gash Luxe</title>
+<meta name="description" content="Visit Gash Luxe at 27 Clement Hill Rd, Kampala. Delivery, exchanges, payment and styling questions answered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Home</a> / Contact &amp; FAQ</p>
+    <div class="section-head center">
+      <span class="kicker">say hi</span>
+      <h1>Come see us, or just ask</h1>
+      <p class="lede">The fastest answer is usually a DM. For anything about a specific piece, Bestie down in the corner knows the whole rail.</p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- ------------------------------------------------ details -->
+      <div class="info-card reveal">
+        <h3 style="margin-bottom:8px">Find us</h3>
+        <div id="infoRows"></div>
+        <a class="btn btn--primary btn--block" id="mapsBtn" target="_blank" rel="noopener" style="margin-top:18px">Open in Google Maps</a>
+        <a class="btn btn--ghost btn--block" id="igBtn" target="_blank" rel="noopener" style="margin-top:10px">Message us on Instagram</a>
+      </div>
+
+      <!-- ------------------------------------------------ message -->
+      <div class="info-card reveal">
+        <h3 style="margin-bottom:4px">Send a message</h3>
+        <p style="font-size:.9rem;color:var(--ink-3)">Fill this in and it opens a ready-to-send message — you pick where it goes.</p>
+        <form id="msgForm" novalidate style="margin-top:16px">
+          <div class="field">
+            <label for="cName">Your name</label>
+            <input id="cName" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="cTopic">What's it about?</label>
+            <select id="cTopic">
+              <option>A specific piece</option>
+              <option>Sizing help</option>
+              <option>Delivery</option>
+              <option>An exchange</option>
+              <option>Styling for an event</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cMsg">Your message</label>
+            <textarea id="cMsg" rows="5" required placeholder="Hi Gash Luxe! I was looking at…"></textarea>
+          </div>
+          <button class="btn btn--primary btn--block" type="submit" style="margin-top:16px">Compose message</button>
+          <p class="news__msg" id="msgOut" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------------------------------------------------------- FAQ -->
+<section class="section section--tight" id="faq">
+  <div class="wrap" style="max-width:800px">
+    <div class="section-head center reveal">
+      <span class="kicker">the usual questions</span>
+      <h2>FAQ</h2>
+    </div>
+    <div class="acc" id="faqAcc"></div>
+    <div class="news reveal center" style="margin-top:40px">
+      <span class="kicker">still stuck?</span>
+      <h2 style="font-size:1.6rem">Ask Bestie</h2>
+      <p class="lede center">She knows every piece, every size and what's actually in stock right now.</p>
+      <button class="btn btn--primary" style="margin-top:16px;position:relative;z-index:1"
+              onclick="askBestie('Hi! I have a question')">Open the Style Assistant ✨</button>
+    </div>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+function pageInit() {
+  document.getElementById('mapsBtn').href = CONFIG.mapsUrl;
+  document.getElementById('igBtn').href = CONFIG.instagram;
+
+  /* Only show contact rows we actually have. No invented phone number. */
+  const rows = [
+    { ic: ICON.pin, label: 'The shop', value: CONFIG.address + '<br><span style="color:var(--ink-4)">' + CONFIG.plusCode + '</span>' },
+    { ic: ICON.clock, label: 'Opening', value: 'Opens ' + CONFIG.opensAt },
+    { ic: ICON.ig, label: 'Instagram', value: `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" style="color:var(--blush-600)">${CONFIG.instagramHandle}</a>` },
+    { ic: ICON.truck, label: 'Delivery', value: `Kampala ${money(CONFIG.kampalaDelivery)} · Upcountry ${money(CONFIG.upcountryDelivery)}<br><span style="color:var(--ink-4)">Free over ${money(CONFIG.freeShippingOver)}</span>` }
+  ];
+  if (CONFIG.phone) {
+    rows.splice(2, 0, {
+      ic: ICON.clock, label: 'Phone',
+      value: `<a href="tel:${CONFIG.phone.replace(/\s/g, '')}" style="color:var(--blush-600)">${CONFIG.phone}</a>`
+    });
+  }
+  document.getElementById('infoRows').innerHTML = rows.map(r => `
+    <div class="info-row">
+      <span class="info-row__ic">${r.ic}</span>
+      <div><strong>${r.label}</strong><span>${r.value}</span></div>
+    </div>`).join('');
+
+  /* FAQ */
+  document.getElementById('faqAcc').innerHTML = FAQ.map(f => `
+    <div class="acc__item">
+      <button class="acc__btn" aria-expanded="false">${escapeHtml(f.q)} ${ICON.plus}</button>
+      <div class="acc__panel"><div><p>${f.a}</p></div></div>
+    </div>`).join('');
+  initAccordions(document.getElementById('faqAcc'));
+
+  /* Message form — composes the text, then hands it to the channel the
+     visitor chooses. We don't have a mail server, so we don't pretend to. */
+  document.getElementById('msgForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('cName').value.trim();
+    const topic = document.getElementById('cTopic').value;
+    const body = document.getElementById('cMsg').value.trim();
+    const out = document.getElementById('msgOut');
+
+    if (!name || !body) { out.textContent = 'Pop your name and a message in first 💕'; return; }
+
+    const composed = `Hi Gash Luxe! I'm ${name}. (${topic})\n\n${body}`;
+    const options = [];
+
+    if (CONFIG.whatsapp) {
+      options.push(`<a class="btn btn--soft" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(composed)}" target="_blank" rel="noopener">Send on WhatsApp</a>`);
+    }
+    if (CONFIG.email) {
+      options.push(`<a class="btn btn--soft" href="mailto:${CONFIG.email}?subject=${encodeURIComponent(topic + ' — ' + name)}&body=${encodeURIComponent(composed)}">Send by email</a>`);
+    }
+    options.push(`<a class="btn btn--soft" href="${CONFIG.instagram}" target="_blank" rel="noopener">Open Instagram DM</a>`);
+    options.push(`<button class="btn btn--soft" type="button" id="copyMsg">Copy message</button>`);
+
+    out.innerHTML = `Your message is ready — send it wherever suits you:
+      <span style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px">${options.join('')}</span>`;
+
+    const copy = document.getElementById('copyMsg');
+    if (copy) copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(composed); toast('Message copied ✨'); }
+      catch { toast('Select and copy the message manually'); }
+    });
+  });
+}
+</script>
+</body>
+</html>

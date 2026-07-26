@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gash Luxe — Boutique by Sheilah Gashumba, Kampala</title>
+<meta name="description" content="Gash Luxe is a Kampala boutique on Clement Hill Road for soft, feminine, main-character pieces. Dresses, tops, skirts, sets and accessories — with delivery across Uganda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<!-- ============================================================ HERO -->
+<section class="hero">
+  <div class="blob blob--pink" style="width:420px;height:420px;top:-120px;right:-80px;opacity:.5"></div>
+  <div class="blob blob--lilac" style="width:340px;height:340px;bottom:-140px;left:-100px;opacity:.45"></div>
+
+  <div class="wrap">
+    <div class="hero__grid">
+      <div>
+        <span class="kicker">main character energy</span>
+        <h1 class="hero__title">Dressing up should feel like <em>the best part</em> of your day.</h1>
+        <p class="lede">A shopping lounge on Clement Hill Road — with a mini champagne bar and a content studio — for the kind of pieces that make people ask where you got it.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary btn--lg" href="shop.html">Shop new in</a>
+          <a class="btn btn--ghost btn--lg" href="#looks">Shop the look</a>
+        </div>
+        <div class="hero__stats">
+          <div class="hero__stat">
+            <strong id="statCount">—</strong><span>pieces on the rail</span>
+          </div>
+          <div class="hero__stat">
+            <strong>4.9 ★</strong><span>from 9 Google reviews</span>
+          </div>
+          <div class="hero__stat">
+            <strong>Kampala</strong><span>delivery in 24h</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__art">
+        <div class="sparkle twinkly" style="top:-14px;left:-6px" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.5 4.6 2.4 6.5 7 7-4.6.5-6.5 2.4-7 7-.5-4.6-2.4-6.5-7-7 4.6-.5 6.5-2.4 7-7z"/></svg>
+        </div>
+        <div class="sparkle twinkly" style="bottom:80px;right:-10px;animation-delay:1.2s" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.5 4.6 2.4 6.5 7 7-4.6.5-6.5 2.4-7 7-.5-4.6-2.4-6.5-7-7 4.6-.5 6.5-2.4 7-7z"/></svg>
+        </div>
+        <div class="hero__frame" id="heroFrame"></div>
+        <div class="hero__badge floaty">
+          <div>
+            <strong>4.9</strong>
+            <span class="stars">★★★★★</span>
+          </div>
+          <div style="border-left:1px solid var(--line);padding-left:12px">
+            <span>“Luxury meets<br>class”</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>New in weekly ✦ Mini champagne bar ✦ Styling by appointment ✦ 27 Clement Hill Rd, opposite Jikoni ✦ Content studio ✦</span>
+    <span>New in weekly ✦ Mini champagne bar ✦ Styling by appointment ✦ 27 Clement Hill Rd, opposite Jikoni ✦ Content studio ✦</span>
+  </div>
+</div>
+
+<!-- ============================================================ COLLECTIONS -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker">shop by category</span>
+      <h2>Find your thing</h2>
+    </div>
+    <div class="grid-collections" id="collections"></div>
+  </div>
+</section>
+
+<!-- ============================================================ NEW ARRIVALS -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="section-head section-head--row reveal">
+      <div>
+        <span class="kicker">fresh off the rail</span>
+        <h2>New arrivals</h2>
+      </div>
+      <a class="link-arrow" href="shop.html?sort=new">See everything <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg></a>
+    </div>
+    <div class="grid-products" id="newArrivals"></div>
+  </div>
+</section>
+
+<!-- ============================================================ SHOP THE LOOK -->
+<section class="section" id="looks">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker">styled for you</span>
+      <h2>Shop the look</h2>
+      <p class="lede">Whole outfits, already put together. Add the lot, or just the bit you're missing.</p>
+    </div>
+    <div class="grid-looks" id="looks-grid"></div>
+  </div>
+</section>
+
+<!-- ============================================================ BESTSELLERS -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="section-head section-head--row reveal">
+      <div>
+        <span class="kicker">everyone's buying</span>
+        <h2>Bestsellers</h2>
+      </div>
+      <a class="link-arrow" href="shop.html">Shop all <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg></a>
+    </div>
+    <div class="grid-products" id="bestsellers"></div>
+  </div>
+</section>
+
+<!-- ============================================================ REVIEWS -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker">in their words</span>
+      <h2>4.9 stars, 9 reviews</h2>
+      <p class="lede">Real reviews from our Google listing. Nothing invented.</p>
+    </div>
+    <div class="grid-reviews" id="reviews"></div>
+  </div>
+</section>
+
+<!-- ============================================================ NEWSLETTER -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="news reveal">
+      <div class="blob blob--pink" style="width:260px;height:260px;top:-90px;left:-60px;opacity:.6"></div>
+      <div class="blob blob--lilac" style="width:220px;height:220px;bottom:-90px;right:-40px;opacity:.6"></div>
+      <div style="position:relative;z-index:1">
+        <span class="kicker">first dibs</span>
+        <h2>Get the drop before it drops</h2>
+        <p class="lede center">New arrivals, restocks and the occasional secret sale. No spam, promise 🎀</p>
+        <form class="news__form" id="newsForm" novalidate>
+          <input type="email" id="newsEmail" placeholder="your@email.com" aria-label="Email address" required>
+          <button class="btn btn--primary" type="submit">Join the list</button>
+        </form>
+        <p class="news__msg" id="newsMsg" role="status"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+function pageInit() {
+  /* hero image slot — drop photos/hero.jpg in to replace the gradient */
+  document.getElementById('heroFrame').innerHTML = media('hero', 'Gash Luxe — Clement Hill Road');
+
+  document.getElementById('statCount').textContent = PRODUCTS.length;
+
+  /* collections */
+  const cats = [...new Set(PRODUCTS.map(p => p.category))];
+  document.getElementById('collections').innerHTML = cats.map(c => {
+    const n = PRODUCTS.filter(p => p.category === c).length;
+    const first = PRODUCTS.find(p => p.category === c);
+    return `<a class="coll reveal" href="shop.html?c=${encodeURIComponent(c)}">
+      ${media('collection-' + c.toLowerCase(), c)}
+      <div class="coll__cap"><strong>${c}</strong><span>${n} piece${n === 1 ? '' : 's'}</span></div>
+    </a>`;
+  }).join('');
+
+  /* new arrivals — New badge first, then the rest */
+  const newest = [...PRODUCTS].sort((a, b) =>
+    (b.badge === 'New' ? 1 : 0) - (a.badge === 'New' ? 1 : 0)).slice(0, 4);
+  document.getElementById('newArrivals').innerHTML = newest.map(productCard).join('');
+
+  /* looks */
+  document.getElementById('looks-grid').innerHTML = LOOKS.map(look => {
+    const items = look.items.map(getProduct).filter(Boolean);
+    const total = items.reduce((n, p) => n + p.price, 0);
+    return `<article class="look reveal">
+      <div class="look__media">${media(look.id, look.title)}</div>
+      <div class="look__body">
+        <h3>${look.title}</h3>
+        <p style="font-size:.9rem;color:var(--ink-3);margin:6px 0 0">${look.note}</p>
+        <ul class="look__items">
+          ${items.map(p => `<li><a href="product.html?id=${p.id}">
+            <span class="look__thumb">${media(p.id, p.name)}</span>
+            <span><strong>${p.name}</strong><em>${money(p.price)}</em></span>
+          </a></li>`).join('')}
+        </ul>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <span style="font-weight:600">${money(total)} the lot</span>
+          <button class="btn btn--soft" data-look="${look.id}">Add all to bag</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  document.getElementById('looks-grid').addEventListener('click', e => {
+    const btn = e.target.closest('[data-look]');
+    if (!btn) return;
+    const look = LOOKS.find(l => l.id === btn.dataset.look);
+    let added = 0, skipped = [];
+    look.items.forEach(id => {
+      const p = getProduct(id);
+      if (!p) return;
+      const size = productSizes(p).find(s => inStock(p, s));
+      if (!size) { skipped.push(p.name); return; }
+      if (Store.add(id, size, p.colors[0], 1)) added++;
+    });
+    if (added) toast(`${added} piece${added === 1 ? '' : 's'} added — check sizes in your bag 💕`);
+    if (skipped.length) toast(`${skipped[0]} is sold out, so I left it out`);
+  });
+
+  /* bestsellers */
+  const best = PRODUCTS.filter(p => p.badge === 'Bestseller').slice(0, 4);
+  document.getElementById('bestsellers').innerHTML = best.map(productCard).join('');
+
+  /* reviews */
+  document.getElementById('reviews').innerHTML = REVIEWS.map(r => `
+    <blockquote class="review reveal">
+      <span class="stars">${'★'.repeat(r.stars)}</span>
+      <p class="review__text">“${r.text}”</p>
+      <div class="review__who">
+        <span class="review__av">${r.name[0]}</span>
+        <div>
+          <strong>${r.name}</strong>
+          <span>${r.badge ? r.badge + ' · ' : ''}${r.when}</span>
+        </div>
+      </div>
+    </blockquote>`).join('');
+
+  /* newsletter — stores locally, no backend to fake */
+  document.getElementById('newsForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('newsEmail').value.trim();
+    const msg = document.getElementById('newsMsg');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msg.textContent = 'That email looks a little off — mind checking it?';
+      return;
+    }
+    const list = JSON.parse(localStorage.getItem('gashluxe.news') || '[]');
+    if (!list.includes(email)) list.push(email);
+    localStorage.setItem('gashluxe.news', JSON.stringify(list));
+    document.getElementById('newsForm').reset();
+    msg.textContent = "You're on the list ✨ We'll be in touch before the next drop.";
+  });
+}
+</script>
+</body>
+</html>
