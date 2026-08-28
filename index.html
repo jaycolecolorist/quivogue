@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202608281422">
+<link rel="stylesheet" href="css/style.css?v=202608282224">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -64,6 +64,16 @@
     <span>Seamless knit ✦ Squat-tested opaque ✦ Inbuilt pant on every skort ✦ Sizes XS–XL ✦ THE CUBE, G17 Kisementi ✦ WhatsApp orders ✦</span>
   </div>
 </div>
+
+<!-- ============================================================ CAMPAIGN + DEALS
+     Driven by CAMPAIGN and DEALS in js/data.js. Each hides itself when
+     live:false, so nothing advertises an offer that isn't running. -->
+<section class="section section--tight" id="promoSection">
+  <div class="wrap">
+    <article class="campaign reveal" id="campaign" hidden></article>
+    <div class="deals" id="deals"></div>
+  </div>
+</section>
 
 <!-- ============================================================ COLLECTIONS -->
 <section class="section">
@@ -148,15 +158,47 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202608281422"></script>
-<script src="js/app.js?v=202608281422"></script>
-<script src="js/assistant.js?v=202608281422"></script>
+<script src="js/data.js?v=202608282224"></script>
+<script src="js/app.js?v=202608282224"></script>
+<script src="js/assistant.js?v=202608282224"></script>
 <script>
 function pageInit() {
   /* hero image slot — drop photos/hero.jpg in to replace the gradient */
-  document.getElementById('heroFrame').innerHTML = media('hero', 'QV fits — the golf and tennis skort dress');
+  document.getElementById('heroFrame').innerHTML = media('hero', 'QV fits — on the track');
 
   document.getElementById('statCount').textContent = PRODUCTS.length;
+
+  /* ---------------------------------------------------- campaign + deals */
+  const campaign = document.getElementById('campaign');
+  if (CAMPAIGN && CAMPAIGN.live) {
+    campaign.hidden = false;
+    campaign.innerHTML = `
+      ${media('banner-campaign', CAMPAIGN.title)}
+      <div class="campaign__body">
+        <span class="kicker">${escapeHtml(CAMPAIGN.kicker)}</span>
+        <h2>${escapeHtml(CAMPAIGN.title)}</h2>
+        <p>${escapeHtml(CAMPAIGN.text)}</p>
+        <a class="btn btn--primary" href="${CAMPAIGN.href}">${escapeHtml(CAMPAIGN.cta)}</a>
+      </div>`;
+  }
+
+  const liveDeals = (DEALS || []).filter(d => d.live);
+  document.getElementById('deals').innerHTML = liveDeals.map(d => {
+    // href null = send them to WhatsApp, since that's how the shop takes orders
+    const href = d.href || (CONFIG.whatsapp
+      ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent("Hi QV fits! What's on offer this week?")}`
+      : CONFIG.instagram);
+    const ext = d.href ? '' : ' target="_blank" rel="noopener"';
+    return `<a class="deal deal--${d.tone} reveal" href="${href}"${ext}>
+      <span class="deal__tag">${escapeHtml(d.tag)}</span>
+      <h3>${escapeHtml(d.title)}</h3>
+      <p>${escapeHtml(d.text)}</p>
+      <span class="link-arrow">${escapeHtml(d.cta)} ${ICON.arrow}</span>
+    </a>`;
+  }).join('');
+  // If every promo is switched off, drop the whole band rather than leave a gap.
+  document.getElementById('promoSection').hidden =
+    !liveDeals.length && !(CAMPAIGN && CAMPAIGN.live);
 
   /* collections */
   const cats = [...new Set(PRODUCTS.map(p => p.category))];

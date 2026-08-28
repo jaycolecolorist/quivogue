@@ -202,15 +202,22 @@ function buildChrome() {
 
   const promo = document.createElement('div');
   promo.className = 'promo';
-  promo.innerHTML = `Free delivery over ${money(CONFIG.freeShippingOver)} &nbsp;·&nbsp; Showroom at ${CONFIG.address.split(',')[0]}, Kisementi &nbsp;·&nbsp; WhatsApp orders ${CONFIG.phone}`;
+  // PROMO_BAR lives in data.js so the shop can edit it without touching code.
+  promo.innerHTML = (typeof PROMO_BAR !== 'undefined' ? PROMO_BAR : [])
+    .map(s => s.replace('{{freeShipping}}', money(CONFIG.freeShippingOver))
+               .replace('{{phone}}', CONFIG.phone || ''))
+    .join('&nbsp;&nbsp;·&nbsp;&nbsp;');
 
   const hdr = document.createElement('header');
   hdr.className = 'hdr';
   hdr.innerHTML = `
     <div class="hdr__inner">
-      <a class="logo" href="index.html">
-        <span class="logo__name">${CONFIG.brand}</span>
-        <span class="logo__sub">${CONFIG.tagline}</span>
+      <a class="logo" href="index.html" aria-label="${CONFIG.brand} home">
+        <img class="logo__mark" src="brand/logo.png" alt="" width="44" height="44">
+        <span class="logo__text">
+          <span class="logo__name">${CONFIG.brand}</span>
+          <span class="logo__sub">${CONFIG.tagline}</span>
+        </span>
       </a>
       <nav class="nav" id="nav">
         <button class="nav__close" id="navClose" aria-label="Close menu">${ICON.close}</button>
@@ -262,8 +269,11 @@ function buildChrome() {
       <div class="ftr__grid">
         <div>
           <a class="logo" href="index.html" style="margin-bottom:14px">
-            <span class="logo__name">${CONFIG.brand}</span>
-            <span class="logo__sub">${CONFIG.tagline}</span>
+            <img class="logo__mark" src="brand/logo.png" alt="" width="48" height="48">
+            <span class="logo__text">
+              <span class="logo__name">${CONFIG.brand}</span>
+              <span class="logo__sub">${CONFIG.tagline}</span>
+            </span>
           </a>
           <p style="font-size:.9rem;color:var(--ink-3);max-width:34ch">
             ${CONFIG.blurb} Made for the way you actually train.

@@ -27,13 +27,16 @@
    ones in. Nothing here is carried over from the previous brand.
 
    PHOTOS
+   brand/logo.png is the shop's real logo (the QV FITS wave mark, EST. 2023),
+   taken from their Instagram profile picture with the white background
+   knocked out. The site's magenta-to-purple accent is sampled from it.
+
    photos/ mixes two sources:
-     · Four images are the brand's own, pulled from their TikTok posts
-       (their Instagram is login-walled and its API is currently erroring).
-       These are hero.jpg, about.jpg, collection-sets.jpg and the three
-       pieces marked // REAL PIECE.
-     · The rest are free-licence stock, lightly graded to match, so the
-       store reads as finished. Replace them with real QV photography.
+     · The prominent slots are the brand's OWN Instagram post photography at
+       full resolution — hero, about, banner-campaign ("Tennis is Sport"),
+       collection-sets, collection-skorts, and several products.
+     · The remainder is free-licence stock, lightly graded to match, so the
+       store reads as finished. Replace it with real QV photography.
    Filenames map to product ids: <id>.jpg, plus -2 / -3 for the gallery.
    ========================================================================== */
 
@@ -85,6 +88,72 @@ const CONFIG = {
    ------------------------------------------------------------------------- */
 const REVIEWS = [];
 
+/* -------------------------------------------------------------------------
+   PROMOTIONS
+   --------------------------------------------------------------------------
+   ⚠ EVERY OFFER BELOW IS A PLACEHOLDER. Do not leave one switched on unless
+   the offer is genuinely running — the site shows these as live claims next
+   to a real WhatsApp number, so a stale "20% off" becomes a promise the shop
+   has to honour.
+
+   Set `live: false` to hide a promo without deleting it.
+
+   For reference, the shop's own promo style (from their Instagram): a
+   "QUIVOGUE CHRISTMAS MEGA SALE — DISCOUNT 50% OFF — THE CUBE G17 KISEMENTI"
+   graphic. That one has expired, so it is not used on the site.
+   ------------------------------------------------------------------------- */
+
+/* The rotating strip at the very top of every page. */
+const PROMO_BAR = [
+  `Free delivery over {{freeShipping}}`,                    // follows CONFIG
+  `Showroom at THE CUBE, G17 Kisementi`,                    // REAL
+  `WhatsApp orders {{phone}}`                               // REAL
+];
+
+/* The big campaign banner on the home page. Image: photos/banner-campaign.jpg */
+const CAMPAIGN = {
+  live: true,
+  kicker: 'New styles',
+  title: 'Tennis is Sport',
+  text: 'The court range — collared tops, pleated skorts and an inbuilt pant, built for the modern active woman.',
+  cta: 'Shop the court range',
+  href: 'shop.html?c=Skorts'
+};
+
+/* The three deal cards under it. */
+const DEALS = [
+  {
+    id: 'seasonal',
+    live: true,                 // PROMO placeholder — confirm before launch
+    tag: 'Seasonal',
+    title: 'Summer drop',
+    text: 'Swim and lightweight seamless, just landed in store.',
+    cta: 'Shop swim',
+    href: 'shop.html?c=Swim',
+    tone: 'brand'
+  },
+  {
+    id: 'percent-off',
+    live: false,                // PROMO placeholder — OFF until a real sale runs
+    tag: 'Limited',
+    title: '20% off',
+    text: 'Selected sets and bras. Ask in store or on WhatsApp.',
+    cta: 'See what\'s in',
+    href: 'shop.html?c=Sets',
+    tone: 'dark'
+  },
+  {
+    id: 'weekly',
+    live: true,                 // PROMO placeholder — confirm before launch
+    tag: 'This week',
+    title: 'Weekly deal',
+    text: 'A rotating piece at a better price. Changes every Monday.',
+    cta: 'Ask us what\'s on',
+    href: null,                 // null = opens WhatsApp
+    tone: 'teal'
+  }
+];
+
 /* ------------------------------------------------------------------------- */
 const COLOR_SWATCHES = {
   'Teal':      '#14625a',
@@ -95,6 +164,7 @@ const COLOR_SWATCHES = {
   'Mocha':     '#b08968',
   'Espresso':  '#5c4433',
   'Butter':    '#efcb68',
+  'Pink':      '#e8467f',
   'Olive':     '#7d8560',
   'Slate':     '#5d6b73',
   'Black':     '#1c2321',
@@ -110,7 +180,7 @@ const PRODUCTS = [
   {
     id: 'seamless-longsleeve-set', name: 'Seamless Long-Sleeve Set', category: 'Sets',
     price: 210000,                                   // PRICE TBC
-    colors: ['Mocha', 'Black', 'Ivory'], badge: 'Bestseller',
+    colors: ['Pink', 'Mocha', 'Black'], badge: 'Bestseller',
     occasions: ['gym', 'everyday', 'lounge'],        // REAL PIECE — from the brand's own post
     blurb: 'Second-skin seamless in a long sleeve and matching legging. Knitted in one piece, so there are no side seams to dig in.',
     details: ['Seamless knit construction', 'Long sleeve + matching legging', 'Squat-tested opaque', 'Four-way stretch'],
