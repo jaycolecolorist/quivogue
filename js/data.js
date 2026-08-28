@@ -134,7 +134,10 @@ const DEALS = [
   },
   {
     id: 'percent-off',
-    live: false,                // PROMO placeholder — OFF until a real sale runs
+    live: true,                 // ON at Jay's request (2026-08-28).
+                                // This advertises a live discount next to the
+                                // shop's real WhatsApp number — set back to
+                                // false the day the offer ends.
     tag: 'Limited',
     title: '20% off',
     text: 'Selected sets and bras. Ask in store or on WhatsApp.',
