@@ -286,7 +286,8 @@ p  { margin: 0 0 1em; }
   transform: scale(0); transition: transform .3s var(--ease);
 }
 .icon-btn__count.is-on { transform: scale(1); }
-.burger { display: none; }
+/* Always available — the side menu is reachable on desktop too. */
+.burger { display: grid; }
 
 /* At full size the header needs ~838px. Rather than fall back to a burger the
    moment a desktop window narrows, tighten the nav so the full links survive
@@ -300,37 +301,13 @@ p  { margin: 0 0 1em; }
   .icon-btn { width: 38px; height: 38px; }
 }
 
+/* Below the breakpoint the inline links go away entirely — the menu button
+   opens the shared side drawer instead. The nav used to BECOME the drawer,
+   which meant it lived inside the header and inherited every one of the
+   header's stacking and backdrop-filter problems. The drawer is a body-level
+   element, so none of that applies to it. */
 @media (max-width: 700px) {
-  .nav {
-    position: fixed; inset: 0 0 0 auto; width: min(84vw, 340px);
-    background: var(--cream); flex-direction: column; gap: 2px;
-    padding: 92px 22px 32px; box-shadow: var(--sh-4);
-    transform: translateX(105%);
-    /* visibility keeps the closed menu out of the tab order and stops it
-       contributing phantom page width */
-    visibility: hidden;
-    transition: transform .42s var(--ease), visibility .42s;
-    z-index: 55;
-  }
-  .nav.is-open { transform: none; visibility: visible; }
-  .nav a { font-size: 1.1rem; padding: .75em 1em; }
-  .nav__close {
-    display: grid; place-items: center;
-    position: absolute; top: 18px; right: 18px;
-    width: 42px; height: 42px; border-radius: var(--r-pill);
-    color: var(--ink-2); background: var(--brand-50);
-    transition: background .2s, color .2s;
-  }
-  .nav__close:hover { background: var(--brand-100); color: var(--brand-600); }
-  .burger { display: grid; }
-  .nav-scrim {
-    /* Dim only — no backdrop-filter. Blur here composites the drawer into the
-       filtered layer on mobile Safari and softens the menu text. */
-    position: fixed; inset: 0; background: rgba(43, 36, 48, .38);
-    opacity: 0; pointer-events: none;
-    transition: opacity .35s; z-index: 54;
-  }
-  .nav-scrim.is-on { opacity: 1; pointer-events: auto; }
+  .nav { display: none; }
 }
 
 /* ---------------------------------------------------------------- decorative */
@@ -1030,3 +1007,23 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 .deal--dark h3, .deal--dark .link-arrow { color: var(--cream); }
 .deal--teal { background: var(--teal-500); color: #fff; }
 .deal--teal h3, .deal--teal .link-arrow { color: #fff; }
+
+/* ---------------------------------------------------------------- side menu */
+.drawer-menu { display: flex; flex-direction: column; padding: 6px 22px 0; }
+.drawer-menu__main {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.35rem; letter-spacing: -.02em;
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+  transition: color .2s, padding-left .2s var(--ease);
+}
+.drawer-menu__main:hover { color: var(--brand-500); padding-left: 6px; }
+.drawer-menu__label {
+  font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+  font-weight: 600; color: var(--ink-4);
+  padding: 22px 22px 4px; margin: 0;
+}
+.drawer-menu__sub {
+  font-size: 1rem; color: var(--ink-2);
+  padding: 9px 0; transition: color .2s, padding-left .2s var(--ease);
+}
+.drawer-menu__sub:hover { color: var(--brand-500); padding-left: 6px; }

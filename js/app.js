@@ -220,7 +220,6 @@ function buildChrome() {
         </span>
       </a>
       <nav class="nav" id="nav">
-        <button class="nav__close" id="navClose" aria-label="Close menu">${ICON.close}</button>
         ${NAV_LINKS.map(([href, label]) =>
           `<a href="${href}" class="${href === here ? 'is-active' : ''}">${label}</a>`).join('')}
       </nav>
@@ -237,11 +236,6 @@ function buildChrome() {
 
   document.body.prepend(hdr);
   document.body.prepend(promo);
-
-  const scrim = document.createElement('div');
-  scrim.className = 'nav-scrim';
-  scrim.id = 'navScrim';
-  document.body.appendChild(scrim);
 
   /* drawer (shared by cart + wishlist) */
   const drawerScrim = document.createElement('div');
@@ -323,24 +317,11 @@ function buildChrome() {
 }
 
 function wireChrome() {
-  const nav = document.getElementById('nav');
   const burger = document.getElementById('burger');
-  const navScrim = document.getElementById('navScrim');
 
-  const closeNav = () => {
-    nav.classList.remove('is-open');
-    navScrim.classList.remove('is-on');
-    burger.setAttribute('aria-expanded', 'false');
-  };
-  burger.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
-    navScrim.classList.toggle('is-on', open);
-    burger.setAttribute('aria-expanded', String(open));
-  });
-  navScrim.addEventListener('click', closeNav);
-  // The open drawer covers the burger, so it needs its own way out.
-  document.getElementById('navClose').addEventListener('click', closeNav);
-  nav.addEventListener('click', e => { if (e.target.tagName === 'A') closeNav(); });
+  // The menu button opens the shared side drawer at every width, so the side
+  // menu is reachable on desktop as well as mobile.
+  burger.addEventListener('click', () => openDrawer('menu'));
 
   const hdr = document.querySelector('.hdr');
   const onScroll = () => hdr.classList.toggle('is-stuck', window.scrollY > 8);
@@ -351,7 +332,7 @@ function wireChrome() {
   document.getElementById('wishBtn').addEventListener('click', () => openDrawer('wish'));
   document.getElementById('drawerClose').addEventListener('click', closeDrawer);
   document.getElementById('drawerScrim').addEventListener('click', closeDrawer);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); closeNav(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
   document.addEventListener('store:change', syncCounts);
   syncCounts();
@@ -392,6 +373,29 @@ function renderDrawer() {
   const title = document.getElementById('drawerTitle');
   const body = document.getElementById('drawerBody');
   const foot = document.getElementById('drawerFoot');
+
+  if (drawerMode === 'menu') {
+    title.textContent = 'Menu';
+    const cats = [...new Set(PRODUCTS.map(p => p.category))];
+    body.innerHTML = `
+      <nav class="drawer-menu" aria-label="Main">
+        ${NAV_LINKS.map(([href, label]) =>
+          `<a href="${href}" class="drawer-menu__main">${label}</a>`).join('')}
+      </nav>
+      <p class="drawer-menu__label">Shop by category</p>
+      <nav class="drawer-menu" aria-label="Categories">
+        ${cats.map(c =>
+          `<a href="shop.html?c=${encodeURIComponent(c)}" class="drawer-menu__sub">${c}</a>`).join('')}
+      </nav>`;
+    foot.innerHTML = `
+      ${CONFIG.whatsapp ? `<a class="btn btn--primary btn--block" target="_blank" rel="noopener"
+        href="https://wa.me/${CONFIG.whatsapp}">WhatsApp us</a>` : ''}
+      <a class="btn btn--ghost btn--block" href="${CONFIG.instagram}" target="_blank" rel="noopener"
+         style="margin-top:10px">Instagram ${CONFIG.instagramHandle}</a>
+      <p style="font-size:.78rem;color:var(--ink-4);text-align:center;margin-top:12px">
+        ${CONFIG.address}</p>`;
+    return;
+  }
 
   if (drawerMode === 'wish') {
     title.textContent = 'Saved pieces';
