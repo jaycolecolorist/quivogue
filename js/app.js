@@ -142,7 +142,10 @@ function toast(text) {
 /* Renders a photo slot. Shows photos/<id>.jpg when it exists, otherwise a
    soft gradient placeholder carrying the product name. */
 function media(id, label, variant = '') {
-  const src = `photos/${id}${variant}.jpg`;
+  // Version query busts the browser cache when a photo is swapped — the file
+  // name stays the same, so without this an old image keeps being served.
+  const v = (typeof CONFIG !== 'undefined' && CONFIG.assetVersion) ? `?v=${CONFIG.assetVersion}` : '';
+  const src = `photos/${id}${variant}.jpg${v}`;
   return `<div class="ph">
     <img src="${src}" alt="${escapeHtml(label)}" loading="lazy"
          onload="this.parentNode.classList.add('has-photo')"
@@ -224,6 +227,8 @@ function buildChrome() {
           `<a href="${href}" class="${href === here ? 'is-active' : ''}">${label}</a>`).join('')}
       </nav>
       <div class="hdr__acts">
+        <button class="icon-btn search__toggle" id="searchToggle"
+                aria-label="Search" aria-expanded="false">${ICON.search}</button>
         <button class="icon-btn" id="wishBtn" aria-label="Wishlist">
           ${ICON.heart}<span class="icon-btn__count" id="wishCount">0</span>
         </button>
@@ -232,7 +237,17 @@ function buildChrome() {
         </button>
         <button class="icon-btn burger" id="burger" aria-label="Menu" aria-expanded="false">${ICON.burger}</button>
       </div>
-    </div>`;
+
+      <!-- One input for both layouts: inline on desktop, and on a phone it
+           wraps onto its own full-width row when the icon is tapped. -->
+      <form class="search__field" id="searchField" role="search" autocomplete="off">
+        <span class="search__icon">${ICON.search}</span>
+        <input id="searchInput" type="search" placeholder="Search leggings, swim, skorts…"
+               aria-label="Search products" aria-controls="searchResults" aria-expanded="false">
+        <button class="search__clear" id="searchClear" type="button" aria-label="Clear search" hidden>${ICON.close}</button>
+      </form>
+    </div>
+    <div class="search__results" id="searchResults" hidden></div>`;
 
   document.body.prepend(hdr);
   document.body.prepend(promo);
@@ -316,6 +331,100 @@ function buildChrome() {
   wireChrome();
 }
 
+/* ---------------------------------------------------------------- search */
+/* Scores name > category > colour > blurb/details, so typing "swim" ranks the
+   Swim pieces above something that merely mentions swimming in its care note. */
+function searchProducts(q, limit = 6) {
+  const terms = q.toLowerCase().replace(/[^\w\s-]/g, ' ').split(/\s+/).filter(w => w.length > 1);
+  if (!terms.length) return [];
+  return PRODUCTS.map(p => {
+    const name = p.name.toLowerCase();
+    const cat = p.category.toLowerCase();
+    const colors = p.colors.join(' ').toLowerCase();
+    const rest = (p.blurb + ' ' + p.details.join(' ') + ' ' + p.fabric).toLowerCase();
+    let score = 0;
+    for (const t of terms) {
+      if (name.includes(t)) score += name.startsWith(t) ? 12 : 8;
+      if (cat.includes(t)) score += 6;
+      if (colors.includes(t)) score += 4;
+      if (rest.includes(t)) score += 1;
+    }
+    if (score && !anyInStock(p)) score -= 3;
+    return { p, score };
+  }).filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(x => x.p);
+}
+
+function wireSearch() {
+  const field = document.getElementById('searchField');
+  const input = document.getElementById('searchInput');
+  const clear = document.getElementById('searchClear');
+  const toggle = document.getElementById('searchToggle');
+  const results = document.getElementById('searchResults');
+  const wrap = field.closest('.hdr');
+
+  const close = () => {
+    results.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+  };
+
+  const render = () => {
+    const q = input.value.trim();
+    clear.hidden = !q;
+    if (q.length < 2) { close(); return; }
+    const hits = searchProducts(q);
+    if (!hits.length) {
+      results.innerHTML = `<div class="search__empty">
+        Nothing matches “${escapeHtml(q)}”. Try a category — sets, bras, leggings, skorts, swim, lounge.</div>`;
+    } else {
+      results.innerHTML = `
+        <div class="search__list">
+          ${hits.map(p => `
+            <a class="search__hit" href="product.html?id=${p.id}">
+              <span class="search__thumb">${media(p.id, p.name)}</span>
+              <span class="search__meta">
+                <strong>${escapeHtml(p.name)}</strong>
+                <small>${p.category}${anyInStock(p) ? '' : ' · sold out'}</small>
+              </span>
+              <span class="search__price">${money(p.price)}</span>
+            </a>`).join('')}
+        </div>
+        <a class="search__all" href="shop.html?q=${encodeURIComponent(q)}">
+          See all results for “${escapeHtml(q)}” ${ICON.arrow}</a>`;
+    }
+    results.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+  };
+
+  input.addEventListener('input', render);
+  input.addEventListener('focus', render);
+
+  clear.addEventListener('click', () => { input.value = ''; clear.hidden = true; close(); input.focus(); });
+
+  field.addEventListener('submit', e => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (q) location.href = 'shop.html?q=' + encodeURIComponent(q);
+  });
+
+  // On a phone the field is hidden until the icon is tapped; it then wraps
+  // onto its own row under the logo.
+  toggle.addEventListener('click', () => {
+    const open = wrap.classList.toggle('search-open');
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => input.focus(), 120); else close();
+  });
+
+  document.addEventListener('click', e => {
+    if (!wrap.contains(e.target)) close();
+  });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { close(); input.blur(); }
+  });
+}
+
 function wireChrome() {
   const burger = document.getElementById('burger');
 
@@ -333,6 +442,8 @@ function wireChrome() {
   document.getElementById('drawerClose').addEventListener('click', closeDrawer);
   document.getElementById('drawerScrim').addEventListener('click', closeDrawer);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+  wireSearch();
 
   document.addEventListener('store:change', syncCounts);
   syncCounts();

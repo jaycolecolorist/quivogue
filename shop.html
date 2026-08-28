@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202608282239">
+<link rel="stylesheet" href="css/style.css?v=202608282301">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -80,11 +80,11 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202608282239"></script>
-<script src="js/app.js?v=202608282239"></script>
-<script src="js/assistant.js?v=202608282239"></script>
+<script src="js/data.js?v=202608282301"></script>
+<script src="js/app.js?v=202608282301"></script>
+<script src="js/assistant.js?v=202608282301"></script>
 <script>
-const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured' };
+const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '' };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
 const PRICE_MAX = Math.max(...PRODUCTS.map(p => p.price));
 
@@ -104,6 +104,10 @@ function pageInit() {
   const sort = params.get('sort');
   if (sort && ['featured', 'new', 'low', 'high', 'az'].includes(sort)) state.sort = sort;
 
+  // ?q= comes from the header search's "see all results"
+  const q = (params.get('q') || '').trim();
+  if (q) state.query = q.slice(0, 80);
+
   buildFilters();
   document.getElementById('sort').value = state.sort;
 
@@ -116,7 +120,7 @@ function pageInit() {
     render();
   });
   document.getElementById('fClear').addEventListener('click', () => {
-    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false });
+    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, query: '' });
     document.getElementById('fStock').checked = false;
     document.getElementById('fPrice').value = 100;
     document.getElementById('priceMax').textContent = money(PRICE_MAX);
@@ -170,7 +174,10 @@ function buildFilters() {
 }
 
 function filtered() {
+  // A text query narrows the rail to the same matches the header search shows.
+  const qMatches = state.query ? new Set(searchProducts(state.query, PRODUCTS.length).map(p => p.id)) : null;
   let list = PRODUCTS.filter(p => {
+    if (qMatches && !qMatches.has(p.id)) return false;
     if (state.cats.length && !state.cats.includes(p.category)) return false;
     if (state.colors.length && !state.colors.some(c => p.colors.includes(c))) return false;
     if (state.occs.length && !state.occs.some(o => p.occasions.includes(o))) return false;
@@ -206,7 +213,9 @@ function render() {
     `${list.length} piece${list.length === 1 ? '' : 's'}${list.length !== PRODUCTS.length ? ` of ${PRODUCTS.length}` : ''}`;
 
   const title = document.getElementById('shopTitle');
-  title.textContent = state.cats.length === 1 ? state.cats[0] : 'Shop everything';
+  title.textContent = state.query ? `Results for “${state.query}”`
+                    : state.cats.length === 1 ? state.cats[0]
+                    : 'Shop everything';
 
   syncCounts();
   grid.querySelectorAll('.reveal').forEach(el => el.classList.add('is-in'));

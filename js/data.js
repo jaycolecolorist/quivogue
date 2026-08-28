@@ -32,15 +32,21 @@
    knocked out. The site's magenta-to-purple accent is sampled from it.
 
    photos/ mixes two sources:
-     · The prominent slots are the brand's OWN Instagram post photography at
-       full resolution — hero, about, banner-campaign ("Tennis is Sport"),
-       collection-sets, collection-skorts, and several products.
-     · The remainder is free-licence stock, lightly graded to match, so the
-       store reads as finished. Replace it with real QV photography.
+     · REAL QV photography — their own Instagram posts at full resolution
+       plus the QVFIT studio product shots Jay supplied. These cover the hero,
+       about, the campaign banner, every category tile, all four kit cards and
+       most of the catalogue.
+     · NO VIDEO STILLS. Earlier versions used frames lifted from their TikTok
+       clips; all of those have been removed at Jay's request.
+     · A shrinking remainder is free-licence stock filler, lightly graded to
+       match. Replace it as real product photography arrives.
    Filenames map to product ids: <id>.jpg, plus -2 / -3 for the gallery.
    ========================================================================== */
 
 const CONFIG = {
+  // Bumped on every deploy so updated photos are not served from cache.
+  assetVersion: '202608282301',
+
   brand: 'QV fits',
   tagline: 'Quivogue',
 
@@ -168,6 +174,9 @@ const COLOR_SWATCHES = {
   'Espresso':  '#5c4433',
   'Butter':    '#efcb68',
   'Pink':      '#e8467f',
+  'Navy':      '#2a3a6b',
+  'Burgundy':  '#7d2740',
+  'Grey':      '#b9bcc0',
   'Olive':     '#7d8560',
   'Slate':     '#5d6b73',
   'Black':     '#1c2321',
@@ -183,7 +192,7 @@ const PRODUCTS = [
   {
     id: 'seamless-longsleeve-set', name: 'Seamless Long-Sleeve Set', category: 'Sets',
     price: 210000,                                   // PRICE TBC
-    colors: ['Pink', 'Mocha', 'Black'], badge: 'Bestseller',
+    colors: ['Ivory', 'Pink', 'Black'], badge: 'Bestseller',
     occasions: ['gym', 'everyday', 'lounge'],        // REAL PIECE — from the brand's own post
     blurb: 'Second-skin seamless in a long sleeve and matching legging. Knitted in one piece, so there are no side seams to dig in.',
     details: ['Seamless knit construction', 'Long sleeve + matching legging', 'Squat-tested opaque', 'Four-way stretch'],
@@ -205,7 +214,7 @@ const PRODUCTS = [
   {
     id: 'rib-seamless-set', name: 'Rib Seamless Set', category: 'Sets',
     price: 195000,                                   // PRICE TBC
-    colors: ['Sand', 'Olive', 'Black'],
+    colors: ['Navy', 'Sand', 'Black'],
     occasions: ['gym', 'yoga', 'lounge'],
     blurb: 'A finer rib with more give. The one to train in when you want the set to move with you, not hold you.',
     details: ['Fine rib seamless knit', 'Scoop bra + full-length legging', 'Soft waistband', 'Breathable'],
@@ -216,7 +225,7 @@ const PRODUCTS = [
   {
     id: 'studio-two-piece', name: 'Studio Two-Piece', category: 'Sets',
     price: 225000,                                   // PRICE TBC
-    colors: ['Slate', 'Black'],
+    colors: ['Burgundy', 'Slate', 'Black'],
     occasions: ['gym', 'run', 'everyday'],
     blurb: 'Seam-fit rather than seamless — panelled for structure where you want it and airflow where you need it.',
     details: ['Seam-fit panelling', 'Mesh ventilation', 'Cropped tank + legging', 'Flatlock seams'],
@@ -264,7 +273,7 @@ const PRODUCTS = [
   {
     id: 'highwaist-sculpt-legging', name: 'High-Waist Sculpt Legging', category: 'Bottoms',
     price: 145000,                                   // PRICE TBC
-    colors: ['Black', 'Mocha', 'Forest', 'Slate'], badge: 'Bestseller',
+    colors: ['Navy', 'Black', 'Mocha', 'Slate'], badge: 'Bestseller',
     occasions: ['gym', 'run', 'everyday'],
     blurb: 'The legging we get asked about most. High rise, contour seaming, and genuinely opaque under load.',
     details: ['High rise', 'Contour seaming', 'Squat-tested opaque', 'Hidden waistband pocket'],
@@ -275,7 +284,7 @@ const PRODUCTS = [
   {
     id: 'seamless-bike-short', name: 'Seamless Bike Short', category: 'Bottoms',
     price: 95000,                                    // PRICE TBC
-    colors: ['Black', 'Sand', 'Teal'],
+    colors: ['Grey', 'Black', 'Teal'],
     occasions: ['gym', 'yoga', 'everyday'],
     blurb: 'Mid-thigh, no side seam, no ride-up. Wear it under a skort or on its own.',
     details: ['Seamless knit', 'Mid-thigh length', 'High waist', 'No side seam'],
@@ -286,7 +295,7 @@ const PRODUCTS = [
   {
     id: 'flare-lounge-legging', name: 'Flare Lounge Legging', category: 'Bottoms',
     price: 135000,                                   // PRICE TBC
-    colors: ['Espresso', 'Black', 'Cream'], badge: 'New',
+    colors: ['Mocha', 'Burgundy', 'Black'], badge: 'New',
     occasions: ['lounge', 'everyday', 'yoga'],
     blurb: 'A soft flare through the ankle. Studio to street without changing.',
     details: ['Flared hem', 'High rise', 'Brushed inside', 'Full length'],
@@ -358,7 +367,7 @@ const PRODUCTS = [
   {
     id: 'ribbed-lounge-set', name: 'Ribbed Lounge Set', category: 'Lounge',
     price: 240000,                                   // PRICE TBC
-    colors: ['Ivory', 'Cream', 'Espresso'], badge: 'Bestseller',
+    colors: ['Burgundy', 'Mocha', 'Cream'], badge: 'Bestseller',
     occasions: ['lounge', 'everyday'],               // REAL PIECE — the brand's own lounge post
     blurb: 'Hooded rib top and wide-leg pant in the same soft knit. Built for long flights and slow mornings.',
     details: ['Hooded rib top + wide-leg pant', 'Soft-spun rib knit', 'Relaxed through the leg', 'Sold as a set'],
@@ -380,7 +389,7 @@ const PRODUCTS = [
   {
     id: 'wideleg-lounge-pant', name: 'Wide-Leg Lounge Pant', category: 'Lounge',
     price: 150000,                                   // PRICE TBC
-    colors: ['Ivory', 'Espresso', 'Black'],
+    colors: ['Burgundy', 'Mocha', 'Black'],
     occasions: ['lounge', 'everyday'],
     blurb: 'A proper wide leg with a soft waistband. Wears like pyjamas, reads like trousers.',
     details: ['Wide leg', 'Soft elastic waistband', 'Full length', 'Side pockets'],

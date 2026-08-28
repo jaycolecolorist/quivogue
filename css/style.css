@@ -1008,6 +1008,169 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 .deal--teal { background: var(--teal-500); color: #fff; }
 .deal--teal h3, .deal--teal .link-arrow { color: #fff; }
 
+/* ==========================================================================
+   PHONE REFINEMENT
+   Desktop proportions were being carried straight down to a 375px screen —
+   one full-width tile per screenful, oversized type, a very long scroll.
+   This scales the whole thing down and puts the grids on two columns.
+   ========================================================================== */
+@media (max-width: 560px) {
+  html { font-size: 15px; }
+  body { font-size: .95rem; line-height: 1.6; }
+  :root { --gut: 14px; }
+
+  /* two-up grids instead of one giant card per row */
+  .grid-products,
+  .grid-collections { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .grid-looks { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .grid-reviews { grid-template-columns: 1fr; }
+
+  .section { padding-block: 38px; }
+  .section--tight { padding-block: 28px; }
+  .section-head { margin-bottom: 20px; }
+
+  h1 { font-size: clamp(1.85rem, 8.4vw, 2.4rem); }
+  h2 { font-size: clamp(1.35rem, 6vw, 1.75rem); }
+  h3 { font-size: 1.02rem; }
+  .lede { font-size: .95rem; }
+  .kicker { font-size: .62rem; letter-spacing: .16em; margin-bottom: .7em; }
+  .kicker::before { width: 16px; }
+
+  /* header chrome */
+  .logo__mark { width: 32px; height: 32px; }
+  .logo__name { font-size: 1.05rem; }
+  .logo__sub { font-size: .48rem; letter-spacing: .18em; }
+  .logo { gap: 7px; }
+  .hdr__inner { padding: 9px var(--gut); gap: 8px; }
+  .hdr__acts { gap: 0; }
+  .icon-btn { width: 36px; height: 36px; }
+  .promo { font-size: .68rem; padding: .45em .8em; }
+
+  /* cards */
+  .card__body { padding: 9px 10px 12px; }
+  .card__cat { font-size: .58rem; letter-spacing: .1em; }
+  .card__name { font-size: .82rem; margin: 2px 0 4px; }
+  .card__price { font-size: .82rem; }
+  .card__swatches { margin: 5px 0 6px; }
+  .sw { width: 11px; height: 11px; }
+  .badge { font-size: .56rem; padding: .32em .6em; top: 8px; left: 8px; }
+  .heart { width: 30px; height: 30px; top: 7px; right: 7px; }
+  .heart svg { width: 15px; height: 15px; }
+  .card__quick { display: none; }          /* tap the card instead */
+
+  /* category tiles */
+  .coll__cap { padding: 8px 10px; inset: auto 8px 8px; border-radius: var(--r-sm); }
+  .coll__cap strong { font-size: .8rem; }
+  .coll__cap span { font-size: .62rem; }
+
+  /* kits */
+  .look__body { padding: 12px; }
+  .look__items { gap: 6px; margin: 10px 0 12px; }
+  .look__thumb { width: 32px; height: 40px; }
+  .look__items a { font-size: .78rem; }
+  .look__items em { font-size: .7rem; }
+
+  /* promos */
+  .campaign { min-height: 300px; }
+  .deals { grid-template-columns: 1fr; gap: 10px; }
+  .deal { padding: 18px; }
+  .deal h3 { font-size: 1.3rem; }
+
+  /* A 4:5 hero fills an entire phone screen before any copy appears. */
+  .hero__frame { aspect-ratio: 1 / 1; border-radius: var(--r-md); }
+  .hero__art { max-width: none; }
+  .hero { padding-block: 16px 30px; }
+  .hero__cta .btn { flex: 1; padding: .8em 1em; font-size: .88rem; }
+  .hero__stats { gap: 16px; margin-top: 24px; }
+  .hero__stat strong { font-size: 1.15rem; }
+  .hero__stat span { font-size: .7rem; }
+  .hero__badge { padding: 10px 14px; }
+  .hero__badge strong { font-size: 1.05rem; }
+
+  .btn { font-size: .88rem; padding: .78em 1.4em; }
+  .btn--lg { padding: .9em 1.6em; font-size: .92rem; }
+  .marquee span { font-size: .8rem; gap: 26px; }
+  .ftr { padding-block: 34px 20px; }
+}
+
+/* Very small phones — keep two columns but tighten further. */
+@media (max-width: 380px) {
+  :root { --gut: 12px; }
+  .grid-products, .grid-collections, .grid-looks { gap: 8px; }
+  .card__name { font-size: .78rem; }
+}
+
+/* ---------------------------------------------------------------- search */
+.search__field {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--white);
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r-pill);
+  padding: 0 8px 0 14px;
+  height: 42px; width: 250px;
+  transition: border-color .2s, box-shadow .2s;
+  order: 3;                     /* after the action icons in the flex row */
+}
+.search__field:focus-within { border-color: var(--brand-300); box-shadow: var(--sh-1); }
+.search__icon { display: grid; place-items: center; color: var(--ink-4); flex: none; }
+.search__field input {
+  border: 0; outline: 0; background: none; width: 100%;
+  font-size: .9rem; min-width: 0;
+}
+.search__field input::-webkit-search-cancel-button { display: none; }
+.search__clear {
+  display: grid; place-items: center; flex: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  color: var(--ink-3); background: var(--cream-2);
+}
+.search__clear:hover { color: var(--brand-600); background: var(--brand-100); }
+.search__toggle { display: none; }
+
+.search__results {
+  position: absolute; left: 0; right: 0; top: 100%;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  box-shadow: var(--sh-3);
+  max-height: min(70vh, 520px); overflow-y: auto;
+  z-index: 5;
+}
+.search__list { max-width: var(--wrap); margin-inline: auto; padding: 8px var(--gut); }
+.search__hit {
+  display: grid; grid-template-columns: 46px 1fr auto; gap: 12px;
+  align-items: center; padding: 9px 8px; border-radius: var(--r-md);
+  transition: background .18s;
+}
+.search__hit:hover { background: var(--brand-50); }
+.search__thumb { width: 46px; aspect-ratio: 3/4; border-radius: 6px; overflow: hidden; }
+.search__thumb .ph__label, .search__thumb .ph__note { display: none; }
+.search__meta strong { display: block; font-family: var(--display); font-size: .95rem; font-weight: 700; }
+.search__meta small { color: var(--ink-3); font-size: .78rem; }
+.search__price { font-weight: 600; font-size: .88rem; white-space: nowrap; }
+.search__all {
+  display: flex; align-items: center; justify-content: center; gap: .4em;
+  max-width: var(--wrap); margin-inline: auto;
+  padding: 14px var(--gut); border-top: 1px solid var(--line);
+  font-family: var(--display); font-weight: 700; font-size: .9rem; color: var(--brand-600);
+}
+.search__all:hover { background: var(--brand-50); }
+.search__empty {
+  max-width: var(--wrap); margin-inline: auto;
+  padding: 22px var(--gut); color: var(--ink-3); font-size: .92rem;
+}
+
+/* Below this the inline field would crowd the nav, so it collapses behind the
+   icon and drops onto its own full-width row when opened. */
+@media (max-width: 1099px) {
+  .hdr__inner { flex-wrap: wrap; }
+  .search__toggle { display: grid; }
+  .search__field {
+    display: none;
+    order: 99; flex-basis: 100%; width: auto;
+    margin-bottom: 12px;
+  }
+  .hdr.search-open .search__field { display: flex; }
+}
+
 /* ---------------------------------------------------------------- side menu */
 .drawer-menu { display: flex; flex-direction: column; padding: 6px 22px 0; }
 .drawer-menu__main {
