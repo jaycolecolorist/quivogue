@@ -178,15 +178,17 @@ function productCard(p) {
       <button class="heart ${Store.isWished(p.id) ? 'is-on' : ''}" data-wish="${p.id}"
               aria-label="Save ${escapeHtml(p.name)} to wishlist" aria-pressed="${Store.isWished(p.id)}">${ICON.heart}</button>
       <a href="product.html?id=${p.id}" aria-label="${escapeHtml(p.name)}">${media(p.id, p.name)}</a>
-      <div class="card__quick">
-        <a class="btn" href="product.html?id=${p.id}">${sold ? 'View details' : 'Quick view'}</a>
-      </div>
     </div>
     <div class="card__body">
       <span class="card__cat">${p.category}</span>
       <a class="card__name" href="product.html?id=${p.id}">${escapeHtml(p.name)}</a>
       <div class="card__swatches">${swatches}</div>
-      <div class="card__price">${money(p.price)}${sizes.length > 1 ? '' : ''}</div>
+      <div class="card__foot">
+        <span class="card__price">${money(p.price)}</span>
+        ${sold
+          ? `<a class="card__add card__add--out" href="product.html?id=${p.id}">Sold out</a>`
+          : `<button class="card__add" data-add="${p.id}" aria-label="Add ${escapeHtml(p.name)} to bag">Add</button>`}
+      </div>
     </div>
   </article>`;
 }
@@ -570,6 +572,26 @@ function renderDrawer() {
 
 /* ---------------------------------------------------------------- global clicks */
 document.addEventListener('click', e => {
+  /* Add straight from a product card. Picks the first size that is actually
+     in stock and the first colour, then says which — the shopper can change
+     both in the bag. Without this there was no way to add to the bag from the
+     shop grid on a phone at all. */
+  const add = e.target.closest('[data-add]');
+  if (add) {
+    const p = getProduct(add.dataset.add);
+    if (p) {
+      const size = productSizes(p).find(s => inStock(p, s));
+      if (!size) { toast(`${p.name} is sold out`); return; }
+      if (Store.add(p.id, size, p.colors[0], 1)) {
+        toast(`${p.name} — ${p.colors[0]}, ${size} added. Change size in your bag.`);
+        openDrawer('cart');
+      } else {
+        toast(`That is all we have of the ${p.name} in ${size}`);
+      }
+    }
+    return;
+  }
+
   const wish = e.target.closest('[data-wish]');
   if (wish) {
     const added = Store.toggleWish(wish.dataset.wish);

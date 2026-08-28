@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '202608282301',
+  assetVersion: '202608282310',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -282,17 +282,6 @@ const PRODUCTS = [
     stock: { XS: 3, S: 6, M: 6, L: 4, XL: 3 }
   },
   {
-    id: 'seamless-bike-short', name: 'Seamless Bike Short', category: 'Bottoms',
-    price: 95000,                                    // PRICE TBC
-    colors: ['Grey', 'Black', 'Teal'],
-    occasions: ['gym', 'yoga', 'everyday'],
-    blurb: 'Mid-thigh, no side seam, no ride-up. Wear it under a skort or on its own.',
-    details: ['Seamless knit', 'Mid-thigh length', 'High waist', 'No side seam'],
-    fit: 'small', fitNote: 'Runs small — size up if between.',
-    fabric: 'Nylon-elastane seamless knit',
-    stock: { XS: 4, S: 5, M: 5, L: 3, XL: 2 }
-  },
-  {
     id: 'flare-lounge-legging', name: 'Flare Lounge Legging', category: 'Bottoms',
     price: 135000,                                   // PRICE TBC
     colors: ['Mocha', 'Burgundy', 'Black'], badge: 'New',
@@ -302,17 +291,6 @@ const PRODUCTS = [
     fit: 'true', fitNote: 'True to size. Long — made for a trainer or a heel.',
     fabric: 'Brushed poly-elastane',
     stock: { XS: 2, S: 4, M: 4, L: 3, XL: 1 }
-  },
-  {
-    id: 'everyday-jogger', name: 'Everyday Jogger', category: 'Bottoms',
-    price: 155000,                                   // PRICE TBC
-    colors: ['Cream', 'Slate', 'Olive'],
-    occasions: ['lounge', 'everyday'],
-    blurb: 'Tapered, cuffed, with proper pockets. The travel-day trouser.',
-    details: ['Tapered leg', 'Cuffed hem', 'Deep side pockets', 'Drawcord waist'],
-    fit: 'relaxed', fitNote: 'Relaxed cut — take your usual size.',
-    fabric: 'Cotton-blend fleeceback',
-    stock: { XS: 3, S: 4, M: 4, L: 3, XL: 2 }
   },
 
   /* ---------------- SKORTS ---------------- */
@@ -419,12 +397,12 @@ const LOOKS = [
   {
     id: 'look-lift-day', title: 'Lift Day',
     note: 'Compression where it counts. Longline bra, sculpt legging, nothing that moves.',
-    items: ['seamless-longline-bra', 'highwaist-sculpt-legging', 'seamless-bike-short']
+    items: ['seamless-longline-bra', 'highwaist-sculpt-legging', 'rib-seamless-set']
   },
   {
     id: 'look-course-to-lunch', title: 'Course to Lunch',
     note: 'The skort dress with an inbuilt pant, so nine holes and a table both work.',
-    items: ['golf-tennis-skort-dress', 'crossback-sports-bra', 'seamless-bike-short']
+    items: ['golf-tennis-skort-dress', 'crossback-sports-bra', 'pleated-tennis-skort']
   },
   {
     id: 'look-long-haul', title: 'Long Haul',
@@ -434,7 +412,7 @@ const LOOKS = [
   {
     id: 'look-off-duty', title: 'Off Duty',
     note: 'Soft rib bra, flare legging, and a jogger for when it cools down.',
-    items: ['ribbed-scoop-bra', 'flare-lounge-legging', 'everyday-jogger']
+    items: ['ribbed-scoop-bra', 'flare-lounge-legging', 'wideleg-lounge-pant']
   }
 ];
 

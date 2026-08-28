@@ -427,7 +427,7 @@ p  { margin: 0 0 1em; }
   font-family: var(--display); font-weight: 700; font-size: 1.02rem;
   margin: 3px 0 6px; line-height: 1.25;
 }
-.card__price { font-weight: 600; color: var(--ink); font-size: .95rem; margin-top: auto; }
+.card__price { font-weight: 600; color: var(--ink); font-size: .95rem; }
 .card__swatches { display: flex; gap: 5px; margin: 8px 0 10px; }
 .sw {
   width: 15px; height: 15px; border-radius: 50%;
@@ -459,15 +459,21 @@ p  { margin: 0 0 1em; }
 .heart-inline.is-on { color: var(--brand-500); background: var(--brand-100); }
 .heart-inline.is-on svg { fill: currentColor; }
 
-.card__quick {
-  position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2;
-  opacity: 0; transform: translateY(10px);
-  transition: opacity .3s var(--ease), transform .3s var(--ease);
+/* Add-to-bag lives on every card at every size. It used to be a hover-only
+   "quick view" link, which meant a phone had no way to add from the grid. */
+.card__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-top: auto; padding-top: 8px;
 }
-.card:hover .card__quick, .card:focus-within .card__quick { opacity: 1; transform: none; }
-@media (hover: none) { .card__quick { opacity: 1; transform: none; } }
-.card__quick .btn { width: 100%; padding: .7em 1em; font-size: .85rem; background: rgba(255,255,255,.95); color: var(--ink); box-shadow: var(--sh-2); }
-.card__quick .btn:hover { background: #fff; }
+.card__add {
+  font-family: var(--display); font-weight: 700; font-size: .78rem;
+  padding: .48em 1em; border-radius: var(--r-pill);
+  background: var(--brand-grad); color: #fff; white-space: nowrap;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease), opacity .2s;
+}
+.card__add:hover { transform: translateY(-1px); box-shadow: var(--sh-2); }
+.card__add--out { background: none; color: var(--ink-4); box-shadow: inset 0 0 0 1.5px var(--line-2); }
+.card__add--out:hover { transform: none; box-shadow: inset 0 0 0 1.5px var(--line-2); }
 
 /* ---------------------------------------------------------------- collection tiles */
 .grid-collections { display: grid; gap: clamp(14px, 2vw, 22px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); }
@@ -1015,9 +1021,9 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
    This scales the whole thing down and puts the grids on two columns.
    ========================================================================== */
 @media (max-width: 560px) {
-  html { font-size: 15px; }
-  body { font-size: .95rem; line-height: 1.6; }
-  :root { --gut: 14px; }
+  html { font-size: 14px; }
+  body { font-size: .92rem; line-height: 1.55; }
+  :root { --gut: 12px; }
 
   /* two-up grids instead of one giant card per row */
   .grid-products,
@@ -1056,7 +1062,6 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   .badge { font-size: .56rem; padding: .32em .6em; top: 8px; left: 8px; }
   .heart { width: 30px; height: 30px; top: 7px; right: 7px; }
   .heart svg { width: 15px; height: 15px; }
-  .card__quick { display: none; }          /* tap the card instead */
 
   /* category tiles */
   .coll__cap { padding: 8px 10px; inset: auto 8px 8px; border-radius: var(--r-sm); }
@@ -1090,7 +1095,22 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   .btn { font-size: .88rem; padding: .78em 1.4em; }
   .btn--lg { padding: .9em 1.6em; font-size: .92rem; }
   .marquee span { font-size: .8rem; gap: 26px; }
-  .ftr { padding-block: 34px 20px; }
+  .ftr { padding-block: 30px 18px; }
+
+
+  /* card add button */
+  .card__add { font-size: .7rem; padding: .42em .8em; }
+  .card__foot { padding-top: 6px; }
+
+  /* product page: keep add-to-bag reachable without scrolling back */
+  .pdp__cta {
+    position: sticky; bottom: 0; z-index: 30;
+    background: var(--cream); margin: 18px -12px 0;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+  }
+  .pdp__cta .btn { font-size: .9rem; padding: .85em 1.2em; }
+  .asst-btn { width: 48px; height: 48px; right: 10px; bottom: 74px; }
 }
 
 /* Very small phones — keep two columns but tighten further. */
@@ -1190,3 +1210,33 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   padding: 9px 0; transition: color .2s, padding-left .2s var(--ease);
 }
 .drawer-menu__sub:hover { color: var(--brand-500); padding-left: 6px; }
+
+
+/* ==========================================================================
+   PHONE — side menu and cards
+   These live at the END of the file on purpose. Media queries add no
+   specificity, so when they sat above .drawer-menu__main's base rule the
+   base rule won and the phone sizes never applied.
+   ========================================================================== */
+@media (max-width: 560px) {
+  .drawer { width: min(68vw, 252px); }
+  .drawer__head { padding: 12px 14px; }
+  .drawer__head h3 { font-size: .92rem; }
+  .drawer__head .icon-btn { width: 32px; height: 32px; }
+  .drawer__body { padding: 2px 0; }
+  .drawer__foot { padding: 10px 14px 14px; }
+  .drawer__foot .btn { font-size: .8rem; padding: .68em 1em; }
+
+  .drawer-menu { padding: 2px 14px 0; }
+  .drawer-menu__main { font-size: .92rem; padding: 8px 0; letter-spacing: -.01em; }
+  .drawer-menu__label { font-size: .55rem; padding: 12px 14px 2px; letter-spacing: .16em; }
+  .drawer-menu__sub { font-size: .8rem; padding: 5px 0; }
+
+  .mini-row { padding: 8px 14px; grid-template-columns: 42px 1fr auto; gap: 9px; }
+  .mini-row__media { width: 42px; }
+  .mini-row strong { font-size: .82rem; }
+  .mini-row small { font-size: .7rem; }
+
+  .card__add { font-size: .7rem; padding: .42em .8em; }
+  .card__foot { padding-top: 6px; }
+}
