@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gash Luxe — "Bestie", the Style Assistant
+   QV fits — "Vee", the fit assistant
    --------------------------------------------------------------------------
    HOW THIS WORKS, HONESTLY
 
@@ -17,38 +17,40 @@
    must never live in this file — anyone can read it in the browser.
    ========================================================================== */
 
-const Bestie = (() => {
+const Vee = (() => {
   const history = [];       // {role, text} — sent to the endpoint if configured
   let lastSubject = null;   // product the conversation is currently about
   let awaitingName = false;
 
   /* ------------------------------------------------------------ language */
   const CATEGORY_WORDS = {
-    'Dresses': ['dress', 'dresses', 'gown', 'frock'],
-    'Tops': ['top', 'tops', 'blouse', 'shirt', 'tank', 'crop', 'tee', 'mesh'],
-    'Bottoms': ['skirt', 'skirts', 'trouser', 'trousers', 'jeans', 'jean', 'denim',
-                'pants', 'leggings', 'legging', 'bottoms', 'midi', 'maxi'],
-    'Sets': ['set', 'sets', 'co-ord', 'coord', 'matching', 'two piece', 'two-piece', 'jumpsuit'],
-    'Shoes': ['shoe', 'shoes', 'heel', 'heels', 'sandal', 'sandals', 'footwear', 'pumps'],
-    'Bags': ['bag', 'bags', 'purse', 'handbag', 'clutch', 'shoulder bag']
+    'Sets': ['set', 'sets', 'co-ord', 'coord', 'matching', 'two piece', 'two-piece', 'twinset'],
+    'Bras': ['bra', 'bras', 'bralette', 'crop top', 'sports bra', 'top', 'tops'],
+    'Bottoms': ['legging', 'leggings', 'tights', 'short', 'shorts', 'bike short',
+                'jogger', 'joggers', 'pant', 'pants', 'trouser', 'trousers', 'bottoms', 'flare'],
+    'Skorts': ['skort', 'skorts', 'skirt', 'golf', 'tennis', 'court', 'course'],
+    'Swim': ['swim', 'swimsuit', 'swimwear', 'bikini', 'one piece', 'one-piece', 'costume', 'beach', 'pool'],
+    'Lounge': ['lounge', 'loungewear', 'hoodie', 'sweat', 'sweats', 'pyjama', 'pajama', 'comfy', 'travel']
   };
 
+  /* Activities, not occasions — people shop activewear by what they do in it. */
   const OCCASION_WORDS = {
-    'date-night': ['date', 'date night', 'dinner', 'romantic', 'valentine'],
-    'brunch': ['brunch', 'lunch', 'daytime', 'day out', 'coffee'],
-    'birthday': ['birthday', 'bday', 'my birthday'],
-    'party': ['party', 'club', 'night out', 'clubbing', 'nye', 'new year', 'concert', 'festival'],
-    'work': ['work', 'office', 'meeting', 'interview', 'corporate', 'professional'],
-    'wedding-guest': ['wedding', 'introduction', 'kwanjula', 'kukyala', 'graduation', 'church', 'guest'],
-    'casual': ['casual', 'everyday', 'day to day', 'errands', 'chill', 'relax', 'lounge', 'weekend']
+    'gym':         ['gym', 'lift', 'lifting', 'weights', 'squat', 'squats', 'train', 'training', 'workout', 'strength'],
+    'run':         ['run', 'running', 'runner', 'jog', 'jogging', 'cardio', 'marathon', 'treadmill'],
+    'yoga':        ['yoga', 'pilates', 'stretch', 'stretching', 'reformer', 'barre', 'flexibility'],
+    'golf-tennis': ['golf', 'tennis', 'padel', 'court', 'course', 'racket', 'racquet', 'nine holes'],
+    'swim':        ['swim', 'swimming', 'pool', 'beach', 'holiday', 'vacation', 'island', 'laps'],
+    'lounge':      ['lounge', 'lounging', 'rest', 'rest day', 'travel', 'flight', 'sofa', 'home', 'chill', 'recovery'],
+    'everyday':    ['everyday', 'every day', 'day to day', 'errands', 'school run', 'casual', 'daily', 'weekend']
   };
 
   const COLOR_WORDS = Object.keys(COLOR_SWATCHES).reduce((m, c) => {
     m[c.toLowerCase()] = c; return m;
   }, {
-    pink: 'Blush', purple: 'Lavender', violet: 'Lilac', beige: 'Cream',
-    ivory: 'Cream', nude: 'Blush', brown: 'Chocolate', blue: 'Sky',
-    green: 'Sage', yellow: 'Butter'
+    green: 'Teal', emerald: 'Teal', 'dark green': 'Forest',
+    beige: 'Sand', nude: 'Sand', tan: 'Mocha', brown: 'Mocha',
+    yellow: 'Butter', grey: 'Slate', gray: 'Slate', khaki: 'Olive',
+    'off white': 'Ivory', neutral: 'Sand'
   });
 
   const has = (t, arr) => arr.some(w => t.includes(w));
@@ -225,47 +227,57 @@ const Bestie = (() => {
     /* --- name --- */
     if (awaitingName) {
       awaitingName = false;
-      const n = raw.trim().replace(/^(i'?m|my name is|call me|it'?s)\s+/i, '').split(/[\s,.!]/)[0];
-      if (n && n.length < 20 && /^[a-z'-]+$/i.test(n)) {
+      const stripped = raw.trim().replace(/^(i'?m|my name is|call me|it'?s)\s+/i, '');
+      const n = stripped.split(/[\s,.!]/)[0];
+      // Someone who answers "what should I call you?" with a question is not
+      // telling us their name. Only take it if it reads like one: a single
+      // short word that isn't a category, an activity or a product.
+      const looksLikeName =
+        n && n.length < 20 && /^[a-z'-]+$/i.test(n) &&
+        stripped.split(/\s+/).length <= 2 &&
+        !findCategory(t) && !findOccasion(t) && !findProduct(t) &&
+        !/\?|^(what|which|do|does|can|how|where|when|why|show|find|need|looking)\b/i.test(stripped);
+
+      if (looksLikeName) {
         Store.setName(n[0].toUpperCase() + n.slice(1).toLowerCase());
-        return [text(`<p>Love that name, ${Store.name}! 💕 Right — what are we shopping for?</p>`)];
+        return [text(`<p>Good to meet you, ${Store.name}. Right — what are you training in?</p>`)];
       }
-      return [text(`<p>No worries, we can skip that. What are you looking for today?</p>`)];
+      // Not a name — fall through and answer what they actually asked.
     }
     const nameM = raw.match(/(?:i'?m|my name is|call me|this is)\s+([A-Za-z'-]{2,18})\b/i);
     if (nameM && !findCategory(t) && !findOccasion(t)) {
       Store.setName(nameM[1][0].toUpperCase() + nameM[1].slice(1).toLowerCase());
-      return [text(`<p>Hi ${Store.name}! 💕 So nice to meet you. What are we finding today — something for an occasion, or just a treat?</p>`)];
+      return [text(`<p>Hi ${Store.name} — good to meet you. What are we finding: something to train in, to swim in, or to live in?</p>`)];
     }
 
     /* --- human handoff --- */
     if (has(t, ['human', 'real person', 'someone else', 'talk to a person', 'agent', 'manager', 'speak to'])) {
       return [text(`<p>Of course${who()} — our team answers fastest on Instagram at
         <a href="${CONFIG.instagram}" target="_blank" rel="noopener">${CONFIG.instagramHandle}</a>,
-        or come see us at ${CONFIG.address} from ${CONFIG.opensAt}. 💕</p>`)];
+        or come and try things on at ${CONFIG.address}.</p>`)];
     }
 
     /* --- greeting --- */
     if (/^(hi|hey|hello|yo|hola|niceeee|good (morning|afternoon|evening))\b/.test(t) && t.length < 30) {
       if (!Store.name) {
         awaitingName = true;
-        return [text(`<p>${pick(['Hey you!', 'Hiii!', 'Hey bestie!'])} ✨ I'm Bestie — I know every piece in the shop. What should I call you?</p>`)];
+        return [text(`<p>${pick(['Hey!', 'Hi there!', 'Hey — good timing.'])} I'm Vee. I know every piece in the studio and how each one fits. What should I call you?</p>`)];
       }
-      return [text(`<p>Hey ${Store.name}! ✨ What are we hunting for today?</p>`)];
+      return [text(`<p>Hey ${Store.name} — what are we looking for today?</p>`)];
     }
 
     /* --- thanks / bye --- */
     if (has(t, ['thank', 'thanks', 'thx', 'appreciate'])) {
-      return [text(`<p>Any time${who()}! 💕 Shout if you want me to pull a whole look together.</p>`)];
+      return [text(`<p>Any time${who()}. Shout if you want me to put a full kit together.</p>`)];
     }
 
     /* --- orders, delivery, returns, payment --- */
     if (has(t, ['delivery', 'deliver', 'shipping', 'ship', 'how long', 'arrive'])) {
       return [text(`<p>Within Kampala it's ${money(CONFIG.kampalaDelivery)}, usually same or next day. Upcountry is ${money(CONFIG.upcountryDelivery)} and takes 2–4 days.</p>
-        <p>Anything over ${money(CONFIG.freeShippingOver)} ships free ✨</p>`)];
+        <p>Anything over ${money(CONFIG.freeShippingOver)} ships free.</p>`)];
     }
     if (has(t, ['return', 'exchange', 'refund', 'swap it', 'doesn\'t fit', 'does not fit'])) {
-      return [text(`<p>You've got 7 days to exchange anything unworn with tags on — bring your receipt or order number. Earrings can't be exchanged, hygiene rules.</p>
+      return [text(`<p>Talk to us as soon as you can and we'll sort an exchange on anything unworn with its tags on. Swim can only be exchanged if the liner is intact — hygiene rules.</p>
         <p>Want me to help you pick a better size instead? Tell me your bust, waist and hip and I'll do the maths.</p>`)];
     }
     if (has(t, ['track', 'my order', 'where is my', 'order number', 'order status'])) {
@@ -277,6 +289,25 @@ const Bestie = (() => {
     }
 
     /* --- size & fit --- */
+    /* --- squat-proof / opacity: the single most-asked activewear question --- */
+    if (has(t, ['squat proof', 'squat-proof', 'squatproof', 'see through', 'see-through',
+                'sheer', 'opaque', 'transparent'])) {
+      const tested = PRODUCTS.filter(p =>
+        (p.details.join(' ') + p.blurb).toLowerCase().includes('opaque'));
+      out.push(text(`<p>The pieces we've tested opaque under stretch are below${who()}. They're knitted heavier through the seat, so they hold up in a deep squat.</p>
+        <p>Lighter colourways are always the ones worth asking about — message the team on
+        <a href="https://wa.me/${CONFIG.whatsapp}" target="_blank" rel="noopener">WhatsApp</a>
+        about a specific shade and they'll tell you straight rather than guess.</p>`));
+      if (tested.length) out.push(cards(tested.slice(0, 3)));
+      return out;
+    }
+
+    /* --- fabric & care --- */
+    if (has(t, ['wash', 'care for', 'shrink', 'fabric softener', 'tumble dry', 'how do i care'])) {
+      return [text(`<p>Cold wash, inside out, no fabric softener — it clogs the fibres and kills the stretch. Hang to dry, never tumble.</p>
+        <p>Rinse swim in fresh water after chlorine or salt.</p>`)];
+    }
+
     const meas = findMeasurements(t);
     const askedSize = has(t, ['size', 'sizing', 'fit', 'measure', 'runs small', 'run small',
       'runs large', 'run large', 'runs big', 'run big', 'true to size', 'what size']);
@@ -371,15 +402,17 @@ const Bestie = (() => {
         return [text(`<p>Nothing matches that exactly${who()} — I'd rather say so than send you something wrong. Try widening the colour or budget, or our team can pull something on <a href="${CONFIG.instagram}" target="_blank" rel="noopener">${CONFIG.instagramHandle}</a>.</p>`)];
       }
       // Lead with accessories — they're the only things that can't be the wrong size.
-      const rank = p => (p.category === 'Accessories' ? 2 : 0) + (p.badge === 'Bestseller' ? 1 : 0);
+      // Lounge and swim are the safest gifts — least dependent on a precise fit.
+      const SAFE = ['Lounge', 'Swim'];
+      const rank = p => (SAFE.includes(p.category) ? 2 : 0) + (p.badge === 'Bestseller' ? 1 : 0);
       items = items.sort((a, b) => rank(b) - rank(a)).slice(0, 3);
-      const allSafe = items.every(p => p.fit === 'one-size');
+      const allSafe = items.every(p => p.fit === 'relaxed');
 
       out.push(text(`<p>Gifting is my favourite${who()}. ${colors.length ? `Since she loves ${colors[0].toLowerCase()} — ` : ''}these would land well:</p>`));
       out.push(cards(items));
       out.push(text(allSafe
-        ? `<p>All one size, so you can't get it wrong 🎀 Mention gift wrap when the team confirms your order.</p>`
-        : `<p>If you're not sure of her size, the accessories are the safe bet — everything else you'd want her measurements for. Mention gift wrap when the team confirms your order 🎀</p>`));
+        ? `<p>All cut relaxed, so the size is forgiving. Mention it's a gift when the team confirms the order.</p>`
+        : `<p>If you don't know her size, lounge and swim are the forgiving ones — everything else you'd want her measurements for. Mention it's a gift when the team confirms the order.</p>`));
       return out;
     }
 
@@ -394,14 +427,14 @@ const Bestie = (() => {
         // Pair with categories that actually complete the outfit — a dress is
         // not a partner for jeans.
         const PAIRINGS = {
-          'Bottoms': ['Tops', 'Shoes', 'Bags'],
-          'Tops':    ['Bottoms', 'Shoes', 'Bags'],
-          'Dresses': ['Shoes', 'Bags', 'Tops'],
-          'Sets':    ['Shoes', 'Bags'],
-          'Shoes':   ['Dresses', 'Bottoms', 'Bags'],
-          'Bags':    ['Dresses', 'Tops', 'Shoes']
+          'Bottoms': ['Bras', 'Sets', 'Lounge'],
+          'Bras':    ['Bottoms', 'Skorts', 'Lounge'],
+          'Sets':    ['Bras', 'Bottoms', 'Lounge'],
+          'Skorts':  ['Bras', 'Bottoms', 'Lounge'],
+          'Swim':    ['Lounge', 'Bras', 'Bottoms'],
+          'Lounge':  ['Bras', 'Bottoms', 'Sets']
         };
-        const wantCats = PAIRINGS[subject.category] || ['Tops', 'Shoes', 'Bags'];
+        const wantCats = PAIRINGS[subject.category] || ['Bras', 'Bottoms', 'Lounge'];
         const partners = [];
         for (const c of wantCats) {
           const found = PRODUCTS.find(p =>
@@ -467,7 +500,7 @@ const Bestie = (() => {
     }
 
     /* --- honest fallback --- */
-    return [text(`<p>I'm not sure I got that one${who()} — and I'd rather ask than guess. Try me with a category ("a midi skirt"), an occasion ("something for a kwanjula"), a colour, or a budget.</p>
+    return [text(`<p>I'm not sure I got that one${who()} — and I'd rather ask than guess. Try me with a category ("seamless leggings"), an activity ("something for the gym"), a colour, or a budget.</p>
       <p>Or if it's an order question, our team is on <a href="${CONFIG.instagram}" target="_blank" rel="noopener">${CONFIG.instagramHandle}</a>. 💕</p>`)];
   }
 
@@ -494,7 +527,8 @@ const Bestie = (() => {
     if (budget) {
       const filtered = items.filter(p => p.price <= budget);
       if (!filtered.length) {
-        return [text(`<p>Nothing for ${label.toLowerCase()} sits under ${money(budget)} right now${who()} — I won't stretch the truth. Our accessories start at ${money(Math.min(...PRODUCTS.filter(p => p.category === 'Accessories').map(p => p.price)))} if you want to add sparkle to something you already own ✨</p>`)];
+        const cheapest = Math.min(...PRODUCTS.filter(anyInStock).map(p => p.price));
+        return [text(`<p>Nothing for ${label.toLowerCase()} sits under ${money(budget)} right now${who()} — I won't stretch the truth. The most affordable piece in stock is ${money(cheapest)} if you want to stretch a little.</p>`)];
       }
       items = filtered;
     }
@@ -512,18 +546,18 @@ const Bestie = (() => {
       if (items.length < 3) items = [...garments, ...extras].slice(0, 3);
     }
     const openers = {
-      'date-night': `Date night${who()} — we're going soft but memorable:`,
-      'brunch': `Brunch energy${who()}! Comfortable, but photographs beautifully:`,
-      'birthday': `It's giving birthday girl${who()} 🎀 You should be the shiniest one there:`,
-      'party': `Party mode${who()}. Something with movement:`,
-      'work': `Polished but still you${who()}:`,
-      'wedding-guest': `Guest-appropriate${who()} — pretty, never louder than the bride:`,
-      'casual': `Easy everyday pieces${who()}:`
+      'gym':         `Lift day${who()} — compression that stays put:`,
+      'run':         `For running${who()}, support first and nothing that chafes:`,
+      'yoga':        `Yoga and pilates${who()} — soft hold, full range:`,
+      'golf-tennis': `Course and court${who()} — inbuilt pant, so you can move:`,
+      'swim':        `For the water${who()}:`,
+      'lounge':      `Rest day${who()}. The soft stuff:`,
+      'everyday':    `Everyday pieces${who()} — train in them, live in them:`
     };
     return [
       text(`<p>${openers[occ] || `For ${label.toLowerCase()}${who()}:`}</p>`),
       cards(items),
-      text(`<p>Want me to finish it off with a bag, earrings or a bow? Just say the word.</p>`)
+      text(`<p>Want me to pair it with a bra or a legging to finish the kit? Just say the word.</p>`)
     ];
   }
 
@@ -578,7 +612,7 @@ function initAssistant() {
       <div class="asst__av">${ICON.bow}</div>
       <div>
         <strong>${CONFIG.assistant.name}</strong>
-        <span>Your Gash Luxe stylist</span>
+        <span>Your QV fit guide</span>
       </div>
       <button class="asst__close" id="asstClose" aria-label="Close">${ICON.close}</button>
     </header>
@@ -589,7 +623,7 @@ function initAssistant() {
         <input id="asstInput" placeholder="Ask me anything…" autocomplete="off" aria-label="Message the Style Assistant">
         <button class="asst__send" type="submit" aria-label="Send">${ICON.arrow}</button>
       </form>
-      <p class="asst__note">Answers come from the live Gash Luxe rail. For orders, our team replies on Instagram.</p>
+      <p class="asst__note">Answers come from live QV stock. For orders, our team replies on WhatsApp.</p>
     </div>`;
 
   document.body.append(btn, nudge, panel);
@@ -659,15 +693,15 @@ function initAssistant() {
   async function send(txt) {
     if (!txt.trim()) return;
     pushMe(txt);
-    Bestie.history.push({ role: 'user', text: txt });
+    Vee.history.push({ role: 'user', text: txt });
     chips.innerHTML = '';
     typing(true);
 
     let blocks;
     try {
       blocks = CONFIG.assistant.endpoint
-        ? await Bestie.askServer(txt)
-        : await new Promise(r => setTimeout(() => r(Bestie.reply(txt)), 420 + Math.random() * 380));
+        ? await Vee.askServer(txt)
+        : await new Promise(r => setTimeout(() => r(Vee.reply(txt)), 420 + Math.random() * 380));
     } catch (err) {
       blocks = [{
         type: 'text',
@@ -676,7 +710,7 @@ function initAssistant() {
     }
     typing(false);
     pushBot(blocks);
-    Bestie.history.push({ role: 'assistant', text: blocks.filter(b => b.type === 'text').map(b => b.html).join(' ') });
+    Vee.history.push({ role: 'assistant', text: blocks.filter(b => b.type === 'text').map(b => b.html).join(' ') });
     renderChips();
   }
 
@@ -709,19 +743,19 @@ function initAssistant() {
 
   /* Proactive nudge — once per session, only if the visitor has been on the
      page a while without opening the assistant. Not a pop-up ambush. */
-  if (!sessionStorage.getItem('gashluxe.nudged')) {
+  if (!sessionStorage.getItem('qvfits.nudged')) {
     setTimeout(() => {
       if (panel.classList.contains('is-open')) return;
       const onProduct = location.pathname.includes('product.html');
       nudge.innerHTML = onProduct
-        ? `Not sure on the size? I can work it out for you 💕`
-        : `Taking your time? Tell me the occasion and I'll narrow it down ✨`;
+        ? `Not sure on the size? Tell me your measurements and I'll work it out.`
+        : `Tell me what you train in and I'll narrow it down.`;
       nudge.classList.add('is-on');
-      sessionStorage.setItem('gashluxe.nudged', '1');
+      sessionStorage.setItem('qvfits.nudged', '1');
       setTimeout(() => nudge.classList.remove('is-on'), 9000);
     }, 45000);
   }
 
   /* Deep link: product pages can open the assistant pre-loaded with a question */
-  window.askBestie = (q) => { open(); setTimeout(() => send(q), 250); };
+  window.askVee = (q) => { open(); setTimeout(() => send(q), 250); };
 }

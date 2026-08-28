@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gash Luxe</title>
-<meta name="description" content="Product details at Gash Luxe Kampala — sizes, colours, fit notes and live stock.">
+<title>QV fits</title>
+<meta name="description" content="Product details at QV fits Kampala — sizes, colours, fit and fabric notes, and live stock.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202607270022">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=202608281422">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -21,17 +21,17 @@
   <div class="wrap">
     <div class="section-head section-head--row">
       <div>
-        <span class="kicker">you'll probably also love</span>
-        <h2>Goes with this</h2>
+        <span class="kicker">Completes the kit</span>
+        <h2>Wears well with</h2>
       </div>
     </div>
     <div class="grid-products" id="related"></div>
   </div>
 </section>
 
-<script src="js/data.js?v=202607270022"></script>
-<script src="js/app.js?v=202607270022"></script>
-<script src="js/assistant.js?v=202607270022"></script>
+<script src="js/data.js?v=202608281422"></script>
+<script src="js/app.js?v=202608281422"></script>
+<script src="js/assistant.js?v=202608281422"></script>
 <script>
 let P = null, chosenSize = null, chosenColor = null;
 
@@ -49,7 +49,7 @@ function pageInit() {
     return;
   }
 
-  document.title = `${P.name} — Gash Luxe`;
+  document.title = `${P.name} — QV fits`;
   chosenColor = P.colors[0];
   chosenSize = productSizes(P).find(s => inStock(P, s)) || null;
 
@@ -86,7 +86,7 @@ function renderPdp() {
       <div class="pdp__price">${money(P.price)}</div>
       <p class="lede" style="font-size:1rem">${escapeHtml(P.blurb)}</p>
 
-      ${sold ? `<div class="pill-note" style="background:var(--blush-100);color:var(--blush-600)">
+      ${sold ? `<div class="pill-note" style="background:var(--brand-100);color:var(--brand-600)">
         Fully sold out right now — ask us on Instagram whether it's coming back</div>` : ''}
 
       <!-- colour -->
@@ -105,7 +105,7 @@ function renderPdp() {
       <div class="opt">
         <div class="opt__head">
           <h4>Size</h4>
-          <a href="size-guide.html" style="font-size:.84rem;color:var(--blush-600);text-decoration:underline">Size guide</a>
+          <a href="size-guide.html" style="font-size:.84rem;color:var(--brand-600);text-decoration:underline">Size guide</a>
         </div>
         <div class="size-row" id="sizeRow">
           ${sizes.map(s => `
@@ -127,8 +127,8 @@ function renderPdp() {
       </div>
 
       <button class="btn btn--soft btn--block" style="margin-top:10px"
-              onclick="askBestie('What size am I in the ${P.name.replace(/'/g, '')}?')">
-        Not sure on size? Ask Bestie ✨
+              onclick="askVee('What size am I in the ${P.name.replace(/'/g, '')}?')">
+        Not sure on size? Ask Vee ✨
       </button>
 
       <!-- details -->
@@ -144,8 +144,8 @@ function renderPdp() {
           <button class="acc__btn" aria-expanded="false">Fit &amp; sizing ${ICON.plus}</button>
           <div class="acc__panel"><div>
             <p>${escapeHtml(P.fitNote)}</p>
-            <p>Not sure? The <a href="size-guide.html" style="color:var(--blush-600);text-decoration:underline">size guide</a>
-               has the full measurement chart, or Bestie will work it out from your measurements.</p>
+            <p>Not sure? The <a href="size-guide.html" style="color:var(--brand-600);text-decoration:underline">size guide</a>
+               has the full measurement chart, or Vee will work it out from your measurements.</p>
           </div></div>
         </div>
         <div class="acc__item">

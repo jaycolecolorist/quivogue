@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your Bag — Gash Luxe</title>
-<meta name="description" content="Your Gash Luxe bag and checkout.">
+<title>Your Bag — QV fits</title>
+<meta name="description" content="Your QV fits bag and checkout.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202607270022">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=202608281422">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -27,9 +27,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202607270022"></script>
-<script src="js/app.js?v=202607270022"></script>
-<script src="js/assistant.js?v=202607270022"></script>
+<script src="js/data.js?v=202608281422"></script>
+<script src="js/app.js?v=202608281422"></script>
+<script src="js/assistant.js?v=202608281422"></script>
 <script>
 let step = 1;
 const order = { name: '', phone: '', region: 'kampala', address: '', note: '', pay: 'Mobile money' };
@@ -92,9 +92,9 @@ function render() {
 
   if (!Store.cart.length && step < 4) {
     root.innerHTML = `<div class="empty">
-      <div style="color:var(--blush-300);display:flex;justify-content:center;margin-bottom:10px">${ICON.bag}</div>
+      <div style="color:var(--brand-300);display:flex;justify-content:center;margin-bottom:10px">${ICON.bag}</div>
       <h3>Your bag is empty</h3>
-      <p class="lede center" style="margin-top:8px">Let's find you something — the rail is right this way.</p>
+      <p class="lede center" style="margin-top:8px">Let's find your fit — the range is this way.</p>
       <a class="btn btn--primary" href="shop.html">Shop new in</a>
     </div>`;
     document.getElementById('steps').hidden = true;
@@ -209,7 +209,7 @@ function render() {
     }).join('\n');
 
     const message =
-`Hi Gash Luxe! I'd like to place an order 💕
+`Hi QV fits! I'd like to place an order
 
 Ref: ${ref}
 Name: ${order.name}

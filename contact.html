@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact &amp; FAQ — Gash Luxe</title>
-<meta name="description" content="Visit Gash Luxe at 27 Clement Hill Rd, Kampala. Delivery, exchanges, payment and styling questions answered.">
+<title>Contact &amp; FAQ — QV fits</title>
+<meta name="description" content="Visit QV fits at THE CUBE, G17 Kisementi, Kampala. Fit, fabric, delivery and exchange questions answered.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202607270022">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%80%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=202608281422">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -17,9 +17,9 @@
   <div class="wrap">
     <p class="crumbs"><a href="index.html">Home</a> / Contact &amp; FAQ</p>
     <div class="section-head center">
-      <span class="kicker">say hi</span>
+      <span class="kicker">Get in touch</span>
       <h1>Come see us, or just ask</h1>
-      <p class="lede">The fastest answer is usually a DM. For anything about a specific piece, Bestie down in the corner knows the whole rail.</p>
+      <p class="lede">The fastest answer is a WhatsApp. For anything about fit, fabric or what is in stock, Vee in the corner knows every piece.</p>
     </div>
 
     <div class="contact-grid">
@@ -53,7 +53,7 @@
           </div>
           <div class="field">
             <label for="cMsg">Your message</label>
-            <textarea id="cMsg" rows="5" required placeholder="Hi Gash Luxe! I was looking at…"></textarea>
+            <textarea id="cMsg" rows="5" required placeholder="Hi QV fits! I was looking at…"></textarea>
           </div>
           <button class="btn btn--primary btn--block" type="submit" style="margin-top:16px">Compose message</button>
           <p class="news__msg" id="msgOut" role="status"></p>
@@ -67,23 +67,23 @@
 <section class="section section--tight" id="faq">
   <div class="wrap" style="max-width:800px">
     <div class="section-head center reveal">
-      <span class="kicker">the usual questions</span>
+      <span class="kicker">Common questions</span>
       <h2>FAQ</h2>
     </div>
     <div class="acc" id="faqAcc"></div>
     <div class="news reveal center" style="margin-top:40px">
-      <span class="kicker">still stuck?</span>
-      <h2 style="font-size:1.6rem">Ask Bestie</h2>
+      <span class="kicker">Still stuck?</span>
+      <h2 style="font-size:1.6rem">Ask Vee</h2>
       <p class="lede center">She knows every piece, every size and what's actually in stock right now.</p>
       <button class="btn btn--primary" style="margin-top:16px;position:relative;z-index:1"
-              onclick="askBestie('Hi! I have a question')">Open the Style Assistant ✨</button>
+              onclick="askVee('Hi! I have a question')">Open the Style Assistant ✨</button>
     </div>
   </div>
 </section>
 
-<script src="js/data.js?v=202607270022"></script>
-<script src="js/app.js?v=202607270022"></script>
-<script src="js/assistant.js?v=202607270022"></script>
+<script src="js/data.js?v=202608281422"></script>
+<script src="js/app.js?v=202608281422"></script>
+<script src="js/assistant.js?v=202608281422"></script>
 <script>
 function pageInit() {
   document.getElementById('mapsBtn').href = CONFIG.mapsUrl;
@@ -93,13 +93,13 @@ function pageInit() {
   const rows = [
     { ic: ICON.pin, label: 'The shop', value: CONFIG.address + '<br><span style="color:var(--ink-4)">' + CONFIG.plusCode + '</span>' },
     { ic: ICON.clock, label: 'Opening', value: 'Opens ' + CONFIG.opensAt },
-    { ic: ICON.ig, label: 'Instagram', value: `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" style="color:var(--blush-600)">${CONFIG.instagramHandle}</a>` },
+    { ic: ICON.ig, label: 'Instagram', value: `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" style="color:var(--brand-600)">${CONFIG.instagramHandle}</a>` },
     { ic: ICON.truck, label: 'Delivery', value: `Kampala ${money(CONFIG.kampalaDelivery)} · Upcountry ${money(CONFIG.upcountryDelivery)}<br><span style="color:var(--ink-4)">Free over ${money(CONFIG.freeShippingOver)}</span>` }
   ];
   if (CONFIG.phone) {
     rows.splice(2, 0, {
       ic: ICON.clock, label: 'Phone',
-      value: `<a href="tel:${CONFIG.phone.replace(/\s/g, '')}" style="color:var(--blush-600)">${CONFIG.phone}</a>`
+      value: `<a href="tel:${CONFIG.phone.replace(/\s/g, '')}" style="color:var(--brand-600)">${CONFIG.phone}</a>`
     });
   }
   document.getElementById('infoRows').innerHTML = rows.map(r => `
@@ -127,7 +127,7 @@ function pageInit() {
 
     if (!name || !body) { out.textContent = 'Pop your name and a message in first 💕'; return; }
 
-    const composed = `Hi Gash Luxe! I'm ${name}. (${topic})\n\n${body}`;
+    const composed = `Hi QV fits! I'm ${name}. (${topic})\n\n${body}`;
     const options = [];
 
     if (CONFIG.whatsapp) {

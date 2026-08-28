@@ -1,335 +1,358 @@
 /* ==========================================================================
-   Gash Luxe — site data
+   QV fits (Quivogue) — site data
    --------------------------------------------------------------------------
    THIS IS THE ONLY FILE YOU NEED TO EDIT TO CHANGE THE STORE.
 
    WHAT IS REAL AND WHAT IS NOT
-   The catalogue below is built from the pieces actually visible on the Gash
-   Luxe Instagram (@gashluxe, pulled 2026-07-26). Every product is a real
-   garment from their feed and every photo is their own.
 
-     // REAL PRICE   — the price was stated on the Instagram post itself.
-     // PRICE TBC    — the piece is real, the price is a placeholder. Confirm.
+   REAL, and sourced — marked // REAL below:
+     · Brand name "QV fits", handle @quivogue, TikTok @quivoguefits
+     · Showroom: THE CUBE, G17, Kisementi, Kampala
+     · WhatsApp / orders: +256 758 981 959
+     · What they make: premium seamless & seam-fit activewear, swim and
+       lounge wear
+     · Golf & tennis skort wear: sizes XS–XL, with an inbuilt pant,
+       described by the brand as multifunctional sportswear
 
-   Sizes are only trustworthy where the post said so (marked // REAL SIZES).
-   Everywhere else the size runs and stock counts are placeholders.
+   NOT REAL — placeholders you must replace before launch:
+     · Every PRICE (marked // PRICE TBC). No prices are published anywhere
+       public, so all of them are invented.
+     · Size runs and stock counts, except the XS–XL noted above.
+     · Delivery fees and the returns window.
+     · Most product names and descriptions. The four pieces marked
+       // REAL PIECE are ones actually seen in the brand's own posts.
 
-   Contact details, address, hours, rating and the customer reviews are REAL,
-   from the Google listing and the Instagram bio.
+   REVIEWS is deliberately EMPTY. QV fits has no public review listing that
+   could be verified, and the review blocks stay hidden until you paste real
+   ones in. Nothing here is carried over from the previous brand.
 
    PHOTOS
-   All 37 images in /photos are Gash Luxe's own, pulled from @gashluxe.
-   Every one is colour-graded to the brand palette by scratchpad/grade.py
-   (blush highlights, lilac shadows, greens and yellows pulled back, skin
-   protected) at strength 0.7. Re-run that script to re-grade or to change
-   the look; the ungraded originals are kept in scratchpad/ig/.
-   Filenames map to product ids: <id>.jpg plus -2 / -3 for the gallery.
-   Overwrite a file and it appears; delete it and a gradient placeholder
-   takes over.
+   photos/ mixes two sources:
+     · Four images are the brand's own, pulled from their TikTok posts
+       (their Instagram is login-walled and its API is currently erroring).
+       These are hero.jpg, about.jpg, collection-sets.jpg and the three
+       pieces marked // REAL PIECE.
+     · The rest are free-licence stock, lightly graded to match, so the
+       store reads as finished. Replace them with real QV photography.
+   Filenames map to product ids: <id>.jpg, plus -2 / -3 for the gallery.
    ========================================================================== */
 
 const CONFIG = {
-  brand: 'Gash Luxe',
-  tagline: 'by Sheilah Gashumba',
+  brand: 'QV fits',
+  tagline: 'Quivogue',
 
-  // REAL — Google listing + Instagram bio
-  address: '27 Clement Hill Rd, Kampala, Uganda',
-  addressNote: 'Opposite Jikoni Restaurant',
-  plusCode: '8H9Q+HV Kampala, Uganda',
-  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Gash+Luxe+27+Clement+Hill+Rd+Kampala',
-  instagram: 'https://www.instagram.com/gashluxe',
-  instagramHandle: '@gashluxe',
-  opensAt: '10 AM',
-  rating: 4.9,
-  reviewCount: 9,
-  followers: 35184,
-  deliveryAvailable: true,
+  // REAL — showroom and contact
+  address: 'THE CUBE, G17, Kisementi, Kampala',
+  addressNote: 'Ground floor, shop G17',
+  plusCode: null,
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=The+Cube+Kisementi+Kampala',
+  instagram: 'https://www.instagram.com/quivogue',
+  instagramHandle: '@quivogue',
+  tiktok: 'https://www.tiktok.com/@quivoguefits',
+  tiktokHandle: '@quivoguefits',
+  opensAt: '10 AM',            // PLACEHOLDER — confirm showroom hours
+  rating: null,                // no public review listing found
+  reviewCount: 0,
+  followers: 14000,            // REAL — ~14K on Instagram
 
-  // REAL — from the Instagram bio: "Call or whatsapp +256 768 308896"
-  phone: '+256 768 308896',
-  whatsapp: '256768308896',
+  // REAL — "WhatsApp orders" number published by the brand
+  phone: '+256 758 981 959',
+  whatsapp: '256758981959',
   email: null,
 
-  // REAL — the bio describes the shop as more than a clothing rail
-  blurb: 'Shopping lounge, mini champagne bar and content studio.',
+  // REAL — how the brand describes itself
+  blurb: 'Premium seamless & seam-fit activewear, swim and lounge wear.',
 
-  // Money
+  // Money — PLACEHOLDER, confirm all of it
   currency: 'UGX',
   currencyPosition: 'before',
-  freeShippingOver: 200000,
-  kampalaDelivery: 15000,     // PLACEHOLDER — confirm
-  upcountryDelivery: 35000,   // PLACEHOLDER — confirm
+  freeShippingOver: 250000,
+  kampalaDelivery: 15000,
+  upcountryDelivery: 35000,
 
-  // Style Assistant
   assistant: {
-    // Leave null and the assistant runs entirely in the browser against the
-    // catalogue below — real search, real stock, real size maths, no AI claims.
-    // Set this to your own server endpoint (which holds the Anthropic API key)
-    // and the assistant will POST {messages, catalogue} to it instead.
+    // Null = runs entirely in the browser against the catalogue below.
+    // Point this at your own server (holding the Anthropic key) for a real LLM.
     endpoint: null,
-    name: 'Bestie',
-    greeting: "Hey bestie! 💕 Looking for something special? I'm here to help!"
+    name: 'Vee',
+    greeting: "Hey! Looking for your fit? I know every piece in the studio — tell me what you train in."
   }
 };
 
 /* -------------------------------------------------------------------------
-   REAL — customer reviews, verbatim from the Google listing (4.9 ★, 9 reviews)
+   EMPTY ON PURPOSE. Paste real customer reviews here and the review blocks
+   appear on the home and about pages. Never carry over another brand's.
    ------------------------------------------------------------------------- */
-const REVIEWS = [
-  { name: 'Myles Austin',          when: 'a year ago',   stars: 5, text: 'Luxury meets class' },
-  { name: 'Huzaifah Husha Lubega', when: '2 years ago',  stars: 5, text: 'Wonderful 😊 place for fashion', badge: 'Local Guide' },
-  { name: 'Macstar Uganda',        when: '3 years ago',  stars: 5, text: 'World class 👌🏾' },
-  { name: 'Norman Vine Muhumuza',  when: 'a year ago',   stars: 5, text: 'Innovative', badge: 'Local Guide' },
-  { name: 'Mwanje Umaru',          when: '2 years ago',  stars: 5, text: 'good', badge: 'Local Guide' }
-];
+const REVIEWS = [];
 
 /* ------------------------------------------------------------------------- */
 const COLOR_SWATCHES = {
-  'Chocolate': '#5b3a2e',
-  'Cocoa':     '#7a5443',
-  'Mint':      '#dfeee0',
-  'Cream':     '#f6efe4',
-  'White':     '#ffffff',
-  'Silver':    '#b9b4b0',
-  'Navy':      '#2c3550',
-  'Black':     '#2b262c',
-  'Blush':     '#f7c8d4',
-  'Pink':      '#ff9ec4',
-  'Lilac':     '#bfa8e8',
-  'Coral':     '#f28f7d',
-  'Sky':       '#8fc4e0',
-  'Leopard':   '#c49a63',
-  'Tortoise':  '#8a5a2b'
+  'Teal':      '#14625a',
+  'Forest':    '#26433a',
+  'Ivory':     '#f4efe6',
+  'Cream':     '#ece2d2',
+  'Sand':      '#d9c7ab',
+  'Mocha':     '#b08968',
+  'Espresso':  '#5c4433',
+  'Butter':    '#efcb68',
+  'Olive':     '#7d8560',
+  'Slate':     '#5d6b73',
+  'Black':     '#1c2321',
+  'White':     '#ffffff'
 };
 
 /* -------------------------------------------------------------------------
-   CATALOGUE — every piece below is real, from @gashluxe
+   CATALOGUE
    stock counts: 0 = sold out (the site tells the truth about this)
    ------------------------------------------------------------------------- */
 const PRODUCTS = [
-  /* ---------------- DRESSES ---------------- */
+  /* ---------------- SETS ---------------- */
   {
-    id: 'chocolate-halter-peplum-dress', name: 'Chocolate Halter Peplum Dress', category: 'Dresses',
-    price: 285000,                                   // PRICE TBC
-    colors: ['Chocolate'], badge: 'Bestseller',
-    occasions: ['date-night', 'party', 'wedding-guest'],
-    blurb: 'The crossover halter with the sculpted peplum waist — the one that caused a little commotion on the feed.',
-    details: ['Crossover halter neckline', 'Structured peplum waist', 'Keyhole front', 'Concealed back zip'],
-    fit: 'true', fitNote: 'True to size through the bust, nipped at the waist.',
-    fabric: 'Stretch crepe',
+    id: 'seamless-longsleeve-set', name: 'Seamless Long-Sleeve Set', category: 'Sets',
+    price: 210000,                                   // PRICE TBC
+    colors: ['Mocha', 'Black', 'Ivory'], badge: 'Bestseller',
+    occasions: ['gym', 'everyday', 'lounge'],        // REAL PIECE — from the brand's own post
+    blurb: 'Second-skin seamless in a long sleeve and matching legging. Knitted in one piece, so there are no side seams to dig in.',
+    details: ['Seamless knit construction', 'Long sleeve + matching legging', 'Squat-tested opaque', 'Four-way stretch'],
+    fit: 'small', fitNote: 'Compressive by design — size up if you want a softer hold.',
+    fabric: 'Nylon-elastane seamless knit',
+    stock: { XS: 3, S: 5, M: 5, L: 4, XL: 2 }
+  },
+  {
+    id: 'sculpt-seamless-set', name: 'Sculpt Seamless Set', category: 'Sets',
+    price: 195000,                                   // PRICE TBC
+    colors: ['Ivory', 'Butter', 'Teal'], badge: 'New',
+    occasions: ['gym', 'yoga', 'everyday'],
+    blurb: 'The bra-and-bike-short set that started it all. Ribbed through the waist, smooth everywhere else.',
+    details: ['Longline bra + bike short', 'Ribbed contour panels', 'Removable cups', 'High waist'],
+    fit: 'small', fitNote: 'Runs small. Between sizes? Take the larger.',
+    fabric: 'Nylon-elastane seamless knit',
     stock: { XS: 2, S: 4, M: 4, L: 3, XL: 1 }
   },
   {
-    id: 'pink-organza-floral-dress', name: 'Pink Organza Floral Dress', category: 'Dresses',
-    price: 245000,                                   // PRICE TBC
-    colors: ['Pink', 'Lilac'], badge: 'New',
-    occasions: ['brunch', 'wedding-guest', 'birthday'],
-    blurb: 'Sheer blush organza over a printed floral skirt, with a lilac belt. Soft, romantic, impossible to miss.',
-    details: ['Sheer organza overlay', 'Puff sleeves', 'Printed floral skirt', 'Belted waist'],
+    id: 'rib-seamless-set', name: 'Rib Seamless Set', category: 'Sets',
+    price: 195000,                                   // PRICE TBC
+    colors: ['Sand', 'Olive', 'Black'],
+    occasions: ['gym', 'yoga', 'lounge'],
+    blurb: 'A finer rib with more give. The one to train in when you want the set to move with you, not hold you.',
+    details: ['Fine rib seamless knit', 'Scoop bra + full-length legging', 'Soft waistband', 'Breathable'],
     fit: 'true', fitNote: 'True to size.',
-    fabric: 'Organza over printed cotton',
+    fabric: 'Nylon-elastane rib knit',
+    stock: { XS: 3, S: 4, M: 5, L: 3, XL: 2 }
+  },
+  {
+    id: 'studio-two-piece', name: 'Studio Two-Piece', category: 'Sets',
+    price: 225000,                                   // PRICE TBC
+    colors: ['Slate', 'Black'],
+    occasions: ['gym', 'run', 'everyday'],
+    blurb: 'Seam-fit rather than seamless — panelled for structure where you want it and airflow where you need it.',
+    details: ['Seam-fit panelling', 'Mesh ventilation', 'Cropped tank + legging', 'Flatlock seams'],
+    fit: 'true', fitNote: 'True to size, supportive through the middle.',
+    fabric: 'Recycled poly-elastane',
     stock: { XS: 1, S: 3, M: 3, L: 2, XL: 0 }
   },
 
-  /* ---------------- TOPS ---------------- */
+  /* ---------------- BRAS ---------------- */
   {
-    id: 'gods-favorite-mesh-top', name: '"God\'s Favorite" Mesh Top', category: 'Tops',
-    price: 180000,                                   // REAL PRICE — stated on the post
-    colors: ['Cream'],
-    occasions: ['casual', 'party', 'brunch'],
-    blurb: 'Printed mesh long-sleeve with the slogan across the chest. Layer it or wear it as is.',
-    details: ['Printed stretch mesh', 'Long sleeves', 'Fitted body', 'Slogan front'],
-    fit: 'true', fitNote: 'Stretch mesh, forgiving on the body.',
-    fabric: 'Stretch mesh',
-    stock: { S: 3, L: 2 }                            // REAL SIZES — post said S & L
-  },
-  {
-    id: 'mint-boxy-crop-tee', name: 'Mint Boxy Crop Tee', category: 'Tops',
-    price: 95000,                                    // PRICE TBC
-    colors: ['Mint', 'White'],
-    occasions: ['casual', 'brunch'],
-    blurb: 'A clean boxy crop in soft mint. The piece that makes a statement trouser wearable in daylight.',
-    details: ['Boxy cropped cut', 'Drop shoulder', 'Ribbed neckline', 'Mid-weight cotton'],
-    fit: 'relaxed', fitNote: 'Cut boxy — take your usual size.',
-    fabric: 'Cotton jersey',
-    stock: { XS: 4, S: 6, M: 5, L: 4, XL: 2 }
-  },
-  {
-    id: 'black-scoop-tank', name: 'Black Scoop Tank', category: 'Tops',
-    price: 75000,                                    // PRICE TBC
-    colors: ['Black', 'White'],
-    occasions: ['casual', 'work', 'date-night'],
-    blurb: 'The plain black tank that quietly holds every other outfit together. Buy two.',
-    details: ['Scoop neckline', 'Ribbed cotton', 'Slim fit', 'Contrast binding'],
-    fit: 'small', fitNote: 'Snug and very stretchy. Size up for a looser look.',
-    fabric: 'Ribbed cotton',
-    stock: { XS: 5, S: 7, M: 7, L: 5, XL: 3 }
-  },
-  {
-    id: 'blue-79-ribbed-tank', name: 'Blue 79 Ribbed Tank', category: 'Tops',
+    id: 'seamless-longline-bra', name: 'Seamless Longline Bra', category: 'Bras',
     price: 85000,                                    // PRICE TBC
-    colors: ['Sky'], badge: 'New',
-    occasions: ['casual', 'brunch', 'party'],
-    blurb: 'Baby-blue rib with the varsity 79 across the front. Sporty, but make it going-out.',
-    details: ['Fine rib knit', 'Varsity number front', 'Racer neckline', 'Cropped hem'],
-    fit: 'small', fitNote: 'Runs small and clingy by design — size up if you want ease.',
-    fabric: 'Ribbed cotton blend',
-    stock: { XS: 3, S: 5, M: 4, L: 2, XL: 0 }
+    colors: ['Ivory', 'Mocha', 'Teal', 'Black'], badge: 'Bestseller',
+    occasions: ['gym', 'yoga', 'everyday'],
+    blurb: 'Longline cut with a wide underband. Medium support, and comfortable enough to keep on all day.',
+    details: ['Longline silhouette', 'Wide supportive underband', 'Removable cups', 'Medium support'],
+    fit: 'small', fitNote: 'Runs small — size up if you are between.',
+    fabric: 'Nylon-elastane seamless knit',
+    stock: { XS: 4, S: 6, M: 6, L: 4, XL: 3 }
+  },
+  {
+    id: 'crossback-sports-bra', name: 'Cross-Back Sports Bra', category: 'Bras',
+    price: 90000,                                    // PRICE TBC
+    colors: ['Black', 'Forest', 'Sand'],
+    occasions: ['run', 'gym'],
+    blurb: 'High support, cross-back straps, no bounce. Built for the days you actually run.',
+    details: ['High support', 'Cross-back straps', 'Moisture-wicking', 'Bonded edges'],
+    fit: 'true', fitNote: 'True to size. Snug on purpose.',
+    fabric: 'Recycled poly-elastane',
+    stock: { XS: 3, S: 5, M: 4, L: 3, XL: 2 }
+  },
+  {
+    id: 'ribbed-scoop-bra', name: 'Ribbed Scoop Bra', category: 'Bras',
+    price: 75000,                                    // PRICE TBC
+    colors: ['Butter', 'Ivory', 'Olive'],
+    occasions: ['yoga', 'lounge', 'everyday'],
+    blurb: 'Light support, deep scoop, soft rib. The one that lives in your everyday rotation.',
+    details: ['Light support', 'Deep scoop neckline', 'Rib knit', 'Pull-on'],
+    fit: 'true', fitNote: 'True to size.',
+    fabric: 'Cotton-blend rib',
+    stock: { XS: 5, S: 6, M: 5, L: 4, XL: 2 }
   },
 
   /* ---------------- BOTTOMS ---------------- */
   {
-    id: 'cocoa-lace-column-skirt', name: 'Cocoa Lace Column Skirt', category: 'Bottoms',
-    price: 195000,                                   // PRICE TBC
-    colors: ['Cocoa', 'Chocolate'],
-    occasions: ['date-night', 'wedding-guest', 'party'],
-    blurb: 'Floor-skimming corded lace with a side split. Wears beautifully with the halter peplum on top.',
-    details: ['Corded lace', 'Side split', 'Lined to mid-thigh', 'Maxi length'],
-    fit: 'true', fitNote: 'True to size. Long — allow for heels.',
-    fabric: 'Corded lace',
-    stock: { XS: 2, S: 3, M: 4, L: 3, XL: 1 }
+    id: 'highwaist-sculpt-legging', name: 'High-Waist Sculpt Legging', category: 'Bottoms',
+    price: 145000,                                   // PRICE TBC
+    colors: ['Black', 'Mocha', 'Forest', 'Slate'], badge: 'Bestseller',
+    occasions: ['gym', 'run', 'everyday'],
+    blurb: 'The legging we get asked about most. High rise, contour seaming, and genuinely opaque under load.',
+    details: ['High rise', 'Contour seaming', 'Squat-tested opaque', 'Hidden waistband pocket'],
+    fit: 'true', fitNote: 'True to size and compressive. Size up for a relaxed feel.',
+    fabric: 'Nylon-elastane',
+    stock: { XS: 3, S: 6, M: 6, L: 4, XL: 3 }
   },
   {
-    id: 'navy-tapestry-jeans', name: 'Navy Tapestry Jeans', category: 'Bottoms',
+    id: 'seamless-bike-short', name: 'Seamless Bike Short', category: 'Bottoms',
+    price: 95000,                                    // PRICE TBC
+    colors: ['Black', 'Sand', 'Teal'],
+    occasions: ['gym', 'yoga', 'everyday'],
+    blurb: 'Mid-thigh, no side seam, no ride-up. Wear it under a skort or on its own.',
+    details: ['Seamless knit', 'Mid-thigh length', 'High waist', 'No side seam'],
+    fit: 'small', fitNote: 'Runs small — size up if between.',
+    fabric: 'Nylon-elastane seamless knit',
+    stock: { XS: 4, S: 5, M: 5, L: 3, XL: 2 }
+  },
+  {
+    id: 'flare-lounge-legging', name: 'Flare Lounge Legging', category: 'Bottoms',
+    price: 135000,                                   // PRICE TBC
+    colors: ['Espresso', 'Black', 'Cream'], badge: 'New',
+    occasions: ['lounge', 'everyday', 'yoga'],
+    blurb: 'A soft flare through the ankle. Studio to street without changing.',
+    details: ['Flared hem', 'High rise', 'Brushed inside', 'Full length'],
+    fit: 'true', fitNote: 'True to size. Long — made for a trainer or a heel.',
+    fabric: 'Brushed poly-elastane',
+    stock: { XS: 2, S: 4, M: 4, L: 3, XL: 1 }
+  },
+  {
+    id: 'everyday-jogger', name: 'Everyday Jogger', category: 'Bottoms',
+    price: 155000,                                   // PRICE TBC
+    colors: ['Cream', 'Slate', 'Olive'],
+    occasions: ['lounge', 'everyday'],
+    blurb: 'Tapered, cuffed, with proper pockets. The travel-day trouser.',
+    details: ['Tapered leg', 'Cuffed hem', 'Deep side pockets', 'Drawcord waist'],
+    fit: 'relaxed', fitNote: 'Relaxed cut — take your usual size.',
+    fabric: 'Cotton-blend fleeceback',
+    stock: { XS: 3, S: 4, M: 4, L: 3, XL: 2 }
+  },
+
+  /* ---------------- SKORTS ---------------- */
+  {
+    id: 'golf-tennis-skort-dress', name: 'Golf & Tennis Skort Dress', category: 'Skorts',
+    price: 245000,                                   // PRICE TBC
+    colors: ['Teal', 'White', 'Black'], badge: 'Bestseller',
+    occasions: ['golf-tennis', 'everyday'],          // REAL PIECE — the brand's own golf post
+    blurb: 'Collared, zip-front, with an inbuilt pant underneath. Multifunctional sportswear — course, court, then lunch.',
+    details: ['Inbuilt pant', 'Zip front placket', 'Collared, sleeveless', 'Four-way stretch'],
+    fit: 'true', fitNote: 'True to size. Stocked XS–XL.',
+    fabric: 'Poly-elastane performance knit',
+    stock: { XS: 2, S: 4, M: 4, L: 3, XL: 2 }        // REAL SIZE RUN — brand states XS–XL
+  },
+  {
+    id: 'pleated-tennis-skort', name: 'Pleated Tennis Skort', category: 'Skorts',
+    price: 165000,                                   // PRICE TBC
+    colors: ['White', 'Teal', 'Butter'],
+    occasions: ['golf-tennis', 'everyday'],
+    blurb: 'Knife-pleated with the same inbuilt pant. Moves properly on a serve.',
+    details: ['Knife pleats', 'Inbuilt pant', 'Elasticated waist', 'Ball pocket'],
+    fit: 'true', fitNote: 'True to size.',
+    fabric: 'Poly-elastane performance knit',
+    stock: { XS: 3, S: 4, M: 3, L: 2, XL: 0 }
+  },
+
+  /* ---------------- SWIM ---------------- */
+  {
+    id: 'sculpt-one-piece', name: 'Sculpt One-Piece', category: 'Swim',
     price: 185000,                                   // PRICE TBC
-    colors: ['Navy'], badge: 'Bestseller',
-    occasions: ['casual', 'party', 'brunch'],
-    blurb: 'Dark denim with a woven tapestry print running through. Statement enough to build a whole outfit on.',
-    details: ['Tapestry-print denim', 'High rise', 'Straight leg', 'Five pocket'],
-    fit: 'true', fitNote: 'True to size on the waist, generous through the leg.',
-    fabric: 'Cotton denim',
+    colors: ['Black', 'Teal', 'Mocha'],
+    occasions: ['swim'],
+    blurb: 'Scooped back, high leg, and a lining that actually holds. Swims as well as it photographs.',
+    details: ['Full front lining', 'High-leg cut', 'Scoop back', 'Chlorine resistant'],
+    fit: 'small', fitNote: 'Swim runs small — size up if between.',
+    fabric: 'Recycled nylon-elastane',
+    stock: { XS: 2, S: 3, M: 3, L: 2, XL: 1 }
+  },
+  {
+    id: 'ribbed-bikini-set', name: 'Ribbed Bikini Set', category: 'Swim',
+    price: 165000,                                   // PRICE TBC
+    colors: ['Butter', 'Ivory', 'Teal'], badge: 'New',
+    occasions: ['swim'],
+    blurb: 'Ribbed triangle top with tie sides. Sold as a set, sized separately on request.',
+    details: ['Ribbed fabric', 'Adjustable tie sides', 'Removable cups', 'Sold as a set'],
+    fit: 'true', fitNote: 'True to size. Ask us to split sizes across top and bottom.',
+    fabric: 'Recycled nylon-elastane rib',
+    stock: { XS: 2, S: 4, M: 3, L: 2, XL: 0 }
+  },
+
+  /* ---------------- LOUNGE ---------------- */
+  {
+    id: 'ribbed-lounge-set', name: 'Ribbed Lounge Set', category: 'Lounge',
+    price: 240000,                                   // PRICE TBC
+    colors: ['Ivory', 'Cream', 'Espresso'], badge: 'Bestseller',
+    occasions: ['lounge', 'everyday'],               // REAL PIECE — the brand's own lounge post
+    blurb: 'Hooded rib top and wide-leg pant in the same soft knit. Built for long flights and slow mornings.',
+    details: ['Hooded rib top + wide-leg pant', 'Soft-spun rib knit', 'Relaxed through the leg', 'Sold as a set'],
+    fit: 'relaxed', fitNote: 'Oversized on purpose — take your usual size.',
+    fabric: 'Viscose-blend rib knit',
     stock: { XS: 2, S: 4, M: 4, L: 3, XL: 2 }
   },
   {
-    id: 'silver-wash-wide-leg-trousers', name: 'Silver Wash Wide-Leg Trousers', category: 'Bottoms',
-    price: 175000,                                   // PRICE TBC
-    colors: ['Silver'],
-    occasions: ['party', 'date-night', 'work'],
-    blurb: 'A washed metallic-grey trouser with a proper wide leg. Pair with something plain and let it work.',
-    details: ['Wide leg', 'High waist', 'Washed finish', 'Full length'],
-    fit: 'true', fitNote: 'True to size. Long in the leg — made for a heel.',
-    fabric: 'Coated cotton blend',
-    stock: { XS: 1, S: 3, M: 3, L: 2, XL: 1 }
+    id: 'oversized-lounge-hoodie', name: 'Oversized Lounge Hoodie', category: 'Lounge',
+    price: 165000,                                   // PRICE TBC
+    colors: ['Cream', 'Slate', 'Forest'],
+    occasions: ['lounge', 'everyday'],
+    blurb: 'Heavyweight, dropped shoulder, brushed inside. The one that never makes it back to its owner.',
+    details: ['Heavyweight fleeceback', 'Dropped shoulder', 'Kangaroo pocket', 'Ribbed cuffs'],
+    fit: 'relaxed', fitNote: 'Oversized. Size down for a neater fit.',
+    fabric: 'Cotton-blend fleeceback',
+    stock: { XS: 3, S: 5, M: 5, L: 4, XL: 3 }
   },
   {
-    id: 'leopard-print-leggings', name: 'Leopard Print Leggings', category: 'Bottoms',
-    price: 200000,                                   // REAL PRICE — stated on the post
-    colors: ['Leopard'],
-    occasions: ['casual', 'party'],
-    blurb: 'Full leopard, high waist, sculpting fit. Not for blending in.',
-    details: ['High waist', 'Sculpting stretch', 'Full length', 'All-over leopard print'],
-    fit: 'true', fitNote: 'High stretch and sculpting — very forgiving.',
-    fabric: 'Stretch jersey',
-    stock: { L: 3, XL: 2 }                           // REAL SIZES — post said L & XL
-  },
-
-  /* ---------------- SETS ---------------- */
-  {
-    id: 'cream-lace-jumpsuit', name: 'Cream Lace Jumpsuit', category: 'Sets',
-    price: 280000,                                   // REAL PRICE — stated on the post
-    colors: ['Cream'], badge: 'Bestseller',
-    occasions: ['wedding-guest', 'party', 'birthday'],
-    blurb: 'All-over cream lace with a tie neckline and a tapered ankle. One piece, whole outfit.',
-    details: ['All-over corded lace', 'Tie neckline', 'Tapered ankle', 'Lined body'],
-    fit: 'true', fitNote: 'True to size — the lace has a little give.',
-    fabric: 'Corded lace',
-    stock: { M: 3, L: 2 }                            // REAL SIZES — post said M & L
-  },
-  {
-    id: 'white-beaded-mini-set', name: 'White Beaded Mini Set', category: 'Sets',
-    price: 265000,                                   // PRICE TBC
-    colors: ['White'],
-    occasions: ['birthday', 'party', 'date-night'],
-    blurb: 'Beaded tee and matching mini skirt. Crisp white, catches the light, photographs like a dream.',
-    details: ['Two pieces: tee + mini skirt', 'Hand-beaded detail', 'Lined skirt', 'Sold as a set'],
-    fit: 'true', fitNote: 'True to size.',
-    fabric: 'Beaded cotton blend',
-    stock: { XS: 1, S: 3, M: 3, L: 2, XL: 0 }
-  },
-
-  /* ---------------- SHOES ---------------- */
-  {
-    id: 'tortoise-block-heel-sandal', name: 'Tortoise Block Heel Sandal', category: 'Shoes',
-    price: 300000,                                   // REAL PRICE — stated on the post
-    colors: ['Tortoise'],
-    occasions: ['brunch', 'work', 'wedding-guest'],
-    blurb: 'Sculpted tortoise-shell block heel with a toe-post strap. Comfortable enough to actually wear all day.',
-    details: ['Sculpted block heel', 'Toe-post strap', 'Padded footbed', 'Approx. 7 cm heel'],
-    fit: 'shoe', fitNote: 'Standard EU sizing — these sit true on the foot.',
-    fabric: 'Resin heel, leather-look upper',
-    stock: { 39: 2 }                                 // REAL SIZES — post said size 39
-  },
-  {
-    id: 'coral-bloom-heeled-sandal', name: 'Coral Bloom Heeled Sandal', category: 'Shoes',
-    price: 300000,                                   // REAL PRICE — stated on the post
-    colors: ['Coral'], badge: 'New',
-    occasions: ['party', 'wedding-guest', 'birthday'],
-    blurb: 'Coral satin with an oversized flower at the toe and a fine stiletto heel. Pure occasion shoe.',
-    details: ['Oversized flower detail', 'Stiletto heel', 'Ankle strap', 'Approx. 10 cm heel'],
-    fit: 'shoe', fitNote: 'Standard EU sizing. A fine heel — narrow through the toe.',
-    fabric: 'Satin upper',
-    stock: { 39: 2, 40: 1 }                          // REAL SIZES — post said 39/40
-  },
-
-  /* ---------------- BAGS ---------------- */
-  {
-    id: 'lilac-quilted-shoulder-bag', name: 'Lilac Quilted Shoulder Bag', category: 'Bags',
-    price: 320000,                                   // PRICE TBC
-    colors: ['Lilac'], badge: 'Bestseller',
-    occasions: ['brunch', 'date-night', 'party'],
-    blurb: 'Soft lilac quilting with a gold clasp and a top handle. The most on-brand thing in the shop.',
-    details: ['Quilted panels', 'Gold-tone clasp', 'Top handle + detachable strap', 'Lined interior'],
-    fit: 'one-size', fitNote: 'One size.',
-    fabric: 'Quilted leather-look',
-    stock: { 'One Size': 4 }
-  },
-  {
-    id: 'white-quilted-top-handle-bag', name: 'White Quilted Top-Handle Bag', category: 'Bags',
-    price: 340000,                                   // PRICE TBC
-    colors: ['White', 'Cream'],
-    occasions: ['wedding-guest', 'work', 'brunch'],
-    blurb: 'Structured white quilting with a short top handle. Goes with absolutely everything on this rail.',
-    details: ['Structured quilted body', 'Short top handle', 'Gold-tone hardware', 'Interior pocket'],
-    fit: 'one-size', fitNote: 'One size.',
-    fabric: 'Quilted leather-look',
-    stock: { 'One Size': 3 }
+    id: 'wideleg-lounge-pant', name: 'Wide-Leg Lounge Pant', category: 'Lounge',
+    price: 150000,                                   // PRICE TBC
+    colors: ['Ivory', 'Espresso', 'Black'],
+    occasions: ['lounge', 'everyday'],
+    blurb: 'A proper wide leg with a soft waistband. Wears like pyjamas, reads like trousers.',
+    details: ['Wide leg', 'Soft elastic waistband', 'Full length', 'Side pockets'],
+    fit: 'relaxed', fitNote: 'Relaxed — take your usual size.',
+    fabric: 'Viscose-blend rib knit',
+    stock: { XS: 2, S: 4, M: 4, L: 3, XL: 1 }
   }
 ];
 
-/* ------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------
+   Activities — what you're training in, not what event you're dressing for
+   ------------------------------------------------------------------------- */
 const OCCASIONS = [
-  { id: 'date-night',    label: 'Date night' },
-  { id: 'brunch',        label: 'Brunch' },
-  { id: 'birthday',      label: 'Birthday' },
-  { id: 'party',         label: 'Party' },
-  { id: 'work',          label: 'Work' },
-  { id: 'wedding-guest', label: 'Wedding guest' },
-  { id: 'casual',        label: 'Everyday' }
+  { id: 'gym',          label: 'Gym & lifting' },
+  { id: 'run',          label: 'Running' },
+  { id: 'yoga',         label: 'Yoga & pilates' },
+  { id: 'golf-tennis',  label: 'Golf & tennis' },
+  { id: 'swim',         label: 'Swim' },
+  { id: 'lounge',       label: 'Lounge' },
+  { id: 'everyday',     label: 'Everyday' }
 ];
 
 /* -------------------------------------------------------------------------
-   Curated looks — real pairings from the catalogue
+   Kits — real pairings from the catalogue
    ------------------------------------------------------------------------- */
 const LOOKS = [
   {
-    id: 'look-brown-hour', title: 'The Brown Hour',
-    note: 'The halter peplum over the cocoa lace column. This is the one from the feed.',
-    items: ['chocolate-halter-peplum-dress', 'cocoa-lace-column-skirt', 'white-quilted-top-handle-bag']
+    id: 'look-lift-day', title: 'Lift Day',
+    note: 'Compression where it counts. Longline bra, sculpt legging, nothing that moves.',
+    items: ['seamless-longline-bra', 'highwaist-sculpt-legging', 'seamless-bike-short']
   },
   {
-    id: 'look-denim-days', title: 'Tapestry Denim',
-    note: 'Plain black tank, loud jeans, quiet bag. Effortless every time.',
-    items: ['black-scoop-tank', 'navy-tapestry-jeans', 'lilac-quilted-shoulder-bag']
+    id: 'look-course-to-lunch', title: 'Course to Lunch',
+    note: 'The skort dress with an inbuilt pant, so nine holes and a table both work.',
+    items: ['golf-tennis-skort-dress', 'crossback-sports-bra', 'seamless-bike-short']
   },
   {
-    id: 'look-lace-affair', title: 'The Lace Affair',
-    note: 'Cream lace head to toe with a coral heel to break it up.',
-    items: ['cream-lace-jumpsuit', 'coral-bloom-heeled-sandal', 'white-quilted-top-handle-bag']
+    id: 'look-long-haul', title: 'Long Haul',
+    note: 'Rib lounge set and an oversized hoodie. Built for the flight, not the photo.',
+    items: ['ribbed-lounge-set', 'oversized-lounge-hoodie', 'wideleg-lounge-pant']
   },
   {
-    id: 'look-city-soft', title: 'Soft in the City',
-    note: 'Mint crop, silver wide leg, a heel you can walk in.',
-    items: ['mint-boxy-crop-tee', 'silver-wash-wide-leg-trousers', 'tortoise-block-heel-sandal']
+    id: 'look-off-duty', title: 'Off Duty',
+    note: 'Soft rib bra, flare legging, and a jogger for when it cools down.',
+    items: ['ribbed-scoop-bra', 'flare-lounge-legging', 'everyday-jogger']
   }
 ];
 
@@ -345,41 +368,41 @@ const SIZE_CHART = [
 ];
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
-const SHOE_SIZES = ['38', '39', '40', '41'];
+const SHOE_SIZES = [];
 
 /* ------------------------------------------------------------------------- */
 const FAQ = [
   {
-    q: 'Where are you and when are you open?',
-    a: `We are at ${CONFIG.address} — ${CONFIG.addressNote.toLowerCase()}. The shop opens at ${CONFIG.opensAt}. It is a shopping lounge with a mini champagne bar, so take your time.`
+    q: 'Where is the showroom?',
+    a: `${CONFIG.address} — ${CONFIG.addressNote.toLowerCase()}. Come and try things on; fit is the whole point.`
   },
   {
-    q: 'How do I reach you fastest?',
-    a: `Call or WhatsApp ${CONFIG.phone}, or DM us on Instagram at ${CONFIG.instagramHandle}. WhatsApp is usually quickest.`
+    q: 'How do I order?',
+    a: `WhatsApp ${CONFIG.phone} with the piece, your size and your colour, or DM us on Instagram at ${CONFIG.instagramHandle}. Our team confirms stock and payment with you directly.`
+  },
+  {
+    q: 'What is the difference between seamless and seam-fit?',
+    a: 'Seamless is knitted as one tube, so there are no side seams to rub — it hugs and moves with you. Seam-fit is cut and stitched from panels, which lets us build in structure, support and mesh exactly where they are needed. Seamless for comfort and shape, seam-fit for support.'
+  },
+  {
+    q: 'Are the leggings squat-proof?',
+    a: 'The High-Waist Sculpt Legging and the seamless sets are tested opaque under stretch. If you are ever unsure about a specific colour, ask us — the lighter shades are the ones worth asking about.'
+  },
+  {
+    q: 'How should activewear fit?',
+    a: 'Snugger than you think. Seamless pieces are compressive and relax slightly as you wear them, so take your true size unless the piece says it runs small. If you are between sizes and want a softer hold, go up.'
+  },
+  {
+    q: 'How do I care for it?',
+    a: 'Cold wash, inside out, no fabric softener — it clogs the fibres and kills the stretch. Hang to dry, never tumble. Rinse swimwear in fresh water after chlorine or salt.'
+  },
+  {
+    q: 'Can I exchange something?',
+    a: 'Talk to us as soon as you can and we will sort an exchange on anything unworn with its tags on. For hygiene reasons swimwear can only be exchanged if the liner is intact and unworn.'
   },
   {
     q: 'Do you deliver?',
-    a: 'Yes. Tell us where you are on WhatsApp and we will confirm the delivery fee and timing with you before anything is sent.'
-  },
-  {
-    q: 'How do I pay?',
-    a: 'Mobile money, card or cash at the shop. You confirm payment with our team when they reach out about your order.'
-  },
-  {
-    q: 'What if it does not fit?',
-    a: 'Talk to us as soon as you can and we will sort an exchange on anything unworn with its tags still on. Bring your receipt or your order reference.'
-  },
-  {
-    q: 'Do you restock sold-out pieces?',
-    a: 'Sometimes, and sometimes a piece was a one-off. Ask the Style Assistant or message us and we will tell you honestly which it is.'
-  },
-  {
-    q: 'Can I reserve something to try on?',
-    a: `Yes — WhatsApp ${CONFIG.phone} with the piece and your size and we will hold it for you.`
-  },
-  {
-    q: 'Do you style people for events?',
-    a: 'We do. Tell us the event, the date and your budget and we will pull a rail for you before you arrive.'
+    a: 'Yes. Tell us where you are on WhatsApp and we will confirm the delivery fee and timing before anything is sent.'
   }
 ];
 

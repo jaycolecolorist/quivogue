@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Gash Luxe — shared app logic
+   QV fits — shared app logic
    Header/footer, cart + wishlist state, product cards, toasts, drawers.
    Cart and wishlist persist in localStorage. No backend: checkout hands the
    order to the team via Instagram / WhatsApp rather than pretending to take
@@ -16,7 +16,9 @@ const ICON = {
   arrow: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>',
   plus: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   spark: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c.5 4.6 2.4 6.5 7 7-4.6.5-6.5 2.4-7 7-.5-4.6-2.4-6.5-7-7 4.6-.5 6.5-2.4 7-7z"/></svg>',
-  bow: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.1 12 4.6 8.2c-.9-.5-2 .1-2 1.1v5.4c0 1 1.1 1.6 2 1.1L11.1 12zm1.8 0 6.5 3.8c.9.5 2-.1 2-1.1V9.3c0-1-1.1-1.6-2-1.1L12.9 12zM12 9.9a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2z"/></svg>',
+  /* The assistant mark: a motion arc, not the old boutique bow. */
+  bow: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15.5c3.4-6.6 12.6-6.6 16 0"/><path d="M12 4.5v4"/><circle cx="12" cy="17.5" r="1.6" fill="currentColor" stroke="none"/></svg>',
+  tiktok: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-1.1-2.8h-2.9v11.4a2.4 2.4 0 1 1-1.7-2.3V9.1a5.3 5.3 0 1 0 4.6 5.2V8.9a7 7 0 0 0 4 1.3V7.3a4.2 4.2 0 0 1-2.9-1.5z"/></svg>',
   check: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"/></svg>',
   pin: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>',
   clock: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
@@ -31,9 +33,11 @@ function money(n) {
 }
 
 /* ---------------------------------------------------------------- state */
-const KEY_CART = 'gashluxe.cart.v1';
-const KEY_WISH = 'gashluxe.wish.v1';
-const KEY_NAME = 'gashluxe.name.v1';
+/* Namespaced to this brand. The previous site lived on the same origin, so
+   sharing keys would resurrect a cart full of products that no longer exist. */
+const KEY_CART = 'qvfits.cart.v1';
+const KEY_WISH = 'qvfits.wish.v1';
+const KEY_NAME = 'qvfits.name.v1';
 
 function read(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -43,9 +47,18 @@ function write(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch { /* private mode */ }
 }
 
+/* Drop anything saved that is no longer in the catalogue — a discontinued
+   product would otherwise sit in the bag counting toward the total while
+   rendering as nothing. */
+function pruneSaved(list, key) {
+  const clean = list.filter(x => getProduct(typeof x === 'string' ? x : x.id));
+  if (clean.length !== list.length) write(key, clean);
+  return clean;
+}
+
 const Store = {
-  cart: read(KEY_CART, []),     // [{id, size, color, qty}]
-  wish: read(KEY_WISH, []),     // [id]
+  cart: pruneSaved(read(KEY_CART, []), KEY_CART),   // [{id, size, color, qty}]
+  wish: pruneSaved(read(KEY_WISH, []), KEY_WISH),   // [id]
 
   save() {
     write(KEY_CART, this.cart);
@@ -189,14 +202,14 @@ function buildChrome() {
 
   const promo = document.createElement('div');
   promo.className = 'promo';
-  promo.innerHTML = `Free delivery on orders over ${money(CONFIG.freeShippingOver)} ✨ &nbsp;·&nbsp; ${CONFIG.address.split(',')[0]} &nbsp;·&nbsp; Opens ${CONFIG.opensAt}`;
+  promo.innerHTML = `Free delivery over ${money(CONFIG.freeShippingOver)} &nbsp;·&nbsp; Showroom at ${CONFIG.address.split(',')[0]}, Kisementi &nbsp;·&nbsp; WhatsApp orders ${CONFIG.phone}`;
 
   const hdr = document.createElement('header');
   hdr.className = 'hdr';
   hdr.innerHTML = `
     <div class="hdr__inner">
       <a class="logo" href="index.html">
-        <span class="logo__name">Gash Luxe</span>
+        <span class="logo__name">${CONFIG.brand}</span>
         <span class="logo__sub">${CONFIG.tagline}</span>
       </a>
       <nav class="nav" id="nav">
@@ -249,16 +262,16 @@ function buildChrome() {
       <div class="ftr__grid">
         <div>
           <a class="logo" href="index.html" style="margin-bottom:14px">
-            <span class="logo__name">Gash Luxe</span>
+            <span class="logo__name">${CONFIG.brand}</span>
             <span class="logo__sub">${CONFIG.tagline}</span>
           </a>
           <p style="font-size:.9rem;color:var(--ink-3);max-width:34ch">
-            A Kampala boutique for pieces that make getting dressed the best part of the day.
+            ${CONFIG.blurb} Made for the way you actually train.
           </p>
-          <p class="stars" aria-label="${CONFIG.rating} out of 5 stars">★★★★★
+          ${CONFIG.rating ? `<p class="stars" aria-label="${CONFIG.rating} out of 5 stars">★★★★★
             <span style="color:var(--ink-3);font-size:.8rem;margin-left:6px">
-              ${CONFIG.rating} · ${CONFIG.reviewCount} Google reviews</span>
-          </p>
+              ${CONFIG.rating} · ${CONFIG.reviewCount} reviews</span>
+          </p>` : ''}
         </div>
         <div>
           <h4>Shop</h4>
@@ -285,12 +298,13 @@ function buildChrome() {
             ${CONFIG.phone ? `<li><a href="tel:${CONFIG.phone.replace(/\s/g, '')}">${CONFIG.phone}</a></li>` : ''}
             ${CONFIG.whatsapp ? `<li><a href="https://wa.me/${CONFIG.whatsapp}" target="_blank" rel="noopener">WhatsApp us</a></li>` : ''}
             <li>${igLink}</li>
+            ${CONFIG.tiktok ? `<li><a href="${CONFIG.tiktok}" target="_blank" rel="noopener">TikTok ${CONFIG.tiktokHandle}</a></li>` : ''}
           </ul>
         </div>
       </div>
       <div class="ftr__bot">
-        <span>© ${new Date().getFullYear()} Gash Luxe. Kampala, Uganda.</span>
-        <span>Made with ♡ and a lot of pink</span>
+        <span>© ${new Date().getFullYear()} ${CONFIG.brand}. Kampala, Uganda.</span>
+        <span>Seamless. Seam-fit. Swim. Lounge.</span>
       </div>
     </div>`;
   document.body.appendChild(ftr);
@@ -373,7 +387,7 @@ function renderDrawer() {
     title.textContent = 'Saved pieces';
     if (!Store.wish.length) {
       body.innerHTML = `<div style="padding:44px 24px;text-align:center;color:var(--ink-3)">
-        <div style="color:var(--blush-300);margin-bottom:10px">${ICON.heart}</div>
+        <div style="color:var(--brand-300);margin-bottom:10px">${ICON.heart}</div>
         Nothing saved yet. Tap the heart on anything you love.</div>`;
       foot.innerHTML = `<a class="btn btn--primary btn--block" href="shop.html">Start browsing</a>`;
       return;
@@ -394,7 +408,7 @@ function renderDrawer() {
   title.textContent = 'Your bag';
   if (!Store.cart.length) {
     body.innerHTML = `<div style="padding:44px 24px;text-align:center;color:var(--ink-3)">
-      <div style="color:var(--blush-300);margin-bottom:10px">${ICON.bag}</div>
+      <div style="color:var(--brand-300);margin-bottom:10px">${ICON.bag}</div>
       Your bag is empty — let's fix that.</div>`;
     foot.innerHTML = `<a class="btn btn--primary btn--block" href="shop.html">Shop new in</a>`;
     return;
