@@ -8,51 +8,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202608282310">
+<link rel="stylesheet" href="css/style.css?v=202608290930">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
-<!-- ============================================================ HERO -->
+<!-- ============================================================ HERO
+     Full-bleed image with the copy laid over it, after the reference. -->
 <section class="hero">
-  <div class="blob blob--a" style="width:420px;height:420px;top:-120px;right:-80px;opacity:.5"></div>
-  <div class="blob blob--b" style="width:340px;height:340px;bottom:-140px;left:-100px;opacity:.45"></div>
-
-  <div class="wrap">
-    <div class="hero__grid">
-      <div>
-        <span class="kicker">Seamless · Seam-fit · Swim · Lounge</span>
-        <h1 class="hero__title">Fit that <em>holds</em>, from the first rep to the last flight.</h1>
-        <p class="lede">Premium seamless and seam-fit pieces, made to hold their shape through the set, the lap and the long flight home. Try them on at THE CUBE, Kisementi.</p>
-        <div class="hero__cta">
-          <a class="btn btn--primary btn--lg" href="shop.html">Shop new in</a>
-          <a class="btn btn--ghost btn--lg" href="#looks">Shop the kit</a>
-        </div>
-        <div class="hero__stats">
-          <div class="hero__stat">
-            <strong id="statCount">—</strong><span>pieces in the studio</span>
-          </div>
-          <div class="hero__stat">
-            <strong>XS–XL</strong><span>every piece, every drop</span>
-          </div>
-          <div class="hero__stat">
-            <strong>Kampala</strong><span>delivery in 24h</span>
-          </div>
-        </div>
+  <div class="hero__art">
+    <div class="hero__frame" id="heroFrame"></div>
+    <div class="hero__scrim"></div>
+    <div class="hero__overlay">
+      <span class="kicker">Seamless · Seam-fit · Swim · Lounge</span>
+      <h1 class="hero__title">Fit that <em>holds</em>, from the first rep to the last flight.</h1>
+      <p class="lede">Premium seamless and seam-fit pieces, made to hold their shape through the set, the lap and the long flight home.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary btn--lg" href="shop.html">Shop new in</a>
+        <a class="btn btn--ghost btn--lg" href="#looks">Shop the kit</a>
       </div>
+    </div>
+  </div>
 
-      <div class="hero__art">
-        <div class="hero__frame" id="heroFrame"></div>
-        <div class="hero__badge floaty">
-          <div>
-            <strong>XS–XL</strong>
-            <span style="font-size:.7rem;color:var(--ink-3)">every piece</span>
-          </div>
-          <div style="border-left:1px solid var(--line);padding-left:12px">
-            <span>Inbuilt pant<br>on every skort</span>
-          </div>
-        </div>
-      </div>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <strong id="statCount">—</strong><span>pieces in the studio</span>
+    </div>
+    <div class="hero__stat">
+      <strong>XS–XL</strong><span>every piece, every drop</span>
+    </div>
+    <div class="hero__stat">
+      <strong>Kampala</strong><span>delivery in 24h</span>
     </div>
   </div>
 </section>
@@ -158,9 +144,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202608282310"></script>
-<script src="js/app.js?v=202608282310"></script>
-<script src="js/assistant.js?v=202608282310"></script>
+<script src="js/data.js?v=202608290930"></script>
+<script src="js/app.js?v=202608290930"></script>
+<script src="js/assistant.js?v=202608290930"></script>
 <script>
 function pageInit() {
   /* hero image slot — drop photos/hero.jpg in to replace the gradient */

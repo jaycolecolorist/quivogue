@@ -217,28 +217,35 @@ function buildChrome() {
   hdr.className = 'hdr';
   hdr.innerHTML = `
     <div class="hdr__inner">
+      <!-- Reference layout: menu + search on the left, wordmark centred,
+           wishlist + bag on the right. -->
+      <div class="hdr__side hdr__side--l">
+        <button class="icon-btn burger" id="burger" aria-label="Menu" aria-expanded="false">${ICON.burger}</button>
+        <button class="icon-btn search__toggle" id="searchToggle"
+                aria-label="Search" aria-expanded="false">${ICON.search}</button>
+      </div>
+
       <a class="logo" href="index.html" aria-label="${CONFIG.brand} home">
-        <img class="logo__mark" src="brand/logo.png" alt="" width="44" height="44">
+        <img class="logo__mark" src="brand/logo.png" alt="" width="34" height="34">
         <span class="logo__text">
           <span class="logo__name">${CONFIG.brand}</span>
           <span class="logo__sub">${CONFIG.tagline}</span>
         </span>
       </a>
-      <nav class="nav" id="nav">
-        ${NAV_LINKS.map(([href, label]) =>
-          `<a href="${href}" class="${href === here ? 'is-active' : ''}">${label}</a>`).join('')}
-      </nav>
-      <div class="hdr__acts">
-        <button class="icon-btn search__toggle" id="searchToggle"
-                aria-label="Search" aria-expanded="false">${ICON.search}</button>
+
+      <div class="hdr__side hdr__side--r">
         <button class="icon-btn" id="wishBtn" aria-label="Wishlist">
           ${ICON.heart}<span class="icon-btn__count" id="wishCount">0</span>
         </button>
         <button class="icon-btn" id="cartBtn" aria-label="Shopping bag">
           ${ICON.bag}<span class="icon-btn__count" id="cartCount">0</span>
         </button>
-        <button class="icon-btn burger" id="burger" aria-label="Menu" aria-expanded="false">${ICON.burger}</button>
       </div>
+
+      <nav class="nav" id="nav">
+        ${NAV_LINKS.map(([href, label]) =>
+          `<a href="${href}" class="${href === here ? 'is-active' : ''}">${label}</a>`).join('')}
+      </nav>
 
       <!-- One input for both layouts: inline on desktop, and on a phone it
            wraps onto its own full-width row when the icon is tapped. -->
