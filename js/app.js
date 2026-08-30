@@ -174,12 +174,12 @@ function productCard(p) {
 
   return `<article class="card reveal" data-id="${p.id}">
     <div class="card__media">
-      ${badge}
       <button class="heart ${Store.isWished(p.id) ? 'is-on' : ''}" data-wish="${p.id}"
               aria-label="Save ${escapeHtml(p.name)} to wishlist" aria-pressed="${Store.isWished(p.id)}">${ICON.heart}</button>
       <a href="product.html?id=${p.id}" aria-label="${escapeHtml(p.name)}">${media(p.id, p.name)}</a>
     </div>
     <div class="card__body">
+      ${badge}
       <span class="card__cat">${p.category}</span>
       <a class="card__name" href="product.html?id=${p.id}">${escapeHtml(p.name)}</a>
       <div class="card__swatches">${swatches}</div>

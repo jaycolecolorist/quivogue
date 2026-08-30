@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260830224095">
+<link rel="stylesheet" href="css/style.css?v=20260830232161">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -45,7 +45,7 @@
     </div>
     <div class="grid-products grid-products--four" id="newArrivals"></div>
     <p class="center" style="margin-top:34px">
-      <a class="btn btn--ghost" href="shop.html?sort=new">See more</a>
+      <a class="btn btn--ghost" href="shop.html?sort=new">Shop the new</a>
     </p>
   </div>
 </section>
@@ -82,6 +82,18 @@
   </div>
 </section>
 
+<!-- ============================================================ 7. SHOP THE FEED
+     The brand's own reels, autoplaying and linking through to the piece. -->
+<section class="section section--tight" id="feedSection" hidden>
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker" id="feedKicker"></span>
+      <h2 id="feedTitle"></h2>
+    </div>
+    <div class="grid-feed" id="feed"></div>
+  </div>
+</section>
+
 <!-- ============================================================ NEWSLETTER -->
 <section class="section section--tight">
   <div class="wrap">
@@ -101,9 +113,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260830224095"></script>
-<script src="js/app.js?v=20260830224095"></script>
-<script src="js/assistant.js?v=20260830224095"></script>
+<script src="js/data.js?v=20260830232161"></script>
+<script src="js/app.js?v=20260830232161"></script>
+<script src="js/assistant.js?v=20260830232161"></script>
 <script>
 function pageInit() {
   initSlideshow();
@@ -144,6 +156,8 @@ function pageInit() {
   }
   document.getElementById('promoSection').hidden = !(CAMPAIGN && CAMPAIGN.live);
 
+  renderFeed();
+
   /* ---------------------------------------------------- newsletter
      Stores locally — there is no backend, so nothing is faked. */
   document.getElementById('newsForm').addEventListener('submit', e => {
@@ -175,7 +189,7 @@ function initSlideshow() {
   if (!list.length) { root.hidden = true; return; }
 
   track.innerHTML = list.map((s, i) => `
-    <div class="slide ${i === 0 ? 'is-on' : ''}" role="group"
+    <div class="slide" role="group"
          aria-roledescription="slide" aria-label="${i + 1} of ${list.length}"
          ${i === 0 ? '' : 'aria-hidden="true"'}>
       ${media(s.id, s.title)}
@@ -199,6 +213,11 @@ function initSlideshow() {
 
   function go(n) {
     at = (n + slides.length) % slides.length;
+    // Slide the whole track sideways. The slides sit in a row rather than
+    // stacking, so two pictures are never on screen fading through each other.
+    // The track stays one viewport wide and the slides overflow it, so 100%
+    // here is exactly one slide.
+    track.style.transform = `translate3d(${-at * 100}%, 0, 0)`;
     slides.forEach((el, i) => {
       const on = i === at;
       el.classList.toggle('is-on', on);
@@ -230,7 +249,55 @@ function initSlideshow() {
   root.addEventListener('focusout', start);
   // Don't burn cycles rotating a hero nobody is looking at.
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  go(0);
   start();
+}
+
+/* ------------------------------------------------------------------- feed
+   The brand's own reels. Muted + playsinline + loop so they autoplay on a
+   phone; each tile links through to the piece. A poster image stands in until
+   the video can play, and on a data-saver connection the video is skipped
+   entirely and the poster is all anyone downloads. */
+function renderFeed() {
+  const section = document.getElementById('feedSection');
+  const ok = typeof SHOP_THE_FEED !== 'undefined' && SHOP_THE_FEED.live
+             && SHOP_THE_FEED.items && SHOP_THE_FEED.items.length;
+  section.hidden = !ok;
+  if (!ok) return;
+
+  document.getElementById('feedKicker').textContent = SHOP_THE_FEED.kicker;
+  document.getElementById('feedTitle').textContent  = SHOP_THE_FEED.title;
+
+  const conn = navigator.connection || {};
+  const lite = conn.saveData === true || /^(slow-)?2g$/.test(conn.effectiveType || '');
+  const v = CONFIG.assetVersion;
+
+  document.getElementById('feed').innerHTML = SHOP_THE_FEED.items.map(it => `
+    <a class="feedtile reveal" href="${it.href}" aria-label="${escapeHtml(it.label)} — shop it">
+      ${lite
+        ? `<img class="feedtile__media" src="photos/${it.id}.jpg?v=${v}" alt="${escapeHtml(it.label)}" loading="lazy">`
+        : `<video class="feedtile__media" poster="photos/${it.id}.jpg?v=${v}"
+                  muted loop playsinline preload="none"
+                  aria-label="${escapeHtml(it.label)}">
+             <source src="photos/${it.id}.mp4?v=${v}" type="video/mp4">
+           </video>`}
+      <span class="feedtile__shop">Shop the look ${ICON.arrow}</span>
+      <span class="feedtile__label">${escapeHtml(it.label)}</span>
+    </a>`).join('');
+
+  // Only play what is actually on screen, and stop again once it scrolls off.
+  const vids = [...document.querySelectorAll('.feedtile__media')].filter(e => e.tagName === 'VIDEO');
+  if (!vids.length) return;
+  if (!('IntersectionObserver' in window)) { vids.forEach(v2 => { v2.preload = 'auto'; v2.play().catch(() => {}); }); return; }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      const el = en.target;
+      if (en.isIntersecting) { el.preload = 'auto'; el.play().catch(() => {}); }
+      else el.pause();
+    });
+  }, { threshold: 0.25 });
+  vids.forEach(el => io.observe(el));
 }
 
 /* ------------------------------------------------------------------ press

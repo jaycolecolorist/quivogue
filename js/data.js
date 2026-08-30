@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260830224095',
+  assetVersion: '20260830232161',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -163,8 +163,8 @@ const HERO_SLIDES = [
   {
     id: 'hero-3',                                  // q1 — track, stadium seats
     kicker: 'Train in it',
-    title: 'Squat-proof, sweat-proof.',
-    text: 'Seamless sets that stay where you put them.',
+    title: 'Squat-proof.',
+    text: 'Seamless sets that stay exactly where you put them.',
     cta: 'Shop now',
     href: 'shop.html?c=Sets'
   },
@@ -179,30 +179,57 @@ const HERO_SLIDES = [
 ];
 
 /* -------------------------------------------------------------------------
-   PRESS — the "As featured in" row under the hero.
+   AS SEEN ON — the credit row under the hero.
    --------------------------------------------------------------------------
-   ⚠ DELIBERATELY EMPTY, AND OFF.
+   The reference site (wiskiiactive.com) runs Vogue / Elle / Marie Claire /
+   Forbes / Cosmopolitan under "AS SEEN IN". Those are WISKII's press credits.
+   QV fits has not been in those magazines, and printing their names and marks
+   here would be a false claim about the business made to its own customers.
+   So the row is real instead: creators who have genuinely worn and posted
+   QV fits, each verifiable from the brand's own Instagram grid, where these
+   are co-authored posts.
 
-   The reference site (wiskiiactive.com) runs a row of Vogue / Elle / Marie
-   Claire / Forbes / Cosmopolitan logos. Those are WISKII's press credits, not
-   QV fits'. Copying them here would claim coverage the brand has not had and
-   would use those publishers' trademarks to do it — a false-advertising and
-   trademark problem for the client, not a design choice.
-
-   The section is fully built and styled. To switch it on, set live: true and
-   add only outlets that have genuinely featured QV fits — a Kampala paper, a
-   blog, a magazine feature, an event, a stockist. `logo` is optional; with no
-   logo file the name is set in the display face, which is how a small brand's
-   press row should look anyway.
+   Add a real outlet the moment there is one — a Kampala paper, a blog, a
+   magazine feature, an event — and change `title` back to "As featured in".
+   `logo` is optional; with no logo file the name is set in the display face.
    ------------------------------------------------------------------------- */
 const PRESS = {
-  live: false,
-  title: 'As featured in',
+  live: true,
+  title: 'As seen on',
   items: [
-    // { name: 'Outlet name', href: 'https://…', logo: 'press-outlet' }
+    { name: '@gia9ina',          href: 'https://www.instagram.com/gia9ina/' },
+    { name: '@sashatherealdeal', href: 'https://www.instagram.com/sashatherealdeal/' },
+    { name: '@zarahmagara',      href: 'https://www.instagram.com/zarahmagara/' },
+    { name: '@quivoguefits',     href: 'https://www.tiktok.com/@quivoguefits' }
   ]
 };
 
+/* -------------------------------------------------------------------------
+   SHOP THE FEED — the video row near the bottom of the home page.
+   --------------------------------------------------------------------------
+   Four of the brand's own Instagram reels, cut to silent 8-second loops and
+   re-encoded small (photos/reel-*.mp4, with a matching .jpg poster). They
+   autoplay muted and loop, and each tile is a link through to what she is
+   wearing.
+
+   ⚠ The hrefs are my best read of the outfit from the footage. Point each one
+   at the exact piece once the shop confirms which SKU is in which clip.
+   ------------------------------------------------------------------------- */
+const SHOP_THE_FEED = {
+  live: true,
+  kicker: 'Straight from the feed',
+  title: 'Seen on you',
+  items: [
+    { id: 'reel-pilates', label: 'Pilates, in pink',   href: 'shop.html?occasion=yoga',
+      post: 'https://www.instagram.com/quivogue/reel/DQwQl5KDP7h/' },
+    { id: 'reel-class',   label: 'BTS: the Pilates class', href: 'shop.html?occasion=yoga',
+      post: 'https://www.instagram.com/quivogue/reel/DMa-87foxWC/' },
+    { id: 'reel-studio',  label: 'Straight from the studio', href: 'shop.html?c=Sets',
+      post: 'https://www.instagram.com/quivogue/reel/DSxOby3jCpJ/' },
+    { id: 'reel-offduty', label: 'Off duty, in mocha', href: 'product.html?id=flare-lounge-legging',
+      post: 'https://www.instagram.com/quivogue/reel/DS5N4xIjGz2/' }
+  ]
+};
 /* -------------------------------------------------------------------------
    STICKER — the small dismissible offer card, bottom-left.
    --------------------------------------------------------------------------
@@ -500,7 +527,7 @@ const MOVEMENTS = [
   { id: 'gym',         label: 'Gym',       occasion: 'gym' },
   { id: 'pilates',     label: 'Pilates',   occasion: 'yoga' },
   { id: 'tennis',      label: 'Tennis',    occasion: 'golf-tennis' },
-  { id: 'lifestyle',   label: 'Lifestyle', occasion: 'lounge' }
+  { id: 'swim-lounge', label: 'Swim & Lounge', occasion: 'swim,lounge' }
 ];
 
 /* -------------------------------------------------------------------------
