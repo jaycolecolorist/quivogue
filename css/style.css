@@ -32,20 +32,20 @@
   --sand-300: #d4c2a6;
   --sand-400: #b08968;
 
-  /* neutrals — white-ground, following the Yeoreo reference */
-  --cream:     #ffffff;
-  --cream-2:   #f6f6f6;
-  --beige:     #efefef;
+  /* neutrals */
+  --cream:     #fbf8f3;
+  --cream-2:   #f5f0e8;
+  --beige:     #ece4d8;
   --white:     #ffffff;
 
   /* ink */
-  --ink:       #232323;
-  --ink-2:     #4a4a4a;
-  --ink-3:     #7a7a7a;
-  --ink-4:     #a6a6a6;
+  --ink:       #17211f;
+  --ink-2:     #3a4643;
+  --ink-3:     #6b7773;
+  --ink-4:     #9aa4a0;
 
-  --line:      #ececec;
-  --line-2:    #dcdcdc;
+  --line:      #e9e2d7;
+  --line-2:    #ddd4c6;
 
   --gold:      #efcb68;
   --success:   #2f7d5f;
@@ -56,18 +56,18 @@
   --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --script: 'Archivo', system-ui, sans-serif;
 
-  /* shape — the reference is square throughout: no rounded cards, no pills */
-  --r-sm: 0px;
-  --r-md: 0px;
-  --r-lg: 0px;
-  --r-xl: 0px;
-  --r-pill: 0px;
+  /* shape — squarer than the old boutique look */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
 
-  /* elevation — the reference uses almost none; keep it for overlays only */
-  --sh-1: none;
-  --sh-2: none;
-  --sh-3: 0 8px 30px rgba(0, 0, 0, .10);
-  --sh-4: 0 20px 60px rgba(0, 0, 0, .16);
+  /* elevation — neutral, never pink */
+  --sh-1: 0 2px 8px rgba(23, 33, 31, .05);
+  --sh-2: 0 6px 20px rgba(23, 33, 31, .08);
+  --sh-3: 0 14px 40px rgba(23, 33, 31, .12);
+  --sh-4: 0 24px 70px rgba(23, 33, 31, .18);
 
   --wrap: 1240px;
   --gut: clamp(18px, 4vw, 44px);
@@ -1239,199 +1239,4 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 
   .card__add { font-size: .7rem; padding: .42em .8em; }
   .card__foot { padding-top: 6px; }
-}
-
-/* ==========================================================================
-   REFERENCE RESTYLE — after es.yeoreo.com
-   White ground, square corners, centred wordmark, hamburger-first nav,
-   full-bleed imagery, uppercase letter-spaced micro-labels, minimal chrome.
-   Appended last so it wins over the earlier component rules.
-   ========================================================================== */
-
-/* ---- header: menu+search left, wordmark centred, wishlist+bag right ---- */
-.hdr__inner {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 10px;
-  padding-block: 12px;
-}
-.hdr__side { display: flex; align-items: center; gap: 2px; }
-.hdr__side--r { justify-content: flex-end; }
-.logo { margin-right: 0; justify-content: center; gap: 9px; }
-.logo__name {
-  font-size: 1.25rem; letter-spacing: .16em; text-transform: uppercase;
-  background: none; color: var(--ink); -webkit-text-fill-color: currentColor;
-}
-.logo__sub { letter-spacing: .28em; font-size: .52rem; color: var(--ink-4); }
-.logo__mark { width: 34px; height: 34px; }
-.hdr::before { background: rgba(255,255,255,.92); backdrop-filter: saturate(1.1) blur(10px); }
-.hdr.is-stuck { box-shadow: none; border-bottom-color: var(--line); }
-
-/* inline nav sits on its own row under the wordmark, uppercase and spaced */
-.nav { grid-column: 1 / -1; justify-content: center; gap: 4px; padding-top: 4px; }
-.nav a {
-  font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
-  font-weight: 500; padding: .5em .8em; color: var(--ink-2);
-}
-.nav a:hover, .nav a.is-active { background: none; color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
-
-.promo { background: var(--ink); animation: none; font-size: .7rem; letter-spacing: .1em; }
-
-/* ---- buttons: square, uppercase, letter-spaced ---- */
-.btn {
-  border-radius: 0; text-transform: uppercase; letter-spacing: .12em;
-  font-size: .74rem; font-weight: 600; padding: 1.05em 2em;
-}
-.btn:hover { transform: none; }
-.btn--primary { background: var(--ink); color: #fff; box-shadow: none; }
-.btn--primary:hover { background: var(--brand-600); box-shadow: none; }
-.btn--ghost { background: #fff; box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
-.btn--ghost:hover { background: var(--ink); color: #fff; box-shadow: inset 0 0 0 1px var(--ink); }
-.btn--soft { background: var(--cream-2); color: var(--ink); }
-.btn--lg { padding: 1.15em 2.4em; font-size: .78rem; }
-
-/* ---- section headings: centred, uppercase, spaced ---- */
-.section-head { text-align: center; }
-.section-head--row { text-align: left; }
-h2 { letter-spacing: .06em; text-transform: uppercase; font-size: clamp(1.4rem, 2.6vw, 2rem); }
-.kicker {
-  color: var(--ink-3); letter-spacing: .22em; font-size: .64rem;
-  justify-content: center;
-}
-.kicker::before { display: none; }
-.section-head--row .kicker { justify-content: flex-start; }
-
-/* ---- full-bleed hero with the copy laid over the image ---- */
-.hero { padding: 0; }
-.hero .wrap { max-width: none; padding: 0; }
-.hero__grid { display: block; }
-.hero__art { max-width: none; }
-.hero__frame {
-  aspect-ratio: 16 / 7; border-radius: 0; box-shadow: none;
-  min-height: 380px;
-}
-.hero__overlay {
-  position: absolute; inset: 0; z-index: 2;
-  display: flex; flex-direction: column; justify-content: center;
-  padding-inline: clamp(20px, 7vw, 96px);
-  color: #fff; max-width: 46ch;
-}
-.hero__overlay .kicker { color: rgba(255,255,255,.85); justify-content: flex-start; }
-.hero__overlay .hero__title { color: #fff; }
-.hero__overlay .lede { color: rgba(255,255,255,.9); }
-.hero__title em { color: #fff; background: none; -webkit-text-fill-color: currentColor; }
-.hero__scrim {
-  position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.28) 45%, rgba(0,0,0,0) 75%);
-}
-.hero__badge { display: none; }
-.hero__stats {
-  max-width: var(--wrap); margin: 0 auto; padding: 22px var(--gut) 0;
-  justify-content: space-between;
-}
-
-/* ---- category tiles: label over the image, no white card ---- */
-.coll { border-radius: 0; box-shadow: none; }
-.coll:hover { transform: none; box-shadow: none; }
-.coll .ph img { transition: transform .8s var(--ease); }
-.coll:hover .ph img { transform: scale(1.04); }
-.coll__cap {
-  inset: auto 0 0 0; background: none; backdrop-filter: none;
-  padding: 18px; border-radius: 0;
-  background-image: linear-gradient(to top, rgba(0,0,0,.55), transparent);
-  align-items: flex-end;
-}
-.coll__cap strong {
-  color: #fff; text-transform: uppercase; letter-spacing: .14em;
-  font-size: .95rem; font-weight: 700;
-}
-.coll__cap span { color: rgba(255,255,255,.8); font-size: .7rem; }
-
-/* ---- product cards: flat and square ---- */
-.card { border-radius: 0; box-shadow: none; background: none; }
-.card:hover { transform: none; box-shadow: none; }
-.card__media { background: var(--cream-2); }
-.card__body { padding: 12px 0 6px; }
-.card__cat { color: var(--ink-4); letter-spacing: .14em; }
-.card__name { font-size: .92rem; letter-spacing: 0; }
-.card__price { font-size: .9rem; font-weight: 500; }
-.card__add {
-  background: none; color: var(--ink); border-radius: 0;
-  box-shadow: inset 0 0 0 1px var(--ink);
-  text-transform: uppercase; letter-spacing: .1em; font-size: .66rem;
-  padding: .6em 1em;
-}
-.card__add:hover { background: var(--ink); color: #fff; transform: none; box-shadow: inset 0 0 0 1px var(--ink); }
-.badge {
-  border-radius: 0; background: var(--ink); color: #fff;
-  letter-spacing: .12em; box-shadow: none;
-}
-.heart { border-radius: 0; background: rgba(255,255,255,.9); box-shadow: none; }
-
-/* ---- misc flattening ---- */
-.look, .review, .value, .info-card, .filters, .summary, .cart-list,
-.measure-card, .table-wrap, .empty, .news, .deal, .campaign, .toast,
-.search__field, .search__results, .drawer, .asst {
-  border-radius: 0;
-}
-.look { box-shadow: none; border: 1px solid var(--line); }
-.look:hover { transform: none; box-shadow: none; }
-.news { background: var(--cream-2); }
-.chip { border-radius: 0; box-shadow: inset 0 0 0 1px var(--line-2); background: #fff; }
-.chip.is-on { background: var(--ink); color: #fff; }
-.select, .field input, .field select, .field textarea { border-radius: 0; }
-.size-btn { border-radius: 0; }
-.swatch-btn { border-radius: 50%; }        /* colour dots stay round */
-.icon-btn { border-radius: 0; }
-.icon-btn__count { border-radius: 0; background: var(--ink); box-shadow: none; }
-.asst-btn { border-radius: 0; background: var(--ink); }
-.asst-btn::after { display: none; }
-.asst__head { background: var(--ink); }
-.marquee { border-block: 1px solid var(--line); }
-.marquee span { text-transform: uppercase; letter-spacing: .14em; font-size: .72rem; color: var(--ink-3); }
-
-/* Hero height follows its copy, with the image behind — a fixed aspect box
-   was clipping the buttons off the bottom edge. */
-.hero__art {
-  position: relative;
-  min-height: clamp(460px, 62vh, 640px);
-  display: grid; align-items: center;
-  overflow: hidden;
-}
-.hero__frame {
-  position: absolute; inset: 0; aspect-ratio: auto;
-  height: 100%; width: 100%; min-height: 0;
-}
-.hero__overlay {
-  position: relative; inset: auto;
-  padding-block: clamp(36px, 6vw, 64px);
-  max-width: 40ch;
-}
-.hero__overlay .hero__title {
-  font-size: clamp(1.9rem, 4.2vw, 3.1rem);
-  text-transform: none; letter-spacing: -.02em;
-  margin-bottom: .5em;
-}
-.hero__overlay .lede { font-size: clamp(.9rem, 1.3vw, 1.02rem); margin-bottom: 26px; }
-.hero__cta { margin-top: 0; }
-.hero__stats { padding-block: 20px; border-bottom: 1px solid var(--line); }
-.hero__stat strong { font-size: 1.2rem; letter-spacing: .02em; }
-.hero__stat span { font-size: .72rem; color: var(--ink-3); }
-
-@media (max-width: 700px) {
-  .hero__art { min-height: clamp(400px, 68vh, 520px); }
-  .hero__overlay { max-width: none; padding-inline: var(--gut); }
-  .hero__cta { flex-wrap: nowrap; }
-  .hero__stats { gap: 10px; }
-}
-
-/* Hero CTAs sit side by side; the narrow overlay was wrapping them. */
-.hero__overlay { max-width: 46ch; }
-.hero__cta { flex-wrap: nowrap; gap: 10px; }
-.hero__scrim {
-  background: linear-gradient(90deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.38) 42%, rgba(0,0,0,.05) 78%);
-}
-@media (max-width: 560px) {
-  .hero__cta .btn { padding: .95em .9em; font-size: .68rem; }
 }

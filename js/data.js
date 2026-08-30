@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '202608290930',
+  assetVersion: '202608282310',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
