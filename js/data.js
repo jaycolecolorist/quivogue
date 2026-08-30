@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260830232161',
+  assetVersion: '20260830235612',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -145,7 +145,10 @@ const BEST_SELLERS = [
    ------------------------------------------------------------------------- */
 const HERO_SLIDES = [
   {
-    id: 'hero-1',                                  // j1 — navy set, gym window light
+    /* Each slide is a three-panel canvas, 1800x1150, built from the brand's
+       own photography. `sticker` is the small tag that sits on the picture. */
+    id: 'hero-1',                          // j2 · j5 · j4 — one set, three colourways
+    sticker: 'New in',
     kicker: 'Seamless · Swim · Lounge',
     title: 'Fit that holds.',
     text: 'Premium activewear, made in Kampala.',
@@ -153,28 +156,31 @@ const HERO_SLIDES = [
     href: 'shop.html'
   },
   {
-    id: 'hero-2',                                  // q6 — tennis, at the net
-    kicker: 'The court range',
-    title: 'Built for the baseline.',
-    text: 'Collared tops, pleated skorts, inbuilt pant.',
-    cta: 'Shop now',
-    href: 'shop.html?c=Skorts'
-  },
-  {
-    id: 'hero-3',                                  // q1 — track, stadium seats
-    kicker: 'Train in it',
-    title: 'Squat-proof.',
-    text: 'Seamless sets that stay exactly where you put them.',
+    id: 'hero-2',                          // q1 · q6 · q2 — track, court, track
+    sticker: 'Train in it',
+    kicker: 'Built for sport',
+    title: 'Built to move.',
+    text: 'Sets that stay exactly where you put them.',
     cta: 'Shop now',
     href: 'shop.html?c=Sets'
   },
   {
-    id: 'hero-4',                                  // q4 — pink set, studio
-    kicker: 'New in',
+    id: 'hero-3',                          // q4 · q7 · q8 — three flare colourways
+    sticker: 'New colours',
+    kicker: 'Just landed',
     title: 'The colour drop.',
     text: 'Fresh seamless colourways, in store now.',
     cta: 'Shop now',
     href: 'shop.html?sort=new'
+  },
+  {
+    id: 'hero-4',                          // p4 · p5 · p1 — out of the gym
+    sticker: 'Off duty',
+    kicker: 'Lounge & everyday',
+    title: 'Anywhere but the gym.',
+    text: 'Straight through the day, and back again.',
+    cta: 'Shop now',
+    href: 'shop.html?c=Lounge'
   }
 ];
 
@@ -524,10 +530,10 @@ const PRODUCTS = [
    at the shop filtered by that activity. Images: photos/movement-<id>.jpg
    ------------------------------------------------------------------------- */
 const MOVEMENTS = [
+  { id: 'swim-lounge', label: 'Swim & Lounge', occasion: 'swim,lounge' },
   { id: 'gym',         label: 'Gym',       occasion: 'gym' },
   { id: 'pilates',     label: 'Pilates',   occasion: 'yoga' },
-  { id: 'tennis',      label: 'Tennis',    occasion: 'golf-tennis' },
-  { id: 'swim-lounge', label: 'Swim & Lounge', occasion: 'swim,lounge' }
+  { id: 'tennis',      label: 'Tennis',    occasion: 'golf-tennis' }
 ];
 
 /* -------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260830232161">
+<link rel="stylesheet" href="css/style.css?v=20260830235612">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -113,9 +113,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260830232161"></script>
-<script src="js/app.js?v=20260830232161"></script>
-<script src="js/assistant.js?v=20260830232161"></script>
+<script src="js/data.js?v=20260830235612"></script>
+<script src="js/app.js?v=20260830235612"></script>
+<script src="js/assistant.js?v=20260830235612"></script>
 <script>
 function pageInit() {
   initSlideshow();
@@ -193,6 +193,7 @@ function initSlideshow() {
          aria-roledescription="slide" aria-label="${i + 1} of ${list.length}"
          ${i === 0 ? '' : 'aria-hidden="true"'}>
       ${media(s.id, s.title)}
+      ${s.sticker ? `<span class="slide__sticker">${escapeHtml(s.sticker)}</span>` : ''}
       <div class="slide__body">
         <span class="kicker">${escapeHtml(s.kicker)}</span>
         <${i === 0 ? 'h1' : 'h2'} class="slide__title">${escapeHtml(s.title)}</${i === 0 ? 'h1' : 'h2'}>
@@ -281,7 +282,7 @@ function renderFeed() {
                   aria-label="${escapeHtml(it.label)}">
              <source src="photos/${it.id}.mp4?v=${v}" type="video/mp4">
            </video>`}
-      <span class="feedtile__shop">Shop the look ${ICON.arrow}</span>
+      <span class="feedtile__shop" aria-hidden="true">${ICON.bag}</span>
       <span class="feedtile__label">${escapeHtml(it.label)}</span>
     </a>`).join('');
 

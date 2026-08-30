@@ -1312,10 +1312,25 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   will-change: transform;
   transition: transform .8s cubic-bezier(.62,.03,.2,1);
 }
-/* Each slide is one full panel of the row. */
+/* The round tag that sits on the picture — the same device the reference uses,
+   kept out of the top-right corner so it never fights the centred copy. */
+.slide__sticker {
+  position: absolute; z-index: 3;
+  top: clamp(18px, 3vw, 34px); right: clamp(18px, 3vw, 34px);
+  width: clamp(76px, 8vw, 104px); aspect-ratio: 1;
+  display: grid; place-items: center; padding: 8px;
+  border-radius: 50%;
+  background: var(--brand-grad); color: #fff;
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(.58rem, .92vw, .72rem); line-height: 1.15;
+  letter-spacing: .1em; text-transform: uppercase; text-align: center;
+  box-shadow: var(--sh-2);
+}
+
+/* Each slide is one full panel of the row. Copy is anchored bottom-centre. */
 .slide {
   position: relative; flex: 0 0 100%; height: 100%;
-  display: flex; align-items: flex-end;
+  display: flex; align-items: flex-end; justify-content: center;
 }
 .slide.is-on .slide__body {
   opacity: 1; transform: none;
@@ -1326,34 +1341,42 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 .slide .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
 .slide .ph__label, .slide .ph__note { display: none; }
 
-/* Scrim weighted to the bottom-left, where the words sit. */
+/* Three scrims, because the copy now sits over the middle panel — which on the
+   colour-drop slide is a near-white studio backdrop:
+     · a pool behind the words themselves
+     · the bottom lift
+     · a light top wash so the sticker reads over a bright panel  */
 .slide::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
   background:
-    linear-gradient(to top, rgba(18,12,20,.80) 0%, rgba(18,12,20,.32) 42%, rgba(18,12,20,0) 72%),
-    linear-gradient(to right, rgba(18,12,20,.45) 0%, rgba(18,12,20,0) 55%);
+    radial-gradient(58% 46% at 50% 88%, rgba(18,12,20,.62) 0%, rgba(18,12,20,.30) 55%, rgba(18,12,20,0) 100%),
+    linear-gradient(to top, rgba(18,12,20,.80) 0%, rgba(18,12,20,.34) 36%, rgba(18,12,20,0) 66%),
+    linear-gradient(to bottom, rgba(18,12,20,.32) 0%, rgba(18,12,20,0) 20%);
 }
 /* Copy rides in just behind its picture rather than arriving with it. */
 .slide__body {
   opacity: 0; transform: translateY(10px);
   transition: opacity .25s ease, transform .25s ease;
   position: relative; z-index: 2;
-  padding: clamp(22px, 4vw, 52px);
-  padding-bottom: clamp(48px, 5vw, 66px);      /* clear of the dots */
-  max-width: 44ch; color: #fff;
+  padding: clamp(22px, 4vw, 40px);
+  padding-bottom: clamp(52px, 5.5vw, 74px);    /* clear of the dots */
+  max-width: 46ch; color: #fff; text-align: center;
 }
-.slide__body .kicker { color: rgba(255,255,255,.86); white-space: nowrap; }
+.slide__body .kicker {
+  color: rgba(255,255,255,.86); white-space: nowrap;
+  justify-content: center;                     /* the kicker rule is a flex row */
+}
 .slide__body .kicker::before { background: rgba(255,255,255,.6); }
 .slide__title {
   color: #fff; font-family: var(--display); font-weight: 800; line-height: 1.04;
   font-size: clamp(2.1rem, 5.4vw, 3.6rem);
   letter-spacing: -.02em; margin-bottom: .3em;
 }
-.slide__body .lede { color: rgba(255,255,255,.9); margin-bottom: 24px; }
+.slide__body .lede { color: rgba(255,255,255,.9); margin-bottom: 24px; margin-inline: auto; }
 
 .slideshow__dots {
   position: absolute; z-index: 3;
-  left: clamp(22px, 4vw, 52px); bottom: clamp(18px, 2.4vw, 26px);
+  left: 50%; transform: translateX(-50%); bottom: clamp(18px, 2.4vw, 26px);
   display: flex; gap: 9px;
 }
 .slideshow__dot {
@@ -1368,6 +1391,7 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 @media (max-width: 700px) {
   .slideshow { border-radius: var(--r-lg); height: clamp(430px, 76vh, 560px); }
   .slide__body { max-width: none; }
+  .slide__sticker { width: 72px; font-size: .56rem; }
   /* Taller phone banner puts the copy over mid-tone fabric — deepen the scrim. */
   .slide::after {
     background: linear-gradient(to top,
@@ -1525,3 +1549,11 @@ a.press__item:hover { opacity: 1; color: var(--brand-500); }
 @media (prefers-reduced-motion: reduce) {
   .feedtile, .feedtile__shop { transition: none; }
 }
+
+/* The feed affordance is the bag icon, not a sentence. */
+.feedtile__shop {
+  width: 42px; height: 42px; padding: 0; gap: 0;
+  justify-content: center; font-size: 0;
+}
+.feedtile__shop svg { width: 19px; height: 19px; }
+@media (hover: none) { .feedtile__shop { width: 34px; height: 34px; } }
