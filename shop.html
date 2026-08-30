@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202608302204">
+<link rel="stylesheet" href="css/style.css?v=20260830224095">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -107,11 +107,11 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202608302204"></script>
-<script src="js/app.js?v=202608302204"></script>
-<script src="js/assistant.js?v=202608302204"></script>
+<script src="js/data.js?v=20260830224095"></script>
+<script src="js/app.js?v=20260830224095"></script>
+<script src="js/assistant.js?v=20260830224095"></script>
 <script>
-const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '' };
+const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '', badge: '' };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
 const PRICE_MAX = Math.max(...PRODUCTS.map(p => p.price));
 
@@ -131,6 +131,10 @@ function pageInit() {
   const sort = params.get('sort');
   if (sort && ['featured', 'new', 'low', 'high', 'az'].includes(sort)) state.sort = sort;
 
+  // ?badge=Bestseller / ?badge=New — the "New" and "Best Sellers" nav links
+  const badge = params.get('badge');
+  if (badge && PRODUCTS.some(p => p.badge === badge)) state.badge = badge;
+
   // ?q= comes from the header search's "see all results"
   const q = (params.get('q') || '').trim();
   if (q) state.query = q.slice(0, 80);
@@ -147,7 +151,7 @@ function pageInit() {
     render();
   });
   document.getElementById('fClear').addEventListener('click', () => {
-    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, query: '' });
+    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, query: '', badge: '' });
     document.getElementById('fStock').checked = false;
     document.getElementById('fPrice').value = 100;
     document.getElementById('priceMax').textContent = money(PRICE_MAX);
@@ -208,6 +212,7 @@ function filtered() {
   const qMatches = state.query ? new Set(searchProducts(state.query, PRODUCTS.length).map(p => p.id)) : null;
   let list = PRODUCTS.filter(p => {
     if (qMatches && !qMatches.has(p.id)) return false;
+    if (state.badge && p.badge !== state.badge) return false;
     if (state.cats.length && !state.cats.includes(p.category)) return false;
     if (state.colors.length && !state.colors.some(c => p.colors.includes(c))) return false;
     if (state.occs.length && !state.occs.some(o => p.occasions.includes(o))) return false;

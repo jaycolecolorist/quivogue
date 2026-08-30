@@ -8,37 +8,64 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202608302204">
+<link rel="stylesheet" href="css/style.css?v=20260830224095">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 
 <!-- ============================================================ 1. HERO
-     Image-led, minimal words. No stat row, no floating badge — the client
-     asked for both to go. -->
+     A rotating canvas of full-bleed photographs, copy set over the picture.
+     Slides come from HERO_SLIDES in data.js. -->
 <section class="hero">
-  <div class="blob blob--a" style="width:420px;height:420px;top:-120px;right:-80px;opacity:.4"></div>
-
   <div class="wrap">
-    <div class="hero__grid">
-      <div>
-        <span class="kicker">Seamless · Seam-fit · Swim · Lounge</span>
-        <h1 class="hero__title">Fit that <em>holds</em>.</h1>
-        <p class="lede">Premium activewear, made in Kampala's own studio.</p>
-        <div class="hero__cta">
-          <a class="btn btn--primary btn--lg" href="shop.html">Shop the range</a>
-        </div>
-      </div>
-
-      <div class="hero__art">
-        <div class="hero__frame" id="heroFrame"></div>
-      </div>
+    <div class="slideshow" id="slideshow" aria-roledescription="carousel" aria-label="QV fits campaigns">
+      <div class="slideshow__track" id="slides"></div>
+      <div class="slideshow__dots" id="slideDots" role="tablist" aria-label="Choose a slide"></div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================ 2. SHOP BY MOVEMENT -->
+<!-- ============================================================ 2. AS FEATURED IN
+     Hidden unless PRESS.live is true and there is something real to list. -->
+<section class="section section--tight" id="pressSection" hidden>
+  <div class="wrap">
+    <div class="press reveal">
+      <h2 class="press__title" id="pressTitle"></h2>
+      <div class="press__row" id="pressRow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 3. NEW RELEASES -->
 <section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker">Just in</span>
+      <h2>New releases</h2>
+    </div>
+    <div class="grid-products grid-products--four" id="newArrivals"></div>
+    <p class="center" style="margin-top:34px">
+      <a class="btn btn--ghost" href="shop.html?sort=new">See more</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ 4. BEST SELLERS -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker">Most loved</span>
+      <h2>Best sellers</h2>
+    </div>
+    <div class="grid-products grid-products--four" id="bestSellers"></div>
+    <p class="center" style="margin-top:34px">
+      <a class="btn btn--ghost" href="shop.html?badge=Bestseller">See more</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ 5. SHOP BY MOVEMENT -->
+<section class="section section--tight">
   <div class="wrap">
     <div class="section-head center reveal">
       <span class="kicker">Shop by movement</span>
@@ -48,22 +75,7 @@
   </div>
 </section>
 
-<!-- ============================================================ 3. NEW IN — four only -->
-<section class="section section--tight">
-  <div class="wrap">
-    <div class="section-head center reveal">
-      <span class="kicker">New in</span>
-      <h2>Just landed</h2>
-    </div>
-    <div class="grid-products grid-products--four" id="newArrivals"></div>
-    <p class="center" style="margin-top:34px">
-      <a class="btn btn--ghost" href="shop.html">See everything</a>
-    </p>
-  </div>
-</section>
-
-<!-- ============================================================ 4. CAMPAIGN
-     One big lifestyle image. Deals and kits moved to the shop page. -->
+<!-- ============================================================ 6. CAMPAIGN -->
 <section class="section section--tight" id="promoSection">
   <div class="wrap">
     <article class="campaign reveal" id="campaign" hidden></article>
@@ -89,12 +101,27 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202608302204"></script>
-<script src="js/app.js?v=202608302204"></script>
-<script src="js/assistant.js?v=202608302204"></script>
+<script src="js/data.js?v=20260830224095"></script>
+<script src="js/app.js?v=20260830224095"></script>
+<script src="js/assistant.js?v=20260830224095"></script>
 <script>
 function pageInit() {
-  document.getElementById('heroFrame').innerHTML = media('hero', 'QV fits — in the gym');
+  initSlideshow();
+  renderPress();
+
+  /* ---------------------------------------------------- the two rows
+     Both come from a curated id list in data.js. If a list is empty, or an id
+     in it no longer exists, the row falls back to the badge so it is never
+     left short. */
+  const row = (ids, badge) => {
+    const picked = (ids || []).map(getProduct).filter(Boolean);
+    const rest = PRODUCTS.filter(p => p.badge === badge && !picked.includes(p));
+    return [...picked, ...rest].slice(0, 4);
+  };
+  document.getElementById('newArrivals').innerHTML =
+    row(typeof NEW_RELEASES !== 'undefined' && NEW_RELEASES, 'New').map(productCard).join('');
+  document.getElementById('bestSellers').innerHTML =
+    row(typeof BEST_SELLERS !== 'undefined' && BEST_SELLERS, 'Bestseller').map(productCard).join('');
 
   /* ---------------------------------------------------- shop by movement */
   document.getElementById('movements').innerHTML = MOVEMENTS.map(m => `
@@ -102,11 +129,6 @@ function pageInit() {
       ${media('movement-' + m.id, m.label)}
       <span class="movement__label">${escapeHtml(m.label)}</span>
     </a>`).join('');
-
-  /* ---------------------------------------------------- new in, four only */
-  const newest = [...PRODUCTS].sort((a, b) =>
-    (b.badge === 'New' ? 1 : 0) - (a.badge === 'New' ? 1 : 0)).slice(0, 4);
-  document.getElementById('newArrivals').innerHTML = newest.map(productCard).join('');
 
   /* ---------------------------------------------------- one campaign image */
   const campaign = document.getElementById('campaign');
@@ -136,8 +158,98 @@ function pageInit() {
     if (!list.includes(email)) list.push(email);
     localStorage.setItem('qvfits.news', JSON.stringify(list));
     document.getElementById('newsForm').reset();
-    msg.textContent = "You're on the list ✨ We'll be in touch before the next drop.";
+    msg.textContent = (typeof STICKER !== 'undefined' && STICKER.live)
+      ? "You're on the list ✨ We'll send your 10% code before the next drop."
+      : "You're on the list ✨ We'll be in touch before the next drop.";
   });
+}
+
+/* -------------------------------------------------------------- slideshow
+   Auto-advances, pauses on hover and on focus, stops entirely if the visitor
+   asks for reduced motion, and can be driven by the dots or the arrow keys. */
+function initSlideshow() {
+  const root  = document.getElementById('slideshow');
+  const track = document.getElementById('slides');
+  const dots  = document.getElementById('slideDots');
+  const list  = (typeof HERO_SLIDES !== 'undefined' ? HERO_SLIDES : []).filter(Boolean);
+  if (!list.length) { root.hidden = true; return; }
+
+  track.innerHTML = list.map((s, i) => `
+    <div class="slide ${i === 0 ? 'is-on' : ''}" role="group"
+         aria-roledescription="slide" aria-label="${i + 1} of ${list.length}"
+         ${i === 0 ? '' : 'aria-hidden="true"'}>
+      ${media(s.id, s.title)}
+      <div class="slide__body">
+        <span class="kicker">${escapeHtml(s.kicker)}</span>
+        <${i === 0 ? 'h1' : 'h2'} class="slide__title">${escapeHtml(s.title)}</${i === 0 ? 'h1' : 'h2'}>
+        <p class="lede">${escapeHtml(s.text)}</p>
+        <a class="btn btn--primary btn--lg" href="${s.href}"
+           ${i === 0 ? '' : 'tabindex="-1"'}>${escapeHtml(s.cta)}</a>
+      </div>
+    </div>`).join('');
+
+  dots.innerHTML = list.map((s, i) => `
+    <button class="slideshow__dot ${i === 0 ? 'is-on' : ''}" role="tab"
+            aria-selected="${i === 0}" data-go="${i}"
+            aria-label="${escapeHtml(s.title)}"></button>`).join('');
+
+  const slides = [...track.children];
+  const pips   = [...dots.children];
+  let at = 0, timer = null;
+
+  function go(n) {
+    at = (n + slides.length) % slides.length;
+    slides.forEach((el, i) => {
+      const on = i === at;
+      el.classList.toggle('is-on', on);
+      if (on) el.removeAttribute('aria-hidden'); else el.setAttribute('aria-hidden', 'true');
+      const link = el.querySelector('a');
+      if (link) link.tabIndex = on ? 0 : -1;
+    });
+    pips.forEach((el, i) => {
+      el.classList.toggle('is-on', i === at);
+      el.setAttribute('aria-selected', String(i === at));
+    });
+  }
+
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const start = () => { if (!still && !timer && slides.length > 1) timer = setInterval(() => go(at + 1), 6000); };
+  const stop  = () => { clearInterval(timer); timer = null; };
+
+  dots.addEventListener('click', e => {
+    const b = e.target.closest('[data-go]');
+    if (b) { go(Number(b.dataset.go)); stop(); start(); }
+  });
+  root.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { go(at + 1); stop(); start(); }
+    if (e.key === 'ArrowLeft')  { go(at - 1); stop(); start(); }
+  });
+  root.addEventListener('mouseenter', stop);
+  root.addEventListener('mouseleave', start);
+  root.addEventListener('focusin', stop);
+  root.addEventListener('focusout', start);
+  // Don't burn cycles rotating a hero nobody is looking at.
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  start();
+}
+
+/* ------------------------------------------------------------------ press
+   Only renders when PRESS.live is true AND there is something in it. */
+function renderPress() {
+  const section = document.getElementById('pressSection');
+  const ok = typeof PRESS !== 'undefined' && PRESS.live && PRESS.items && PRESS.items.length;
+  section.hidden = !ok;
+  if (!ok) return;
+
+  document.getElementById('pressTitle').textContent = PRESS.title;
+  document.getElementById('pressRow').innerHTML = PRESS.items.map(it => {
+    const inner = it.logo
+      ? `<img src="photos/${it.logo}.jpg?v=${CONFIG.assetVersion}" alt="${escapeHtml(it.name)}" loading="lazy">`
+      : `<span>${escapeHtml(it.name)}</span>`;
+    return it.href
+      ? `<a class="press__item" href="${it.href}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="press__item">${inner}</div>`;
+  }).join('');
 }
 </script>
 </body>

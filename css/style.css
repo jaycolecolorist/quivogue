@@ -263,6 +263,7 @@ p  { margin: 0 0 1em; }
 .nav a {
   padding: .5em .95em; border-radius: var(--r-pill);
   font-weight: 500; font-size: .93rem; color: var(--ink-2);
+  white-space: nowrap;              /* "Best Sellers" must not break in two */
   transition: background .2s, color .2s;
 }
 .nav a:hover { background: var(--brand-100); color: var(--brand-600); }
@@ -289,9 +290,14 @@ p  { margin: 0 0 1em; }
 /* Always available — the side menu is reachable on desktop too. */
 .burger { display: grid; }
 
-/* At full size the header needs ~838px. Rather than fall back to a burger the
-   moment a desktop window narrows, tighten the nav so the full links survive
-   down to ~700px. Measured: this trims the nav from 466px to ~356px. */
+/* Seven links plus the search field need real room. Rather than fall back to a
+   burger the moment a desktop window narrows, tighten the nav in two stages so
+   the full links survive down to ~700px. */
+@media (max-width: 1080px) and (min-width: 881px) {
+  .hdr__inner { gap: 14px; }
+  .nav { gap: 2px; }
+  .nav a { font-size: .89rem; padding: .5em .7em; }
+}
 @media (max-width: 880px) and (min-width: 701px) {
   .hdr__inner { gap: 12px; }
   .logo__name { font-size: 1.3rem; }
@@ -1284,4 +1290,175 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   .grid-movements { gap: 8px; }
   .movement { aspect-ratio: 3 / 4; }
   .movement__label { padding: 11px 12px; letter-spacing: .08em; }
+}
+
+/* ==========================================================================
+   HERO SLIDESHOW — a rotating canvas with the copy over the picture
+   ========================================================================== */
+.hero { padding-block: clamp(14px, 2vw, 26px) 0; }
+
+.slideshow {
+  position: relative; overflow: hidden;
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-3);
+}
+.slideshow__track {
+  position: relative;
+  min-height: clamp(430px, 56vw, 620px);
+}
+/* Every slide fills the track, so the height is set by the track alone and
+   never jumps as the copy changes length from slide to slide. */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end;
+  opacity: 0; visibility: hidden;
+  transition: opacity .7s ease, visibility .7s;
+}
+.slide.is-on { opacity: 1; visibility: visible; }
+.slide.is-on .slide__body {
+  opacity: 1; transform: none;
+  transition: opacity .5s ease .3s, transform .5s ease .3s;
+}
+
+.slide .ph { position: absolute; inset: 0; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
+.slide .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+.slide .ph__label, .slide .ph__note { display: none; }
+
+/* Scrim weighted to the bottom-left, where the words sit. */
+.slide::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to top, rgba(18,12,20,.80) 0%, rgba(18,12,20,.32) 42%, rgba(18,12,20,0) 72%),
+    linear-gradient(to right, rgba(18,12,20,.45) 0%, rgba(18,12,20,0) 55%);
+}
+/* The pictures cross-fade, but the words must not — two headlines on screen at
+   once is unreadable. The outgoing copy leaves first, then the new copy lands. */
+.slide__body {
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .25s ease, transform .25s ease;
+  position: relative; z-index: 2;
+  padding: clamp(22px, 4vw, 52px);
+  padding-bottom: clamp(48px, 5vw, 66px);      /* clear of the dots */
+  max-width: 44ch; color: #fff;
+}
+.slide__body .kicker { color: rgba(255,255,255,.86); white-space: nowrap; }
+.slide__body .kicker::before { background: rgba(255,255,255,.6); }
+.slide__title {
+  color: #fff; font-family: var(--display); font-weight: 800; line-height: 1.04;
+  font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+  letter-spacing: -.02em; margin-bottom: .3em;
+}
+.slide__body .lede { color: rgba(255,255,255,.9); margin-bottom: 24px; }
+
+.slideshow__dots {
+  position: absolute; z-index: 3;
+  left: clamp(22px, 4vw, 52px); bottom: clamp(18px, 2.4vw, 26px);
+  display: flex; gap: 9px;
+}
+.slideshow__dot {
+  width: 34px; height: 4px; padding: 0; border: 0; cursor: pointer;
+  border-radius: 999px; background: rgba(255,255,255,.38);
+  transition: background .25s ease, width .25s ease;
+}
+.slideshow__dot:hover { background: rgba(255,255,255,.65); }
+.slideshow__dot.is-on { background: #fff; width: 46px; }
+.slideshow__dot:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+@media (max-width: 700px) {
+  .slideshow { border-radius: var(--r-lg); }
+  .slideshow__track { min-height: clamp(430px, 76vh, 560px); }
+  .slide__body { max-width: none; }
+  /* Taller phone banner puts the copy over mid-tone fabric — deepen the scrim. */
+  .slide::after {
+    background: linear-gradient(to top,
+      rgba(18,12,20,.90) 0%, rgba(18,12,20,.72) 34%,
+      rgba(18,12,20,.30) 58%, rgba(18,12,20,0) 82%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide, .slide__body, .slide.is-on .slide__body { transition: none; transform: none; }
+}
+
+/* ==========================================================================
+   AS FEATURED IN
+   ========================================================================== */
+.press { text-align: center; }
+.press__title {
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(.95rem, 1.5vw, 1.15rem);
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-2); margin-bottom: 22px;
+}
+.press__row {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  align-items: center; gap: clamp(20px, 4vw, 52px);
+}
+.press__item {
+  display: inline-flex; align-items: center;
+  font-family: var(--display); font-weight: 600;
+  font-size: clamp(.95rem, 1.6vw, 1.2rem);
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-2); opacity: .72;
+  transition: opacity .2s ease, color .2s ease;
+}
+a.press__item:hover { opacity: 1; color: var(--brand-500); }
+.press__item img { height: 24px; width: auto; object-fit: contain; }
+
+/* ==========================================================================
+   OFFER STICKER — dismissible, bottom-left
+   ========================================================================== */
+.sticker {
+  position: fixed; z-index: 58;
+  left: 20px; bottom: 20px; width: min(310px, calc(100vw - 40px));
+  padding: 18px 20px 20px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  opacity: 0; transform: translateY(14px) scale(.98);
+  pointer-events: none;
+  transition: opacity .32s ease, transform .32s cubic-bezier(.2,.8,.3,1);
+}
+.sticker.is-in { opacity: 1; transform: none; pointer-events: auto; }
+.sticker__x {
+  position: absolute; top: 8px; right: 8px;
+  width: 30px; height: 30px; display: grid; place-items: center;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: transparent; color: var(--ink-2);
+  transition: background .18s ease, color .18s ease;
+}
+.sticker__x:hover { background: var(--sand-100, rgba(0,0,0,.05)); color: var(--ink); }
+.sticker__tag {
+  display: inline-block; margin-bottom: 10px;
+  padding: 4px 11px; border-radius: 999px;
+  background: var(--brand-grad); color: #fff;
+  font-family: var(--display); font-weight: 700; font-size: .68rem;
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.sticker__title {
+  font-family: var(--display); font-weight: 700;
+  font-size: 1.08rem; line-height: 1.25; color: var(--ink);
+  margin-bottom: 5px;
+}
+.sticker__text { font-size: .86rem; line-height: 1.5; color: var(--ink-2); margin-bottom: 12px; }
+.sticker__cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--display); font-weight: 700; font-size: .84rem;
+  letter-spacing: .04em; color: var(--brand-500);
+}
+.sticker__cta:hover { gap: 10px; }
+.sticker__cta svg { transition: transform .2s ease; }
+
+/* On a phone the card goes full width, so it would run underneath the
+   assistant bubble in the bottom-right. Sit it above the bubble instead. */
+@media (max-width: 560px) {
+  .sticker {
+    left: 12px; right: 12px; width: auto;
+    bottom: 134px;                    /* .asst-btn: 48px tall, 74px up, + a 12px gap */
+    padding: 15px 16px 16px;
+  }
+  .sticker__title { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticker { transition: opacity .2s ease; transform: none; }
 }

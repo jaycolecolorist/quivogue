@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '202608302204',
+  assetVersion: '20260830224095',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -108,6 +108,118 @@ const REVIEWS = [];
    "QUIVOGUE CHRISTMAS MEGA SALE — DISCOUNT 50% OFF — THE CUBE G17 KISEMENTI"
    graphic. That one has expired, so it is not used on the site.
    ------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------
+   THE TWO HOME-PAGE ROWS — which four pieces show in each.
+   --------------------------------------------------------------------------
+   Both are plain lists of product ids, so the shop can reorder them without
+   touching any code. Leave a list empty and the row falls back to sorting the
+   whole catalogue by badge.
+
+   NEW_RELEASES is the four QVFIT studio shots Jay supplied — the brand's own
+   photography, shot in the gym, in ivory, burgundy and two navies.
+
+   ⚠ BEST_SELLERS is a PLACEHOLDER. Nothing public says what actually sells
+   best; these four are simply the pieces with the strongest photography. Ask
+   the shop for the real four before launch.
+   ------------------------------------------------------------------------- */
+const NEW_RELEASES = [
+  'studio-two-piece',          // burgundy, gym
+  'rib-seamless-set',          // navy, gym
+  'seamless-longsleeve-set',   // ivory, gym
+  'highwaist-sculpt-legging'   // navy, gym window light
+];
+
+const BEST_SELLERS = [
+  'golf-tennis-skort-dress',
+  'ribbed-lounge-set',
+  'sculpt-seamless-set',
+  'flare-lounge-legging'
+];
+
+/* -------------------------------------------------------------------------
+   HERO SLIDES — the rotating canvas at the top of the home page.
+   Images live in photos/ as hero-1.jpg … hero-4.jpg. All four are the brand's
+   own photography (Jay's supplied shoot + their Instagram posts).
+   Keep the copy short — it sits over the picture.
+   ------------------------------------------------------------------------- */
+const HERO_SLIDES = [
+  {
+    id: 'hero-1',                                  // j1 — navy set, gym window light
+    kicker: 'Seamless · Swim · Lounge',
+    title: 'Fit that holds.',
+    text: 'Premium activewear, made in Kampala.',
+    cta: 'Shop now',
+    href: 'shop.html'
+  },
+  {
+    id: 'hero-2',                                  // q6 — tennis, at the net
+    kicker: 'The court range',
+    title: 'Built for the baseline.',
+    text: 'Collared tops, pleated skorts, inbuilt pant.',
+    cta: 'Shop now',
+    href: 'shop.html?c=Skorts'
+  },
+  {
+    id: 'hero-3',                                  // q1 — track, stadium seats
+    kicker: 'Train in it',
+    title: 'Squat-proof, sweat-proof.',
+    text: 'Seamless sets that stay where you put them.',
+    cta: 'Shop now',
+    href: 'shop.html?c=Sets'
+  },
+  {
+    id: 'hero-4',                                  // q4 — pink set, studio
+    kicker: 'New in',
+    title: 'The colour drop.',
+    text: 'Fresh seamless colourways, in store now.',
+    cta: 'Shop now',
+    href: 'shop.html?sort=new'
+  }
+];
+
+/* -------------------------------------------------------------------------
+   PRESS — the "As featured in" row under the hero.
+   --------------------------------------------------------------------------
+   ⚠ DELIBERATELY EMPTY, AND OFF.
+
+   The reference site (wiskiiactive.com) runs a row of Vogue / Elle / Marie
+   Claire / Forbes / Cosmopolitan logos. Those are WISKII's press credits, not
+   QV fits'. Copying them here would claim coverage the brand has not had and
+   would use those publishers' trademarks to do it — a false-advertising and
+   trademark problem for the client, not a design choice.
+
+   The section is fully built and styled. To switch it on, set live: true and
+   add only outlets that have genuinely featured QV fits — a Kampala paper, a
+   blog, a magazine feature, an event, a stockist. `logo` is optional; with no
+   logo file the name is set in the display face, which is how a small brand's
+   press row should look anyway.
+   ------------------------------------------------------------------------- */
+const PRESS = {
+  live: false,
+  title: 'As featured in',
+  items: [
+    // { name: 'Outlet name', href: 'https://…', logo: 'press-outlet' }
+  ]
+};
+
+/* -------------------------------------------------------------------------
+   STICKER — the small dismissible offer card, bottom-left.
+   --------------------------------------------------------------------------
+   ⚠ THIS IS A LIVE PROMISE. It is tied to the newsletter form, so anyone who
+   subscribes will expect 10% off their first order. Switch it off the day the
+   offer ends. Dismissing it is remembered for `snoozeDays`.
+   ------------------------------------------------------------------------- */
+const STICKER = {
+  live: true,                   // ON at Jay's request (2026-08-30)
+  tag: '10% off',
+  title: 'First order, 10% off',
+  text: 'Join the list and we\'ll send your code before the next drop.',
+  cta: 'Get my code',
+  href: '#newsForm',
+  snoozeDays: 14,
+  delayMs: 6000                 // let people see the page before it appears
+};
 
 /* The rotating strip at the very top of every page. */
 const PROMO_BAR = [
@@ -192,7 +304,7 @@ const PRODUCTS = [
   {
     id: 'seamless-longsleeve-set', name: 'Seamless Long-Sleeve Set', category: 'Sets',
     price: 210000,                                   // PRICE TBC
-    colors: ['Ivory', 'Pink', 'Black'], badge: 'Bestseller',
+    colors: ['Ivory', 'Pink', 'Black'], badge: 'New',
     occasions: ['gym', 'everyday', 'lounge'],        // REAL PIECE — from the brand's own post
     blurb: 'Second-skin seamless in a long sleeve and matching legging. Knitted in one piece, so there are no side seams to dig in.',
     details: ['Seamless knit construction', 'Long sleeve + matching legging', 'Squat-tested opaque', 'Four-way stretch'],
@@ -203,7 +315,7 @@ const PRODUCTS = [
   {
     id: 'sculpt-seamless-set', name: 'Sculpt Seamless Set', category: 'Sets',
     price: 195000,                                   // PRICE TBC
-    colors: ['Ivory', 'Butter', 'Teal'], badge: 'New',
+    colors: ['Ivory', 'Butter', 'Teal'], badge: 'Bestseller',
     occasions: ['gym', 'yoga', 'everyday'],
     blurb: 'The bra-and-bike-short set that started it all. Ribbed through the waist, smooth everywhere else.',
     details: ['Longline bra + bike short', 'Ribbed contour panels', 'Removable cups', 'High waist'],
@@ -212,7 +324,8 @@ const PRODUCTS = [
     stock: { XS: 2, S: 4, M: 4, L: 3, XL: 1 }
   },
   {
-    id: 'rib-seamless-set', name: 'Rib Seamless Set', category: 'Sets',
+    id: 'rib-seamless-set',
+    badge: 'New', name: 'Rib Seamless Set', category: 'Sets',
     price: 195000,                                   // PRICE TBC
     colors: ['Navy', 'Sand', 'Black'],
     occasions: ['gym', 'yoga', 'lounge'],
@@ -223,7 +336,8 @@ const PRODUCTS = [
     stock: { XS: 3, S: 4, M: 5, L: 3, XL: 2 }
   },
   {
-    id: 'studio-two-piece', name: 'Studio Two-Piece', category: 'Sets',
+    id: 'studio-two-piece',
+    badge: 'New', name: 'Studio Two-Piece', category: 'Sets',
     price: 225000,                                   // PRICE TBC
     colors: ['Burgundy', 'Slate', 'Black'],
     occasions: ['gym', 'run', 'everyday'],
@@ -273,7 +387,7 @@ const PRODUCTS = [
   {
     id: 'highwaist-sculpt-legging', name: 'High-Waist Sculpt Legging', category: 'Bottoms',
     price: 145000,                                   // PRICE TBC
-    colors: ['Navy', 'Black', 'Mocha', 'Slate'], badge: 'Bestseller',
+    colors: ['Navy', 'Black', 'Mocha', 'Slate'], badge: 'New',
     occasions: ['gym', 'run', 'everyday'],
     blurb: 'The legging we get asked about most. High rise, contour seaming, and genuinely opaque under load.',
     details: ['High rise', 'Contour seaming', 'Squat-tested opaque', 'Hidden waistband pocket'],
@@ -284,7 +398,7 @@ const PRODUCTS = [
   {
     id: 'flare-lounge-legging', name: 'Flare Lounge Legging', category: 'Bottoms',
     price: 135000,                                   // PRICE TBC
-    colors: ['Mocha', 'Burgundy', 'Black'], badge: 'New',
+    colors: ['Mocha', 'Burgundy', 'Black'], badge: 'Bestseller',
     occasions: ['lounge', 'everyday', 'yoga'],
     blurb: 'A soft flare through the ankle. Studio to street without changing.',
     details: ['Flared hem', 'High rise', 'Brushed inside', 'Full length'],

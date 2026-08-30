@@ -194,9 +194,13 @@ function productCard(p) {
 }
 
 /* ---------------------------------------------------------------- header / footer */
+/* New and Best Sellers are views of the shop, not separate pages — they carry
+   a query the shop already understands, so nothing here is a dead link. */
 const NAV_LINKS = [
   ['index.html', 'Home'],
   ['shop.html', 'Shop'],
+  ['shop.html?sort=new', 'New'],
+  ['shop.html?badge=Bestseller', 'Best Sellers'],
   ['about.html', 'About'],
   ['size-guide.html', 'Size Guide'],
   ['contact.html', 'Contact & FAQ']
@@ -657,11 +661,78 @@ function initAccordions(root = document) {
   });
 }
 
+/* ---------------------------------------------------------------- sticker
+   The small dismissible offer card, bottom-left. Driven by STICKER in data.js.
+
+   It only ever appears when STICKER.live is true, so switching the offer off
+   removes it everywhere. Closing it is remembered for STICKER.snoozeDays, so
+   nobody gets nagged on every page. */
+function initSticker() {
+  if (typeof STICKER === 'undefined' || !STICKER.live) return;
+
+  const KEY = 'qvfits.sticker.' + (STICKER.tag || 'offer');
+  const until = Number(localStorage.getItem(KEY) || 0);
+  if (until && Date.now() < until) return;
+
+  const el = document.createElement('aside');
+  el.className = 'sticker';
+  el.setAttribute('role', 'complementary');
+  el.setAttribute('aria-label', STICKER.title);
+  el.innerHTML = `
+    <button class="sticker__x" aria-label="Close this offer">${ICON.close}</button>
+    <span class="sticker__tag">${escapeHtml(STICKER.tag)}</span>
+    <p class="sticker__title">${escapeHtml(STICKER.title)}</p>
+    <p class="sticker__text">${escapeHtml(STICKER.text)}</p>
+    <a class="sticker__cta" href="${STICKER.href}">${escapeHtml(STICKER.cta)} ${ICON.arrow}</a>`;
+
+  function dismiss() {
+    el.classList.remove('is-in');
+    const days = Number(STICKER.snoozeDays) || 14;
+    try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {}
+    setTimeout(() => el.remove(), 280);
+  }
+
+  el.querySelector('.sticker__x').addEventListener('click', dismiss);
+  el.querySelector('.sticker__cta').addEventListener('click', e => {
+    // On the home page the offer points at the newsletter form. Elsewhere
+    // that anchor does not exist, so send them to the page that has it.
+    const form = document.querySelector(STICKER.href);
+    if (STICKER.href.startsWith('#')) {
+      e.preventDefault();
+      if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const input = form.querySelector('input');
+        // preventScroll, or the focus re-scrolls the form to the very bottom
+        // edge and undoes the centred position we just animated to.
+        if (input) setTimeout(() => input.focus({ preventScroll: true }), 700);
+      } else {
+        location.href = 'index.html' + STICKER.href;
+      }
+    }
+    dismiss();
+  });
+
+  document.body.appendChild(el);
+
+  // Wait for BOTH the delay and a scroll before showing it. On its own a timer
+  // would drop the card straight over the hero's Shop now button.
+  let waited = false, moved = window.scrollY > 400;
+  const show = () => {
+    if (!waited || !moved || !el.isConnected) return;
+    el.classList.add('is-in');
+    window.removeEventListener('scroll', onScroll);
+  };
+  const onScroll = () => { if (window.scrollY > 400) { moved = true; show(); } };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  setTimeout(() => { waited = true; show(); }, Number(STICKER.delayMs) || 6000);
+}
+
 /* ---------------------------------------------------------------- boot */
 document.addEventListener('DOMContentLoaded', () => {
   buildChrome();
   if (typeof pageInit === 'function') pageInit();
   initReveal();
   initAccordions();
+  initSticker();
   if (typeof initAssistant === 'function') initAssistant();
 });
