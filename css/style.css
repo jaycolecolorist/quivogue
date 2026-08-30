@@ -1240,3 +1240,48 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   .card__add { font-size: .7rem; padding: .42em .8em; }
   .card__foot { padding-top: 6px; }
 }
+
+/* ==========================================================================
+   HOME: SHOP BY MOVEMENT
+   Four large image tiles with the word over the picture. Deliberately spare —
+   the client asked for a home page that is image-led, not busy.
+   ========================================================================== */
+.grid-movements {
+  display: grid; gap: clamp(10px, 1.6vw, 18px);
+  grid-template-columns: repeat(4, 1fr);
+}
+.movement {
+  position: relative; display: block; overflow: hidden;
+  aspect-ratio: 4 / 5; border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+.movement:hover { transform: translateY(-4px); box-shadow: var(--sh-3); }
+.movement .ph { position: absolute; inset: 0; }
+.movement .ph img { transition: transform .9s var(--ease); }
+.movement:hover .ph img { transform: scale(1.05); }
+.movement .ph__label, .movement .ph__note { display: none; }
+.movement::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(20,14,22,.62) 0%, rgba(20,14,22,.12) 45%, transparent 70%);
+}
+.movement__label {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  padding: 16px 18px; color: #fff;
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(.95rem, 1.5vw, 1.25rem);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* New in shows four across on a wide screen, with room to breathe. */
+.grid-products--four { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 900px) {
+  .grid-movements { grid-template-columns: repeat(2, 1fr); }
+  .grid-products--four { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .grid-movements { gap: 8px; }
+  .movement { aspect-ratio: 3 / 4; }
+  .movement__label { padding: 11px 12px; letter-spacing: .08em; }
+}

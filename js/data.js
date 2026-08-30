@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '202608302152',
+  assetVersion: '202608302204',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -375,6 +375,18 @@ const PRODUCTS = [
     fabric: 'Viscose-blend rib knit',
     stock: { XS: 2, S: 4, M: 4, L: 3, XL: 1 }
   }
+];
+
+/* -------------------------------------------------------------------------
+   MOVEMENTS — the home page "Shop by movement" tiles.
+   Four only, on purpose: the client asked for a spare home page. Each points
+   at the shop filtered by that activity. Images: photos/movement-<id>.jpg
+   ------------------------------------------------------------------------- */
+const MOVEMENTS = [
+  { id: 'gym',         label: 'Gym',       occasion: 'gym' },
+  { id: 'pilates',     label: 'Pilates',   occasion: 'yoga' },
+  { id: 'tennis',      label: 'Tennis',    occasion: 'golf-tennis' },
+  { id: 'lifestyle',   label: 'Lifestyle', occasion: 'lounge' }
 ];
 
 /* -------------------------------------------------------------------------

@@ -8,10 +8,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202608302152">
+<link rel="stylesheet" href="css/style.css?v=202608302204">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
+
+<!-- Moved off the home page at the client's request: it belongs with the
+     products, not above the hero. -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>Seamless knit ✦ Squat-tested opaque ✦ Inbuilt pant on every skort ✦ Sizes XS–XL ✦ THE CUBE, G17 Kisementi ✦ WhatsApp orders ✦</span>
+    <span>Seamless knit ✦ Squat-tested opaque ✦ Inbuilt pant on every skort ✦ Sizes XS–XL ✦ THE CUBE, G17 Kisementi ✦ WhatsApp orders ✦</span>
+  </div>
+</div>
 
 <section class="section section--tight">
   <div class="wrap">
@@ -80,9 +89,27 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202608302152"></script>
-<script src="js/app.js?v=202608302152"></script>
-<script src="js/assistant.js?v=202608302152"></script>
+<!-- Offers and kits also moved here from the home page. -->
+<section class="section section--tight" id="dealsSection">
+  <div class="wrap">
+    <div class="deals" id="deals"></div>
+  </div>
+</section>
+
+<section class="section section--tight" id="kitsSection">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="kicker">Complete kits</span>
+      <h2>Shop the kit</h2>
+      <p class="lede">Full kits, already put together. Take the lot, or just the piece you are missing.</p>
+    </div>
+    <div class="grid-looks" id="looks-grid"></div>
+  </div>
+</section>
+
+<script src="js/data.js?v=202608302204"></script>
+<script src="js/app.js?v=202608302204"></script>
+<script src="js/assistant.js?v=202608302204"></script>
 <script>
 const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '' };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
@@ -131,6 +158,9 @@ function pageInit() {
   document.getElementById('filterToggle').addEventListener('click', () => {
     document.getElementById('filters').classList.toggle('is-open');
   });
+
+  renderDeals();
+  renderKits();
 
   document.getElementById('priceMin').textContent = money(PRICE_MIN);
   document.getElementById('priceMax').textContent = money(PRICE_MAX);
@@ -223,3 +253,64 @@ function render() {
 </script>
 </body>
 </html>
+
+<script>
+/* Deals and kits, relocated here from the home page. */
+function renderDeals() {
+  const live = (typeof DEALS !== 'undefined' ? DEALS : []).filter(d => d.live);
+  document.getElementById('dealsSection').hidden = !live.length;
+  document.getElementById('deals').innerHTML = live.map(d => {
+    const href = d.href || (CONFIG.whatsapp
+      ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent("Hi QV fits! What's on offer this week?")}`
+      : CONFIG.instagram);
+    const ext = d.href ? '' : ' target="_blank" rel="noopener"';
+    return `<a class="deal deal--${d.tone} reveal" href="${href}"${ext}>
+      <span class="deal__tag">${escapeHtml(d.tag)}</span>
+      <h3>${escapeHtml(d.title)}</h3>
+      <p>${escapeHtml(d.text)}</p>
+      <span class="link-arrow">${escapeHtml(d.cta)} ${ICON.arrow}</span>
+    </a>`;
+  }).join('');
+}
+
+function renderKits() {
+  const host = document.getElementById('looks-grid');
+  host.innerHTML = LOOKS.map(look => {
+    const items = look.items.map(getProduct).filter(Boolean);
+    const total = items.reduce((n, p) => n + p.price, 0);
+    return `<article class="look reveal">
+      <div class="look__media">${media(look.id, look.title)}</div>
+      <div class="look__body">
+        <h3>${look.title}</h3>
+        <p style="font-size:.9rem;color:var(--ink-3);margin:6px 0 0">${look.note}</p>
+        <ul class="look__items">
+          ${items.map(p => `<li><a href="product.html?id=${p.id}">
+            <span class="look__thumb">${media(p.id, p.name)}</span>
+            <span><strong>${p.name}</strong><em>${money(p.price)}</em></span>
+          </a></li>`).join('')}
+        </ul>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <span style="font-weight:600">${money(total)} the lot</span>
+          <button class="btn btn--soft" data-look="${look.id}">Add all to bag</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  host.addEventListener('click', e => {
+    const btn = e.target.closest('[data-look]');
+    if (!btn) return;
+    const look = LOOKS.find(l => l.id === btn.dataset.look);
+    let added = 0, skipped = [];
+    look.items.forEach(id => {
+      const p = getProduct(id);
+      if (!p) return;
+      const size = productSizes(p).find(s => inStock(p, s));
+      if (!size) { skipped.push(p.name); return; }
+      if (Store.add(id, size, p.colors[0], 1)) added++;
+    });
+    if (added) toast(`${added} piece${added === 1 ? '' : 's'} added — check sizes in your bag`);
+    if (skipped.length) toast(`${skipped[0]} is sold out, so I left it out`);
+  });
+}
+</script>
