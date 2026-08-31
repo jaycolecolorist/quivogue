@@ -1371,10 +1371,23 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   padding-bottom: clamp(52px, 5.5vw, 74px);    /* clear of the dots */
   max-width: 52ch; color: #fff; text-align: center;
 }
+/* Six activities will not sit on one line on a small phone, and because a
+   flex item will not shrink below its own min-content, a nowrap kicker was
+   dragging the whole copy block wider than the frame.
+
+   The base .kicker is an inline-flex row, which puts its rule on a line of its
+   own the moment the text wraps. Here it becomes a plain block with the rule
+   flowing inline, so a long list wraps as ordinary centred text. */
 .slide__body .kicker {
-  color: rgba(255,255,255,.86); white-space: nowrap;
-  justify-content: center;                     /* the kicker rule is a flex row */
+  color: rgba(255,255,255,.86);
+  display: block; white-space: normal;
+  line-height: 1.45;
 }
+.slide__body .kicker::before {
+  display: inline-block; vertical-align: middle;
+  margin-right: .8em; margin-bottom: .18em;
+}
+.slide__body { min-width: 0; }
 .slide__body .kicker::before { background: rgba(255,255,255,.6); }
 .slide__title {
   color: #fff; font-family: var(--display); font-weight: 800; line-height: 1.04;
@@ -1405,6 +1418,7 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   .slideshow { border-radius: var(--r-lg); height: clamp(430px, 76vh, 560px); }
   .slide__body { max-width: none; }
   .slide__sticker { width: 72px; font-size: .56rem; }
+  .slide__body .kicker { font-size: .64rem; letter-spacing: .13em; }
   /* Taller phone banner puts the copy over mid-tone fabric — deepen the scrim. */
   .slide::after {
     background: linear-gradient(to top,
