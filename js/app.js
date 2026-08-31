@@ -661,6 +661,51 @@ function initAccordions(root = document) {
   });
 }
 
+/* ------------------------------------------------------------- photo zoom
+   A slow pull-back on each product photo as it comes into view, settling on
+   the full outfit. Deliberately NOT driven by the .reveal observer: that one
+   has a 2.5s blanket fallback which would fire every card at once, so only
+   the top of the page would ever be seen moving.
+
+   The photo's resting state in CSS is the full frame. This adds the push-in
+   and then takes it away, so a failure here leaves the outfit whole rather
+   than stuck on a crop. */
+function initPhotoZoom(root = document) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const imgs = [...root.querySelectorAll('.card__media .ph img, .movement .ph img')]
+    .filter(el => !el.dataset.zoomWired);
+  if (!imgs.length) return;
+
+  const release = el => el.classList.remove('is-zoomed');
+
+  imgs.forEach(el => {
+    el.dataset.zoomWired = '1';
+    el.classList.add('is-zoomed');
+  });
+  void imgs[0].offsetWidth;                 // commit the push-in before releasing
+
+  if (!('IntersectionObserver' in window)) { imgs.forEach(release); return; }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      release(en.target);
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.18 });
+
+  imgs.forEach(el => {
+    const r = el.getBoundingClientRect();
+    // Already on screen: let it play now rather than waiting for a scroll.
+    if (r.top < window.innerHeight && r.bottom > 0) setTimeout(() => release(el), 120);
+    else io.observe(el);
+  });
+
+  // Nothing stays pushed in for long, whatever the observer does.
+  setTimeout(() => imgs.forEach(release), 9000);
+}
+
 /* ---------------------------------------------------------------- sticker
    The small dismissible offer card, bottom-left. Driven by STICKER in data.js.
 
@@ -732,6 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildChrome();
   if (typeof pageInit === 'function') pageInit();
   initReveal();
+  initPhotoZoom();
   initAccordions();
   initSticker();
   if (typeof initAssistant === 'function') initAssistant();

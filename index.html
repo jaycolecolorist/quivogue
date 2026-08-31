@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260830235612">
+<link rel="stylesheet" href="css/style.css?v=20260831001223">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 </head>
 <body>
@@ -113,9 +113,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260830235612"></script>
-<script src="js/app.js?v=20260830235612"></script>
-<script src="js/assistant.js?v=20260830235612"></script>
+<script src="js/data.js?v=20260831001223"></script>
+<script src="js/app.js?v=20260831001223"></script>
+<script src="js/assistant.js?v=20260831001223"></script>
 <script>
 function pageInit() {
   initSlideshow();
@@ -189,7 +189,7 @@ function initSlideshow() {
   if (!list.length) { root.hidden = true; return; }
 
   track.innerHTML = list.map((s, i) => `
-    <div class="slide" role="group"
+    <div class="slide ${i === 0 ? 'is-on' : ''}" role="group"
          aria-roledescription="slide" aria-label="${i + 1} of ${list.length}"
          ${i === 0 ? '' : 'aria-hidden="true"'}>
       ${media(s.id, s.title)}
@@ -211,17 +211,21 @@ function initSlideshow() {
   const slides = [...track.children];
   const pips   = [...dots.children];
   let at = 0, timer = null;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Dip to black: the outgoing slide fades out against the black backing,
+     the frame sits empty for a beat, then the new one rises out of it. */
+  const DIP = 420;                       // must match the .slide transition
+  let dipping = null;
 
   function go(n) {
-    at = (n + slides.length) % slides.length;
-    // Slide the whole track sideways. The slides sit in a row rather than
-    // stacking, so two pictures are never on screen fading through each other.
-    // The track stays one viewport wide and the slides overflow it, so 100%
-    // here is exactly one slide.
-    track.style.transform = `translate3d(${-at * 100}%, 0, 0)`;
+    const next = (n + slides.length) % slides.length;
+    if (next === at && dipping === null) return;
+    at = next;
+
+    // State that assistive tech and the dots read updates straight away.
     slides.forEach((el, i) => {
       const on = i === at;
-      el.classList.toggle('is-on', on);
       if (on) el.removeAttribute('aria-hidden'); else el.setAttribute('aria-hidden', 'true');
       const link = el.querySelector('a');
       if (link) link.tabIndex = on ? 0 : -1;
@@ -230,9 +234,20 @@ function initSlideshow() {
       el.classList.toggle('is-on', i === at);
       el.setAttribute('aria-selected', String(i === at));
     });
+
+    if (still) {                          // no dip for reduced motion
+      slides.forEach((el, i) => el.classList.toggle('is-on', i === at));
+      return;
+    }
+
+    clearTimeout(dipping);
+    slides.forEach(el => el.classList.remove('is-on'));    // down to black
+    dipping = setTimeout(() => {
+      slides[at].classList.add('is-on');                   // and back up
+      dipping = null;
+    }, DIP);
   }
 
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const start = () => { if (!still && !timer && slides.length > 1) timer = setInterval(() => go(at + 1), 6000); };
   const stop  = () => { clearInterval(timer); timer = null; };
 
@@ -250,7 +265,6 @@ function initSlideshow() {
   root.addEventListener('focusout', start);
   // Don't burn cycles rotating a hero nobody is looking at.
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-  go(0);
   start();
 }
 

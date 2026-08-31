@@ -427,6 +427,14 @@ p  { margin: 0 0 1em; }
 .card__media { aspect-ratio: 3 / 4; position: relative; overflow: hidden; background: var(--brand-50); }
 .card__media .ph { transition: transform .6s var(--ease); }
 .card:hover .card__media .ph { transform: scale(1.045); }
+/* The photo eases back from a slight push-in as the card arrives, so the eye
+   lands on the whole outfit rather than a crop of it. Hover scales the
+   wrapper, not the image, so the two never fight.
+
+   The RESTING state is the full frame. The push-in is added by JS and taken
+   away again — so if the script never runs, every photo still shows the whole
+   outfit rather than being stuck on a crop of it. */
+.card__media .ph img { transform: none; transition: transform 1.5s cubic-bezier(.22,.7,.25,1); }
 .card__body { padding: 14px 16px 18px; display: flex; flex-direction: column; flex: 1; }
 .card__cat { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-4); }
 .card__name {
@@ -1266,8 +1274,9 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 }
 .movement:hover { transform: translateY(-4px); box-shadow: var(--sh-3); }
 .movement .ph { position: absolute; inset: 0; }
-.movement .ph img { transition: transform .9s var(--ease); }
-.movement:hover .ph img { transform: scale(1.05); }
+.movement .ph { transition: transform .9s var(--ease); }
+.movement:hover .ph { transform: scale(1.05); }
+.movement .ph img { transform: none; transition: transform 1.6s cubic-bezier(.22,.7,.25,1); }
 .movement .ph__label, .movement .ph__note { display: none; }
 .movement::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
@@ -1304,14 +1313,9 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   border-radius: var(--r-xl);
   box-shadow: var(--sh-3);
   height: clamp(430px, 56vw, 620px);
+  background: #0b0810;                  /* the black the slides dip through */
 }
-/* The slides sit in a row and the row slides. Nothing stacks, so two pictures
-   are never fading through each other. Width is set in JS from the count. */
-.slideshow__track {
-  display: flex; height: 100%; width: 100%;
-  will-change: transform;
-  transition: transform .8s cubic-bezier(.62,.03,.2,1);
-}
+.slideshow__track { position: relative; height: 100%; }
 /* The round tag that sits on the picture — the same device the reference uses,
    kept out of the top-right corner so it never fights the centred copy. */
 .slide__sticker {
@@ -1327,15 +1331,22 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   box-shadow: var(--sh-2);
 }
 
-/* Each slide is one full panel of the row. Copy is anchored bottom-centre. */
+/* Slides stack, and cross-dip through the black backing rather than through
+   each other — only ever one is visible, and for a beat none of them is. */
 .slide {
-  position: relative; flex: 0 0 100%; height: 100%;
+  position: absolute; inset: 0;
   display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity .42s ease, visibility .42s;
 }
+.slide.is-on { opacity: 1; visibility: visible; }
 .slide.is-on .slide__body {
   opacity: 1; transform: none;
-  transition: opacity .55s ease .25s, transform .55s ease .25s;
+  transition: opacity .5s ease .18s, transform .5s ease .18s;
 }
+/* A slow push in over the slide's six seconds, settling on the full frame. */
+.slide .ph img { transform: scale(1.055); transition: transform 6.4s linear; }
+.slide.is-on .ph img { transform: scale(1); }
 
 .slide .ph { position: absolute; inset: 0; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
 .slide .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
@@ -1400,7 +1411,8 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .slideshow__track { transition: none; }
+  .slide, .slide.is-on { transition: none; }
+  .slide .ph img, .slide.is-on .ph img { transition: none; transform: none; }
   .slide__body, .slide.is-on .slide__body { transition: none; transform: none; opacity: 1; }
 }
 
@@ -1557,3 +1569,16 @@ a.press__item:hover { opacity: 1; color: var(--brand-500); }
 }
 .feedtile__shop svg { width: 19px; height: 19px; }
 @media (hover: none) { .feedtile__shop { width: 34px; height: 34px; } }
+
+/* The push-in the zoom eases out of. No transition going in, or it would
+   animate the wrong way first. */
+.card__media .ph img.is-zoomed,
+.movement .ph img.is-zoomed { transform: scale(1.11); transition: none; }
+
+/* A visitor who asks for less motion gets the full frame immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .card__media .ph img, .movement .ph img,
+  .card__media .ph img.is-zoomed, .movement .ph img.is-zoomed {
+    transition: none; transform: none;
+  }
+}
