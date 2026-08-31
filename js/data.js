@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831163703',
+  assetVersion: '20260831165064',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -87,6 +87,37 @@ const CONFIG = {
     greeting: "Hey! Looking for your fit? I know every piece in the studio — tell me what you train in."
   }
 };
+
+/* -------------------------------------------------------------------------
+   CURRENCIES
+   --------------------------------------------------------------------------
+   UGX is the base and the only currency the shop actually settles in. The
+   others are a convenience for customers reading from abroad — the picker
+   says so, and every conversion is marked approximate.
+
+   `perUGX` is how many units of that currency one shilling buys. Rates were
+   taken from exchangerate-api.com on the date below. THEY GO STALE. Refresh
+   them, and RATES_UPDATED with them, whenever you touch this file — the date
+   is shown to customers so an old number is visibly old rather than a lie.
+   ------------------------------------------------------------------------- */
+const RATES_UPDATED = '31 August 2026';
+
+const CURRENCIES = [
+  /* `display` picks what sits before the number. UGX shows the code, because
+     the shop writes "UGX 250,000" everywhere else and Intl's own symbol for it
+     is "USh", which nobody on this site has ever seen. */
+  { code: 'UGX', label: 'Uganda Shilling', perUGX: 1,        decimals: 0, display: 'code' },
+  { code: 'USD', label: 'US Dollar',       perUGX: 0.000267, decimals: 2 },
+  { code: 'EUR', label: 'Euro',            perUGX: 0.000231, decimals: 2 },
+  { code: 'GBP', label: 'Pound Sterling',  perUGX: 0.000197, decimals: 2 },
+  /* 'symbol' rather than 'narrowSymbol': both of these render as a bare $
+     otherwise, which is indistinguishable from USD sitting right above them. */
+  { code: 'CAD', label: 'Canadian Dollar', perUGX: 0.00037,  decimals: 2, display: 'symbol' },
+  { code: 'AUD', label: 'Australian Dollar', perUGX: 0.000372, decimals: 2, display: 'symbol' },
+  { code: 'CHF', label: 'Swiss Franc',     perUGX: 0.000217, decimals: 2 },
+  { code: 'AED', label: 'UAE Dirham',      perUGX: 0.000982, decimals: 2 },
+  { code: 'JPY', label: 'Japanese Yen',    perUGX: 0.042798, decimals: 0 }
+];
 
 /* -------------------------------------------------------------------------
    EMPTY ON PURPOSE. Paste real customer reviews here and the review blocks

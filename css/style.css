@@ -1594,3 +1594,61 @@ a.press__item:hover { opacity: 1; color: var(--brand-500); }
 .badge--sale { background: var(--brand-grad); color: #fff; }
 .card__price s { color: var(--ink-4); font-weight: 500; margin-right: 4px; }
 .card__price b { color: var(--brand-600); font-weight: 700; }
+
+/* ==========================================================================
+   CURRENCY PICKER
+   ========================================================================== */
+.cur { position: relative; }
+.cur__btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 34px; padding: 0 10px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: transparent; color: var(--ink-2);
+  font-family: var(--display); font-weight: 600; font-size: .74rem;
+  letter-spacing: .06em;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.cur__btn:hover { background: var(--brand-100); color: var(--brand-600); border-color: var(--brand-200); }
+.cur__btn svg { opacity: .6; }
+
+.cur__menu {
+  position: absolute; z-index: 70; top: calc(100% + 9px); right: 0;
+  width: 244px; padding: 7px;
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: var(--r-lg); box-shadow: var(--sh-3);
+}
+.cur__menu[hidden] { display: none; }
+.cur__opt {
+  display: flex; align-items: baseline; gap: 9px; width: 100%;
+  padding: 8px 10px; cursor: pointer; text-align: left;
+  border: 0; background: transparent; border-radius: var(--r-md);
+  color: var(--ink-2); transition: background .16s, color .16s;
+}
+.cur__opt:hover { background: var(--brand-50, rgba(0,0,0,.04)); color: var(--ink); }
+.cur__opt b { font-family: var(--display); font-size: .78rem; letter-spacing: .05em; min-width: 34px; }
+.cur__opt span { font-size: .78rem; color: var(--ink-3); }
+.cur__opt.is-on { background: var(--brand-100); color: var(--brand-600); }
+.cur__opt.is-on span { color: var(--brand-500); }
+.cur__note {
+  margin: 6px 4px 2px; padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: .68rem; line-height: 1.5; color: var(--ink-4);
+}
+
+/* The header is tight below this; the picker keeps its place but shrinks. */
+@media (max-width: 1080px) {
+  .cur__btn { height: 32px; padding: 0 8px; font-size: .7rem; }
+}
+/* On a phone the button sits mid-header, so a menu anchored to it runs off
+   one edge or the other whichever side it is hung from. Pin it to the viewport
+   instead and let the vertical placement stay where the flow put it.
+   (.hdr keeps its glass on ::before precisely so nothing here creates a
+   containing block for a fixed child.) */
+@media (max-width: 700px) {
+  .cur__menu {
+    position: fixed; top: auto; left: 12px; right: 12px; width: auto;
+  }
+}
+@media (max-width: 560px) {
+  .cur__btn { height: 30px; padding: 0 7px; font-size: .66rem; gap: 3px; }
+}

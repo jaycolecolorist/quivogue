@@ -26,10 +26,61 @@ const ICON = {
   ig: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17" cy="7" r="1" fill="currentColor" stroke="none"/></svg>'
 };
 
-/* ---------------------------------------------------------------- money */
+/* ---------------------------------------------------------------- money
+   Every price in the catalogue is stored in UGX, the only currency the shop
+   actually settles in. The picker converts for display only — the note in the
+   dropdown says so, and the WhatsApp order still quotes shillings. */
+const KEY_CUR = 'qvfits.currency.v1';
+
+function currencies() {
+  return (typeof CURRENCIES !== 'undefined' && CURRENCIES.length)
+    ? CURRENCIES
+    : [{ code: 'UGX', label: 'Uganda Shilling', perUGX: 1, decimals: 0 }];
+}
+
+function activeCurrency() {
+  let code;
+  try { code = localStorage.getItem(KEY_CUR); } catch (e) { /* private mode */ }
+  return currencies().find(c => c.code === code) || currencies()[0];
+}
+
+function setCurrency(code) {
+  if (!currencies().some(c => c.code === code)) return;
+  try {
+    localStorage.setItem(KEY_CUR, code);
+    // Prices are rendered in a dozen places across five pages. Reloading is
+    // the one way to be sure none is left showing the old currency; the scroll
+    // position is put back so it reads as an in-place change.
+    sessionStorage.setItem('qvfits.scroll', String(window.scrollY));
+  } catch (e) { /* private mode — the reload still shows the new currency */ }
+  location.reload();
+}
+
+/* Always the settlement currency, whatever the viewer is browsing in. Anything
+   that leaves the site and reaches the shop — the WhatsApp order above all —
+   has to be in the money they actually take. */
+function moneyBase(n) {
+  const base = currencies()[0];
+  return formatIn(base, n);
+}
+
 function money(n) {
-  const s = Math.round(n).toLocaleString('en-US');
-  return CONFIG.currencyPosition === 'before' ? `${CONFIG.currency} ${s}` : `${s} ${CONFIG.currency}`;
+  return formatIn(activeCurrency(), n);
+}
+
+function formatIn(c, n) {
+  const v = (Number(n) || 0) * c.perUGX;
+  try {
+    return new Intl.NumberFormat('en-UG', {
+      style: 'currency', currency: c.code,
+      currencyDisplay: c.display || 'narrowSymbol',
+      minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals
+    }).format(v);
+  } catch (e) {
+    // Older engines without that currency in their tables
+    return `${c.code} ${v.toLocaleString('en-US', {
+      minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })}`;
+  }
 }
 
 /* ---------------------------------------------------------------- state */
@@ -206,6 +257,34 @@ function productCard(p) {
   </article>`;
 }
 
+/* ------------------------------------------------------------ currency picker */
+function currencyPicker() {
+  const list = currencies();
+  if (list.length < 2) return '';
+  const now = activeCurrency();
+  return `
+    <div class="cur">
+      <button class="cur__btn" id="curBtn" aria-haspopup="listbox" aria-expanded="false"
+              aria-label="Change currency. Showing ${now.code}">
+        <span>${now.code}</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 9 7 7 7-7"/></svg>
+      </button>
+      <div class="cur__menu" id="curMenu" role="listbox" hidden>
+        ${list.map(c => `
+          <button class="cur__opt ${c.code === now.code ? 'is-on' : ''}" role="option"
+                  aria-selected="${c.code === now.code}" data-cur="${c.code}">
+            <b>${c.code}</b><span>${escapeHtml(c.label)}</span>
+          </button>`).join('')}
+        <p class="cur__note">
+          Prices outside ${escapeHtml(list[0].code)} are approximate, converted at
+          rates from ${escapeHtml(typeof RATES_UPDATED !== 'undefined' ? RATES_UPDATED : 'a recent update')}.
+          Orders are settled in ${escapeHtml(list[0].label)}.
+        </p>
+      </div>
+    </div>`;
+}
+
 /* ---------------------------------------------------------------- header / footer */
 /* New and Best Sellers are views of the shop, not separate pages — they carry
    a query the shop already understands, so nothing here is a dead link. */
@@ -246,6 +325,7 @@ function buildChrome() {
           `<a href="${href}" class="${href === here ? 'is-active' : ''}">${label}</a>`).join('')}
       </nav>
       <div class="hdr__acts">
+        ${currencyPicker()}
         <button class="icon-btn search__toggle" id="searchToggle"
                 aria-label="Search" aria-expanded="false">${ICON.search}</button>
         <button class="icon-btn" id="wishBtn" aria-label="Wishlist">
@@ -442,6 +522,23 @@ function wireSearch() {
   input.addEventListener('keydown', e => {
     if (e.key === 'Escape') { close(); input.blur(); }
   });
+}
+
+function wireCurrency() {
+  const btn = document.getElementById('curBtn');
+  const menu = document.getElementById('curMenu');
+  if (!btn || !menu) return;
+
+  const close = () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  const open  = () => { menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); };
+
+  btn.addEventListener('click', e => { e.stopPropagation(); menu.hidden ? open() : close(); });
+  menu.addEventListener('click', e => {
+    const opt = e.target.closest('[data-cur]');
+    if (opt) setCurrency(opt.dataset.cur);
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.cur')) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 }
 
 function wireChrome() {
@@ -743,6 +840,14 @@ function initSticker() {
 /* ---------------------------------------------------------------- boot */
 document.addEventListener('DOMContentLoaded', () => {
   buildChrome();
+  wireCurrency();
+
+  // Put the reader back where they were after a currency change.
+  try {
+    const y = sessionStorage.getItem('qvfits.scroll');
+    if (y !== null) { sessionStorage.removeItem('qvfits.scroll'); window.scrollTo(0, Number(y)); }
+  } catch (e) { /* private mode */ }
+
   if (typeof pageInit === 'function') pageInit();
   initReveal();
   initAccordions();

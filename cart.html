@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260831163703">
+<link rel="stylesheet" href="css/style.css?v=20260831165064">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -28,9 +28,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260831163703"></script>
-<script src="js/app.js?v=20260831163703"></script>
-<script src="js/assistant.js?v=20260831163703"></script>
+<script src="js/data.js?v=20260831165064"></script>
+<script src="js/app.js?v=20260831165064"></script>
+<script src="js/assistant.js?v=20260831165064"></script>
 <script>
 let step = 1;
 const order = { name: '', phone: '', region: 'kampala', address: '', note: '', pay: 'Mobile money' };
@@ -202,12 +202,20 @@ function render() {
   if (step === 3) {
     const sub = Store.subtotal();
     const ship = Store.shipping(order.region);
-    const ref = 'GL-' + Date.now().toString(36).slice(-5).toUpperCase();
+    // QV, not GL — the prefix was still Gash Luxe's from before the rebrand.
+    const ref = 'QV-' + Date.now().toString(36).slice(-5).toUpperCase();
 
+    // The order that reaches the shop is always in shillings, whatever the
+    // customer was browsing in — they settle in UGX, and a dollar total in the
+    // message would have to be converted back by hand at the other end.
     const lines = Store.cart.map(l => {
       const p = getProduct(l.id);
-      return `• ${p.name} — ${l.color}, ${l.size} ×${l.qty} — ${money(p.price * l.qty)}`;
+      return `• ${p.name} — ${l.color}, ${l.size} ×${l.qty} — ${moneyBase(p.price * l.qty)}`;
     }).join('\n');
+
+    const viewing = activeCurrency();
+    const seenIn = viewing.code === currencies()[0].code ? '' :
+      `\n\n(I was viewing prices in ${viewing.code} — about ${money(sub + ship)}.)`;
 
     const message =
 `Hi QV fits! I'd like to place an order
@@ -221,9 +229,9 @@ ${order.note ? `Note: ${order.note}` : ''}
 
 ${lines}
 
-Subtotal: ${money(sub)}
-Delivery: ${ship === 0 ? 'Free' : money(ship)}
-Total: ${money(sub + ship)}`;
+Subtotal: ${moneyBase(sub)}
+Delivery: ${ship === 0 ? 'Free' : moneyBase(ship)}
+Total: ${moneyBase(sub + ship)}${seenIn}`;
 
     root.innerHTML = `
       <div class="cart-layout">
