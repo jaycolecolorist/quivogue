@@ -299,18 +299,25 @@ p  { margin: 0 0 1em; }
 /* Seven links plus the search field need real room. Rather than fall back to a
    burger the moment a desktop window narrows, tighten the nav in two stages so
    the full links survive down to ~700px. */
+/* Seven links, the currency pill and four icons: between 700 and 1080 the
+   header gives ground in two stages. (The nowrap that keeps it on one line
+   lives with the search rules further down, where the wrap is declared.) */
 @media (max-width: 1080px) and (min-width: 881px) {
   .hdr__inner { gap: 14px; }
   .nav { gap: 2px; }
   .nav a { font-size: .89rem; padding: .5em .7em; }
 }
+/* Measured at 768: logo + nav + icons want 743px in a 753px bar, and the gaps
+   push it over. These numbers bring it to ~698 including gaps. */
 @media (max-width: 880px) and (min-width: 701px) {
-  .hdr__inner { gap: 12px; }
-  .logo__name { font-size: 1.3rem; }
-  .logo__sub { font-size: .55rem; letter-spacing: .14em; }
-  .nav { gap: 1px; }
-  .nav a { font-size: .86rem; padding: .5em .55em; }
-  .icon-btn { width: 38px; height: 38px; }
+  .hdr__inner { gap: 6px; }
+  .logo__mark { width: 36px; height: 36px; }
+  .logo__name { font-size: 1.12rem; letter-spacing: .09em; }
+  .logo__sub { font-size: .5rem; letter-spacing: .16em; }
+  .nav { gap: 0; }
+  .nav a { font-size: .74rem; padding: .5em .3em; }
+  .icon-btn { width: 32px; height: 32px; }
+  .cur__btn { height: 29px; padding: 0 5px; font-size: .62rem; }
 }
 
 /* Below the breakpoint the inline links go away entirely — the menu button
@@ -1196,7 +1203,11 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
 /* Below this the inline field would crowd the nav, so it collapses behind the
    icon and drops onto its own full-width row when opened. */
 @media (max-width: 1099px) {
-  .hdr__inner { flex-wrap: wrap; }
+  /* Wrap ONLY while the field is open. Leaving it on permanently meant the
+     collapsed, zero-width field still broke the line, dropping the icons onto
+     a second row on a tablet even though everything fitted across. */
+  .hdr__inner { flex-wrap: nowrap; }
+  .hdr.search-open .hdr__inner { flex-wrap: wrap; }
   .search__toggle { display: grid; }
   .search__field {
     display: none;
