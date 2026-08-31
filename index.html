@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260831165064">
+<link rel="stylesheet" href="css/style.css?v=20260831221705">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -46,7 +46,7 @@
     </div>
     <div class="grid-products grid-products--four" id="newArrivals"></div>
     <p class="center" style="margin-top:34px">
-      <a class="btn btn--ghost" href="shop.html?sort=new">Shop the new</a>
+      <a class="btn btn--ghost" href="shop.html?badge=New">Shop the new</a>
     </p>
   </div>
 </section>
@@ -115,9 +115,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260831165064"></script>
-<script src="js/app.js?v=20260831165064"></script>
-<script src="js/assistant.js?v=20260831165064"></script>
+<script src="js/data.js?v=20260831221705"></script>
+<script src="js/app.js?v=20260831221705"></script>
+<script src="js/assistant.js?v=20260831221705"></script>
 <script>
 function pageInit() {
   initSlideshow();
@@ -187,13 +187,7 @@ function initSlideshow() {
   const root  = document.getElementById('slideshow');
   const track = document.getElementById('slides');
   const dots  = document.getElementById('slideDots');
-  // A slide marked needsSale only appears when the sale is genuinely on AND
-  // something is actually reduced — a "50% off" banner over an empty rail is
-  // worse than no banner at all.
-  const saleOn = typeof SALE !== 'undefined' && SALE.live
-                 && PRODUCTS.some(p => p.salePercent > 0);
-  const list  = (typeof HERO_SLIDES !== 'undefined' ? HERO_SLIDES : [])
-                  .filter(s => s && (!s.needsSale || saleOn));
+  const list  = (typeof HERO_SLIDES !== 'undefined' ? HERO_SLIDES : []).filter(Boolean);
   if (!list.length) { root.hidden = true; return; }
 
   track.innerHTML = list.map((s, i) => `

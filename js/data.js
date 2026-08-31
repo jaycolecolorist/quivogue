@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831165064',
+  assetVersion: '20260831221705',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -180,7 +180,6 @@ const HERO_SLIDES = [
        own photography. `sticker` is the round tag on the picture. Copy and
        destinations are the client's own, supplied 2026-08-31. */
     id: 'hero-1',                          // j2 · j5 · j4 — one set, three colourways
-    sticker: 'New in',
     kicker: 'Gym · Pilates · Tennis · Golf · Swim · Lifestyle',
     title: 'Fit that holds.',
     text: 'Premium seamless and seam-fit pieces curated for training, movement and everyday life.',
@@ -189,16 +188,18 @@ const HERO_SLIDES = [
   },
   {
     id: 'hero-3',                          // q4 · q7 · q8 — three flare colourways
-    sticker: 'New in',
     kicker: 'Latest drop',
     title: 'Made for your every move.',
     text: 'Fresh shades. Same QV energy.',
     cta: 'Shop now',
-    href: 'shop.html?sort=new'             // new releases
+    /* The canvas is the three flare colourways — flare-lounge-legging and
+       ribbed-lounge-set among them. ?occasion=lounge is the narrowest filter
+       that actually contains both; ?c=Lounge would miss the legging, which
+       sits under Bottoms. */
+    href: 'shop.html?occasion=lounge'
   },
   {
     id: 'hero-4',                          // p4 · p5 · p1 — out of the gym
-    sticker: 'Off duty',
     kicker: 'Lounge & sport',
     title: 'Beyond Movement.',
     text: "Because your day doesn't end when the workout does.",
@@ -206,11 +207,11 @@ const HERO_SLIDES = [
     href: 'shop.html?occasion=swim,lounge' // swim and lounge
   },
   {
-    /* ⚠ GATED ON SALE.live — see SALE below. A "50% off" banner pointing at an
-       empty rail is worse than no banner, so this slide only appears once real
-       discounted pieces exist. */
+    /* Shown at Jay's instruction (2026-08-31), after I had gated it. The copy
+       is the client's own, so the sale is hers to declare — but until a piece
+       carries a salePercent below, "Shop now" lands on an empty rail. Mark the
+       reduced pieces and this becomes a real page. */
     id: 'hero-2',                          // q1 · q6 · q2 — track, court, track
-    needsSale: true,
     sticker: 'Sale',
     kicker: "Now's your moment",
     title: 'Up to 50% off.',
@@ -236,7 +237,11 @@ const HERO_SLIDES = [
    slide stays hidden until at least one piece is marked.
    ------------------------------------------------------------------------- */
 const SALE = {
-  live: false,
+  // ON — the home page advertises it. What is still missing is the discount on
+  // each piece: add `salePercent: <n>` to every product that is genuinely
+  // reduced and they appear in the ?sale=1 rail with the old price struck out.
+  // Until then that rail is empty and says so.
+  live: true,
   percentUpTo: 50
 };
 

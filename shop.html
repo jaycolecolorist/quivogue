@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260831165064">
+<link rel="stylesheet" href="css/style.css?v=20260831221705">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -82,8 +82,9 @@
         <div class="grid-products" id="grid"></div>
         <div class="empty" id="empty" hidden>
           <h3 id="emptyTitle">Nothing matches that combination</h3>
-          <p class="lede center" style="margin-top:8px">Try loosening a filter — or ask Vee and she'll find the closest thing on the rail.</p>
-          <button class="btn btn--primary" onclick="askVee('Help me find something')">Ask Vee ✨</button>
+          <p class="lede center" id="emptyText" style="margin-top:8px">Try loosening a filter — or ask Vee and she'll find the closest thing on the rail.</p>
+          <a class="btn btn--primary" id="emptyShopAll" href="shop.html" hidden>Shop everything</a>
+          <button class="btn btn--ghost" id="emptyAsk" onclick="askVee('Help me find something')">Ask Vee ✨</button>
         </div>
       </div>
     </div>
@@ -108,9 +109,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260831165064"></script>
-<script src="js/app.js?v=20260831165064"></script>
-<script src="js/assistant.js?v=20260831165064"></script>
+<script src="js/data.js?v=20260831221705"></script>
+<script src="js/app.js?v=20260831221705"></script>
+<script src="js/assistant.js?v=20260831221705"></script>
 <script>
 const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '', badge: '', sale: false };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
@@ -251,10 +252,17 @@ function render() {
   const grid = document.getElementById('grid');
   const empty = document.getElementById('empty');
 
-  // Landing on ?sale=1 with no sale running is not a failed filter.
-  document.getElementById('emptyTitle').textContent = (state.sale && !list.length)
+  // Landing on ?sale=1 with no sale running is not a failed filter, and the
+  // reader arrived from a banner — send them somewhere rather than nowhere.
+  const saleEmpty = state.sale && !list.length;
+  document.getElementById('emptyTitle').textContent = saleEmpty
     ? "The sale isn't running right now"
     : 'Nothing matches that combination';
+  document.getElementById('emptyText').textContent = saleEmpty
+    ? 'Nothing is reduced at the moment. The full range is still here, and Vee can point you at it.'
+    : "Try loosening a filter — or ask Vee and she'll find the closest thing on the rail.";
+  document.getElementById('emptyShopAll').hidden = !saleEmpty;
+  document.getElementById('emptyAsk').className = saleEmpty ? 'btn btn--ghost' : 'btn btn--primary';
 
   grid.innerHTML = list.map(productCard).join('');
   empty.hidden = list.length > 0;

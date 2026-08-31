@@ -291,7 +291,7 @@ function currencyPicker() {
 const NAV_LINKS = [
   ['index.html', 'Home'],
   ['shop.html', 'Shop'],
-  ['shop.html?sort=new', 'New'],
+  ['shop.html?badge=New', 'New'],
   ['shop.html?badge=Bestseller', 'Best Sellers'],
   ['about.html', 'About'],
   ['size-guide.html', 'Size Guide'],
