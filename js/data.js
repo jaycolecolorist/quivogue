@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831094443',
+  assetVersion: '20260831102253',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -532,10 +532,10 @@ const PRODUCTS = [
    at the shop filtered by that activity. Images: photos/movement-<id>.jpg
    ------------------------------------------------------------------------- */
 const MOVEMENTS = [
-  { id: 'swim-lounge', label: 'Swim & Lounge', occasion: 'swim,lounge' },
-  { id: 'gym',         label: 'Gym',       occasion: 'gym' },
-  { id: 'pilates',     label: 'Pilates',   occasion: 'yoga' },
-  { id: 'tennis',      label: 'Tennis',    occasion: 'golf-tennis' }
+  { id: 'gym',         label: 'Gym',           occasion: 'gym' },
+  { id: 'pilates',     label: 'Pilates',       occasion: 'yoga' },
+  { id: 'tennis',      label: 'Tennis',        occasion: 'golf-tennis' },
+  { id: 'swim-lounge', label: 'Swim & Lounge', occasion: 'swim,lounge' }
 ];
 
 /* -------------------------------------------------------------------------
