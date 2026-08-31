@@ -7,8 +7,8 @@
 <meta name="description" content="Shop seamless sets, sports bras, leggings, skorts, swim and lounge at QV fits Kampala. Filter by size, colour, price and activity.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260831102253">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20260831162483">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -81,7 +81,7 @@
         </div>
         <div class="grid-products" id="grid"></div>
         <div class="empty" id="empty" hidden>
-          <h3>Nothing matches that combination</h3>
+          <h3 id="emptyTitle">Nothing matches that combination</h3>
           <p class="lede center" style="margin-top:8px">Try loosening a filter — or ask Vee and she'll find the closest thing on the rail.</p>
           <button class="btn btn--primary" onclick="askVee('Help me find something')">Ask Vee ✨</button>
         </div>
@@ -108,11 +108,11 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260831102253"></script>
-<script src="js/app.js?v=20260831102253"></script>
-<script src="js/assistant.js?v=20260831102253"></script>
+<script src="js/data.js?v=20260831162483"></script>
+<script src="js/app.js?v=20260831162483"></script>
+<script src="js/assistant.js?v=20260831162483"></script>
 <script>
-const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '', badge: '' };
+const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '', badge: '', sale: false };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
 const PRICE_MAX = Math.max(...PRODUCTS.map(p => p.price));
 
@@ -139,6 +139,10 @@ function pageInit() {
   const badge = params.get('badge');
   if (badge && PRODUCTS.some(p => p.badge === badge)) state.badge = badge;
 
+  // ?sale=1 — the sale rail. saleOf() returns null unless the sale is actually
+  // running, so this quietly shows nothing rather than a fake markdown.
+  if (params.get('sale') === '1') state.sale = true;
+
   // ?q= comes from the header search's "see all results"
   const q = (params.get('q') || '').trim();
   if (q) state.query = q.slice(0, 80);
@@ -155,7 +159,7 @@ function pageInit() {
     render();
   });
   document.getElementById('fClear').addEventListener('click', () => {
-    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, query: '', badge: '' });
+    Object.assign(state, { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, query: '', badge: '', sale: false });
     document.getElementById('fStock').checked = false;
     document.getElementById('fPrice').value = 100;
     document.getElementById('priceMax').textContent = money(PRICE_MAX);
@@ -216,6 +220,7 @@ function filtered() {
   const qMatches = state.query ? new Set(searchProducts(state.query, PRODUCTS.length).map(p => p.id)) : null;
   let list = PRODUCTS.filter(p => {
     if (qMatches && !qMatches.has(p.id)) return false;
+    if (state.sale && !saleOf(p)) return false;
     if (state.badge && p.badge !== state.badge) return false;
     if (state.cats.length && !state.cats.includes(p.category)) return false;
     if (state.colors.length && !state.colors.some(c => p.colors.includes(c))) return false;
@@ -245,6 +250,11 @@ function render() {
   const list = filtered();
   const grid = document.getElementById('grid');
   const empty = document.getElementById('empty');
+
+  // Landing on ?sale=1 with no sale running is not a failed filter.
+  document.getElementById('emptyTitle').textContent = (state.sale && !list.length)
+    ? "The sale isn't running right now"
+    : 'Nothing matches that combination';
 
   grid.innerHTML = list.map(productCard).join('');
   empty.hidden = list.length > 0;

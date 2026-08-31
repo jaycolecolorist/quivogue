@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831102253',
+  assetVersion: '20260831162483',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -146,43 +146,68 @@ const BEST_SELLERS = [
 const HERO_SLIDES = [
   {
     /* Each slide is a three-panel canvas, 1800x1150, built from the brand's
-       own photography. `sticker` is the small tag that sits on the picture. */
+       own photography. `sticker` is the round tag on the picture. Copy and
+       destinations are the client's own, supplied 2026-08-31. */
     id: 'hero-1',                          // j2 · j5 · j4 — one set, three colourways
     sticker: 'New in',
-    kicker: 'Seamless · Swim · Lounge',
+    kicker: 'Gym · Pilates · Tennis · Golf · Swim · Lifestyle',
     title: 'Fit that holds.',
-    text: 'Premium activewear, made in Kampala.',
+    text: 'Premium seamless and seam-fit pieces curated for training, movement and everyday life.',
     cta: 'Shop now',
-    href: 'shop.html'
-  },
-  {
-    id: 'hero-2',                          // q1 · q6 · q2 — track, court, track
-    sticker: 'Train in it',
-    kicker: 'Built for sport',
-    title: 'Built to move.',
-    text: 'Sets that stay exactly where you put them.',
-    cta: 'Shop now',
-    href: 'shop.html?c=Sets'
+    href: 'shop.html'                      // the whole range
   },
   {
     id: 'hero-3',                          // q4 · q7 · q8 — three flare colourways
-    sticker: 'New colours',
-    kicker: 'Just landed',
-    title: 'The colour drop.',
-    text: 'Fresh seamless colourways, in store now.',
+    sticker: 'New in',
+    kicker: 'Latest drop',
+    title: 'Made for your every move.',
+    text: 'Fresh shades. Same QV energy.',
     cta: 'Shop now',
-    href: 'shop.html?sort=new'
+    href: 'shop.html?sort=new'             // new releases
   },
   {
     id: 'hero-4',                          // p4 · p5 · p1 — out of the gym
     sticker: 'Off duty',
-    kicker: 'Lounge & everyday',
-    title: 'Anywhere but the gym.',
-    text: 'Straight through the day, and back again.',
+    kicker: 'Lounge & sport',
+    title: 'Beyond Movement.',
+    text: "Because your day doesn't end when the workout does.",
     cta: 'Shop now',
-    href: 'shop.html?c=Lounge'
+    href: 'shop.html?occasion=swim,lounge' // swim and lounge
+  },
+  {
+    /* ⚠ GATED ON SALE.live — see SALE below. A "50% off" banner pointing at an
+       empty rail is worse than no banner, so this slide only appears once real
+       discounted pieces exist. */
+    id: 'hero-2',                          // q1 · q6 · q2 — track, court, track
+    needsSale: true,
+    sticker: 'Sale',
+    kicker: "Now's your moment",
+    title: 'Up to 50% off.',
+    text: 'Selected QV favourites, now for less.',
+    cta: 'Shop now',
+    href: 'shop.html?sale=1'               // the sale rail
   }
 ];
+
+/* -------------------------------------------------------------------------
+   SALE
+   --------------------------------------------------------------------------
+   ⚠ OFF, AND IT HAS TO STAY OFF UNTIL THE DISCOUNTS ARE REAL.
+
+   Switching this on puts a "Up to 50% off" slide on the home page next to the
+   shop's real WhatsApp number. To turn it on you need BOTH:
+
+     1. SALE.live = true, and percentUpTo set to the real headline number
+     2. `salePercent: <n>` on each product that is genuinely reduced
+
+   With live true and nothing carrying a salePercent, the sale rail would be
+   empty and the banner would be a promise the shop cannot keep — so the
+   slide stays hidden until at least one piece is marked.
+   ------------------------------------------------------------------------- */
+const SALE = {
+  live: false,
+  percentUpTo: 50
+};
 
 /* -------------------------------------------------------------------------
    AS SEEN ON — the credit row under the hero.

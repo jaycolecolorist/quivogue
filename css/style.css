@@ -249,13 +249,19 @@ p  { margin: 0 0 1em; }
 }
 .logo__mark { width: 44px; height: 44px; object-fit: contain; flex: none; }
 .logo__text { display: flex; flex-direction: column; }
+/* The wordmark is set in the brand's own face — the same condensed display
+   cut used in the QV FITS logo mark sitting next to it. */
 .logo__name {
-  font-family: var(--display); font-weight: 700; font-size: 1.4rem;
-  letter-spacing: -.02em;
+  font-family: 'Anton', var(--display), sans-serif;
+  font-weight: 400;                     /* Anton ships one weight, already heavy */
+  font-size: 1.42rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;                  /* the wider tracking was breaking it in two */
   background: var(--brand-grad);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.logo__sub { font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); margin-top: 4px; }
+.logo__sub { font-size: .58rem; letter-spacing: .3em; text-transform: uppercase; color: var(--ink-3); margin-top: 5px; }
 .ftr .logo__mark { width: 48px; height: 48px; }
 @media (max-width: 700px) { .logo__mark { width: 38px; height: 38px; } }
 
@@ -1363,7 +1369,7 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   position: relative; z-index: 2;
   padding: clamp(22px, 4vw, 40px);
   padding-bottom: clamp(52px, 5.5vw, 74px);    /* clear of the dots */
-  max-width: 46ch; color: #fff; text-align: center;
+  max-width: 52ch; color: #fff; text-align: center;
 }
 .slide__body .kicker {
   color: rgba(255,255,255,.86); white-space: nowrap;
@@ -1375,7 +1381,11 @@ table.size td:first-child { font-family: var(--display); font-weight: 700; }
   font-size: clamp(2.1rem, 5.4vw, 3.6rem);
   letter-spacing: -.02em; margin-bottom: .3em;
 }
-.slide__body .lede { color: rgba(255,255,255,.9); margin-bottom: 24px; margin-inline: auto; }
+.slide__body .lede {
+  color: rgba(255,255,255,.9); margin-bottom: 24px; margin-inline: auto;
+  text-wrap: balance;                   /* no orphaned last word */
+}
+.slide__title { text-wrap: balance; }
 
 .slideshow__dots {
   position: absolute; z-index: 3;
@@ -1565,3 +1575,8 @@ a.press__item:hover { opacity: 1; color: var(--brand-500); }
 @media (prefers-reduced-motion: reduce) {
   .card__media .ph img, .movement .ph img { transition: none; transform: none; }
 }
+
+/* A reduced piece: the old price struck through, the new one in brand colour. */
+.badge--sale { background: var(--brand-grad); color: #fff; }
+.card__price s { color: var(--ink-4); font-weight: 500; margin-right: 4px; }
+.card__price b { color: var(--brand-600); font-weight: 700; }

@@ -7,8 +7,8 @@
 <meta name="description" content="QV fits — premium seamless and seam-fit activewear, swim and lounge wear. Sets, bras, leggings, skorts and swim, with delivery across Uganda. Showroom at THE CUBE, Kisementi.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260831102253">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20260831162483">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -115,9 +115,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260831102253"></script>
-<script src="js/app.js?v=20260831102253"></script>
-<script src="js/assistant.js?v=20260831102253"></script>
+<script src="js/data.js?v=20260831162483"></script>
+<script src="js/app.js?v=20260831162483"></script>
+<script src="js/assistant.js?v=20260831162483"></script>
 <script>
 function pageInit() {
   initSlideshow();
@@ -187,7 +187,13 @@ function initSlideshow() {
   const root  = document.getElementById('slideshow');
   const track = document.getElementById('slides');
   const dots  = document.getElementById('slideDots');
-  const list  = (typeof HERO_SLIDES !== 'undefined' ? HERO_SLIDES : []).filter(Boolean);
+  // A slide marked needsSale only appears when the sale is genuinely on AND
+  // something is actually reduced — a "50% off" banner over an empty rail is
+  // worse than no banner at all.
+  const saleOn = typeof SALE !== 'undefined' && SALE.live
+                 && PRODUCTS.some(p => p.salePercent > 0);
+  const list  = (typeof HERO_SLIDES !== 'undefined' ? HERO_SLIDES : [])
+                  .filter(s => s && (!s.needsSale || saleOn));
   if (!list.length) { root.hidden = true; return; }
 
   track.innerHTML = list.map((s, i) => `

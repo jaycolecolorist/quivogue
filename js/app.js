@@ -162,12 +162,23 @@ function escapeHtml(s) {
 }
 
 /* ---------------------------------------------------------------- product card */
+/* A piece is on sale only when the sale is switched on AND that piece carries
+   a salePercent. Neither alone shows a reduced price anywhere. */
+function saleOf(p) {
+  if (typeof SALE === 'undefined' || !SALE.live) return null;
+  const pct = Number(p.salePercent) || 0;
+  if (pct <= 0) return null;
+  return { pct, was: p.price, now: Math.round(p.price * (100 - pct) / 100) };
+}
+
 function productCard(p) {
   const sizes = productSizes(p);
   const sold = !anyInStock(p);
+  const sale = saleOf(p);
   const badge = sold
     ? '<span class="badge badge--out">Sold out</span>'
-    : (p.badge ? `<span class="badge">${p.badge}</span>` : '');
+    : sale ? `<span class="badge badge--sale">${sale.pct}% off</span>`
+           : (p.badge ? `<span class="badge">${p.badge}</span>` : '');
   const swatches = p.colors.map(c =>
     `<i class="sw" style="background:${COLOR_SWATCHES[c] || '#ddd'}" title="${c}"></i>`
   ).join('');
@@ -184,7 +195,9 @@ function productCard(p) {
       <a class="card__name" href="product.html?id=${p.id}">${escapeHtml(p.name)}</a>
       <div class="card__swatches">${swatches}</div>
       <div class="card__foot">
-        <span class="card__price">${money(p.price)}</span>
+        <span class="card__price">${sale
+          ? `<s>${money(sale.was)}</s> <b>${money(sale.now)}</b>`
+          : money(p.price)}</span>
         ${sold
           ? `<a class="card__add card__add--out" href="product.html?id=${p.id}">Sold out</a>`
           : `<button class="card__add" data-add="${p.id}" aria-label="Add ${escapeHtml(p.name)} to bag">Add</button>`}
