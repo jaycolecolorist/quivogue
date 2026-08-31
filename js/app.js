@@ -316,7 +316,7 @@ function buildChrome() {
       <a class="logo" href="index.html" aria-label="${CONFIG.brand} home">
         <img class="logo__mark" src="brand/logo.png" alt="" width="44" height="44">
         <span class="logo__text">
-          <span class="logo__name">${CONFIG.brand}</span>
+          <span class="logo__name">${CONFIG.wordmark || CONFIG.brand}</span>
           <span class="logo__sub">${CONFIG.tagline}</span>
         </span>
       </a>
@@ -379,7 +379,7 @@ function buildChrome() {
           <a class="logo" href="index.html" style="margin-bottom:14px">
             <img class="logo__mark" src="brand/logo.png" alt="" width="48" height="48">
             <span class="logo__text">
-              <span class="logo__name">${CONFIG.brand}</span>
+              <span class="logo__name">${CONFIG.wordmark || CONFIG.brand}</span>
               <span class="logo__sub">${CONFIG.tagline}</span>
             </span>
           </a>

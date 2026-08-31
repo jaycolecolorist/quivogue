@@ -45,9 +45,13 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831221705',
+  assetVersion: '20260831222815',
 
   brand: 'QV fits',
+  // The lockup only — set solid, no space, to sit with the logo mark. Page
+  // titles, alt text, the footer line and the assistant all keep `brand`,
+  // which is how the shop actually writes its name.
+  wordmark: 'QVFITS',
   tagline: 'Quivogue',
 
   // REAL — showroom and contact
