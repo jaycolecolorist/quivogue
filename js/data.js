@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831001223',
+  assetVersion: '20260831094443',
 
   brand: 'QV fits',
   tagline: 'Quivogue',
@@ -200,13 +200,15 @@ const HERO_SLIDES = [
    `logo` is optional; with no logo file the name is set in the display face.
    ------------------------------------------------------------------------- */
 const PRESS = {
-  live: true,
+  // OFF at Jay's request (2026-08-31) — he did not want the creator tags on
+  // the page. Nothing here is deleted, so a real credit row is one flag away.
+  live: false,
   title: 'As seen on',
   items: [
-    { name: '@gia9ina',          href: 'https://www.instagram.com/gia9ina/' },
-    { name: '@sashatherealdeal', href: 'https://www.instagram.com/sashatherealdeal/' },
-    { name: '@zarahmagara',      href: 'https://www.instagram.com/zarahmagara/' },
-    { name: '@quivoguefits',     href: 'https://www.tiktok.com/@quivoguefits' }
+    // Verified from co-authored posts in the brand's own Instagram grid:
+    // { name: '@gia9ina',          href: 'https://www.instagram.com/gia9ina/' },
+    // { name: '@sashatherealdeal', href: 'https://www.instagram.com/sashatherealdeal/' },
+    // { name: '@zarahmagara',      href: 'https://www.instagram.com/zarahmagara/' }
   ]
 };
 
