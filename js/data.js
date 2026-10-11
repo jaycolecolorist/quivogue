@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '202610111052',
+  assetVersion: '202610111121',
 
   brand: 'QV fits',
   // The lockup only — set solid, no space, to sit with the logo mark. Page

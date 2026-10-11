@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "quivogue",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd '/Volumes/JAY COLE/quivogue' && exec python3 -m http.server 8731"],
+      "port": 8731
+    }
+  ]
+}

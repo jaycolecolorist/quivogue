@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610111052">
+<link rel="stylesheet" href="css/style.css?v=20261011114025">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -57,8 +57,8 @@
           <div class="range-vals"><span id="priceMin"></span><span id="priceMax"></span></div>
         </div>
         <div class="filters__group">
-          <label style="display:flex;align-items:center;gap:9px;font-size:.9rem;cursor:pointer">
-            <input type="checkbox" id="fStock" style="accent-color:var(--brand-500);width:17px;height:17px">
+          <label class="check-row">
+            <input type="checkbox" id="fStock">
             In stock only
           </label>
           <button class="btn btn--soft btn--block" id="fClear" style="margin-top:16px">Clear filters</button>
@@ -109,9 +109,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202610111052"></script>
-<script src="js/app.js?v=202610111052"></script>
-<script src="js/assistant.js?v=202610111052"></script>
+<script src="js/data.js?v=20261011114025"></script>
+<script src="js/app.js?v=20261011114025"></script>
+<script src="js/assistant.js?v=20261011114025"></script>
 <script>
 const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '', badge: '', sale: false };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));
