@@ -1667,3 +1667,8 @@ a.press__item:hover { opacity: 1; color: var(--brand-500); }
 @media (max-width: 560px) {
   .cur__btn { height: 30px; padding: 0 7px; font-size: .66rem; gap: 3px; }
 }
+
+/* A quote the shop published without a rating: no empty star row, and the
+   name block carries itself without a date beside it. */
+.review .stars:empty { display: none; }
+.review__who > div > span:empty { display: none; }

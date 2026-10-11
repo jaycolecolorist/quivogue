@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '20260831223745',
+  assetVersion: '202610111030',
 
   brand: 'QV fits',
   // The lockup only — set solid, no space, to sit with the logo mark. Page
@@ -71,7 +71,8 @@ const CONFIG = {
   // REAL — "WhatsApp orders" number published by the brand
   phone: '+256 758 981 959',
   whatsapp: '256758981959',
-  email: null,
+  // REAL — published on the shop's own site at brand.site/qv-fits
+  email: 'qvfits@gmail.com',
 
   // REAL — how the brand describes itself
   blurb: 'Premium seamless & seam-fit activewear, swim and lounge wear.',
@@ -124,10 +125,33 @@ const CURRENCIES = [
 ];
 
 /* -------------------------------------------------------------------------
-   EMPTY ON PURPOSE. Paste real customer reviews here and the review blocks
-   appear on the home and about pages. Never carry over another brand's.
+   REVIEWS — REAL, and quoted exactly.
+   --------------------------------------------------------------------------
+   These three are the shop's own customer quotes, published by QV fits on
+   their own site at brand.site/qv-fits. They are reproduced verbatim, typos
+   and all, because that is how the shop published them and how the customers
+   wrote them — tidying them would be putting words in a named person's mouth.
+
+   Their site gives a first name and nothing else: no star rating, no date, no
+   piece bought. So `stars`, `when` and `badge` are deliberately absent, and
+   the review card leaves out whatever is missing rather than inventing it.
+   If the shop can supply dates, ratings or which set each person bought, add
+   them here and they will appear.
    ------------------------------------------------------------------------- */
-const REVIEWS = [];
+const REVIEWS = [
+  {
+    name: 'Natacia',
+    text: "I Love it OMG, I thought u we're kidding about the material but omg, I love it"
+  },
+  {
+    name: 'Eryne',
+    text: "Hey hun, I love them. Wouldn't get another set if I didn't. Quality is top notch."
+  },
+  {
+    name: 'Melody',
+    text: "Well receive. Thank you Lots. The quality, I can't deal. It's too rich. Definitely hitting the gym in this just to show off. Thanks once again."
+  }
+];
 
 /* -------------------------------------------------------------------------
    PROMOTIONS

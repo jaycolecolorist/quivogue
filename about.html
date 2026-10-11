@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260831223745">
+<link rel="stylesheet" href="css/style.css?v=202610111030">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -97,24 +97,31 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20260831223745"></script>
-<script src="js/app.js?v=20260831223745"></script>
-<script src="js/assistant.js?v=20260831223745"></script>
+<script src="js/data.js?v=202610111030"></script>
+<script src="js/app.js?v=202610111030"></script>
+<script src="js/assistant.js?v=202610111030"></script>
 <script>
 function pageInit() {
   document.getElementById('aboutArt').innerHTML = media('about', 'Inside the QV fits studio');
   document.getElementById('mapsBtn').href = CONFIG.mapsUrl;
   document.getElementById('igBtn').href = CONFIG.instagram;
   document.getElementById('reviewsSection').hidden = REVIEWS.length === 0;
-  document.getElementById('reviews').innerHTML = REVIEWS.map(r => `
+  /* Stars, date and badge are all optional. The shop publishes these quotes
+     with a first name and nothing else, so anything missing is left out
+     rather than filled in with a guess — no invented five-star rating, no
+     invented "2 weeks ago". */
+  document.getElementById('reviews').innerHTML = REVIEWS.map(r => {
+    const meta = [r.badge, r.when].filter(Boolean).join(' · ');
+    return `
     <blockquote class="review reveal">
-      <span class="stars">${'★'.repeat(r.stars)}</span>
-      <p class="review__text">“${r.text}”</p>
+      ${r.stars ? `<span class="stars">${'★'.repeat(r.stars)}</span>` : ''}
+      <p class="review__text">“${escapeHtml(r.text)}”</p>
       <div class="review__who">
-        <span class="review__av">${r.name[0]}</span>
-        <div><strong>${r.name}</strong><span>${r.badge ? r.badge + ' · ' : ''}${r.when}</span></div>
+        <span class="review__av">${escapeHtml(r.name[0])}</span>
+        <div><strong>${escapeHtml(r.name)}</strong>${meta ? `<span>${escapeHtml(meta)}</span>` : ''}</div>
       </div>
-    </blockquote>`).join('');
+    </blockquote>`;
+  }).join('');
 }
 </script>
 </body>
