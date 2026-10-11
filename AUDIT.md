@@ -51,20 +51,28 @@ the review blocks stop being hidden.
 
 ## Serious — measured
 
-4. **2.1 MB on the home page**, 2.0 MB of it images, ~4s to load. On Kampala
-   mobile data that is slow and expensive.
-   - All four hero canvases download up front (~950 KB) though only one shows.
-   - `logo.png` is **180 KB** for a 44px mark — should be about 8 KB.
-   - No WebP; JPEG only.
-5. **Text fails contrast.** `.card__cat` and the currency note sit at **2.42:1**
-   — WCAG AA needs 4.5:1. They are grey-on-cream at 8–9px.
-6. **Phone type is too small.** Category labels render at **8.1px**, product
-   names at 10.9px. The repeated "make it smaller" passes went too far.
-7. **82 tap targets under 44px** on the shop page — the Add button is 35×23px,
-   the wishlist heart 30×30px. Apple and Google both call for 44px.
+4. ~~**2.1 MB on the home page**~~ — **FIXED** (commit 9109039). Now **205 KB
+   and 1.4s** on a phone. WebP for all 66 photos, the logo down from 180 KB to
+   14 KB, hero canvases mounted on demand instead of all four up front, and
+   400/800px variants so a phone takes a 19 KB card image instead of 66 KB.
+5. ~~**Text fails contrast.**~~ — **FIXED** (commit 839504f). The two grey inks
+   went from 4.39:1 and 2.42:1 to **6.1:1 and 4.6:1**. White-over-photo text was
+   measured by compositing the scrim against the real image pixels, which caught
+   two more failures the eye had passed (the Pilates tile at 4.26:1, slide 4's
+   kicker at 4.49:1); both fixed. **Zero failures across all 8 pages.**
+6. ~~**Phone type is too small.**~~ — **FIXED** (commit 839504f). Category
+   labels 8.1 → **11.2px**, product names 10.9 → **13.3px**, prices 11.5 →
+   13.3px. Floors: 13px product text, 11px labels.
+7. ~~**82 tap targets under 44px**~~ — **FIXED** (commit 839504f). Every control
+   is now 44×44, with the drawn size unchanged — each keeps its look and gets an
+   invisible 44px touch area. Two deliberate exceptions, both clearing AA: the
+   product-name link (24px, with the photo above it a much larger link to the
+   same page) and the slideshow dots (43×44, because a full 44 would overlap the
+   next dot and steal its taps).
 8. **No h1 on shop.html or cart.html**; heading levels skip on shop, product and
-   contact.
-9. **17 of 19 images have no width/height**, so the page jumps as they load.
+   contact. *(still open)*
+9. ~~**17 of 19 images have no width/height**~~ — **FIXED** (commit 9109039).
+   Every image now carries its real dimensions, so cards hold their shape.
 
 ## Worth fixing before launch
 
