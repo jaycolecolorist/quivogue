@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=202610111030">
+<link rel="stylesheet" href="css/style.css?v=202610111052">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -115,9 +115,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=202610111030"></script>
-<script src="js/app.js?v=202610111030"></script>
-<script src="js/assistant.js?v=202610111030"></script>
+<script src="js/data.js?v=202610111052"></script>
+<script src="js/app.js?v=202610111052"></script>
+<script src="js/assistant.js?v=202610111052"></script>
 <script>
 function pageInit() {
   initSlideshow();
@@ -149,7 +149,7 @@ function pageInit() {
   if (CAMPAIGN && CAMPAIGN.live) {
     campaign.hidden = false;
     campaign.innerHTML = `
-      ${media('banner-campaign', CAMPAIGN.title)}
+      ${media('banner-campaign', CAMPAIGN.title, '', false, true)}
       <div class="campaign__body">
         <span class="kicker">${escapeHtml(CAMPAIGN.kicker)}</span>
         <h2>${escapeHtml(CAMPAIGN.title)}</h2>
@@ -194,7 +194,7 @@ function initSlideshow() {
     <div class="slide" role="group"
          aria-roledescription="slide" aria-label="${i + 1} of ${list.length}"
          ${i === 0 ? '' : 'aria-hidden="true"'}>
-      ${media(s.id, s.title)}
+      <div class="slide__media" data-media="${s.id}" data-label="${escapeHtml(s.title)}"></div>
       ${s.sticker ? `<span class="slide__sticker">${escapeHtml(s.sticker)}</span>` : ''}
       <div class="slide__body">
         <span class="kicker">${escapeHtml(s.kicker)}</span>
@@ -213,6 +213,18 @@ function initSlideshow() {
   const slides = [...track.children];
   const pips   = [...dots.children];
   let at = 0, timer = null;
+
+  /* Every slide sits in the same box, so loading="lazy" cannot help — the
+     browser counts all four as on screen and fetches the lot. So the picture
+     is not in the markup at all; it is mounted when its slide is reached, and
+     one slide ahead so the dip to black never reveals an empty frame. */
+  function mount(i) {
+    const slide = slides[(i + slides.length) % slides.length];
+    const host = slide && slide.querySelector('.slide__media');
+    if (!host || host.dataset.mounted) return;
+    host.dataset.mounted = '1';
+    host.innerHTML = media(host.dataset.media, host.dataset.label, '', i === 0, true);
+  }
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // The first slide is marked active a frame late, so its push-in animates
   // like every other slide's instead of starting already settled.
@@ -239,6 +251,8 @@ function initSlideshow() {
       el.classList.toggle('is-on', i === at);
       el.setAttribute('aria-selected', String(i === at));
     });
+
+    mount(at); mount(at + 1);
 
     if (still) {                          // no dip for reduced motion
       slides.forEach((el, i) => el.classList.toggle('is-on', i === at));
@@ -270,6 +284,7 @@ function initSlideshow() {
   root.addEventListener('focusout', start);
   // Don't burn cycles rotating a hero nobody is looking at.
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  mount(0); mount(1);
   start();
 }
 
@@ -295,8 +310,8 @@ function renderFeed() {
   document.getElementById('feed').innerHTML = SHOP_THE_FEED.items.map(it => `
     <a class="feedtile reveal" href="${it.href}" aria-label="${escapeHtml(it.label)} — shop it">
       ${lite
-        ? `<img class="feedtile__media" src="photos/${it.id}.jpg?v=${v}" alt="${escapeHtml(it.label)}" loading="lazy">`
-        : `<video class="feedtile__media" poster="photos/${it.id}.jpg?v=${v}"
+        ? `<img class="feedtile__media" src="photos/${it.id}.webp?v=${v}" alt="${escapeHtml(it.label)}" loading="lazy">`
+        : `<video class="feedtile__media" poster="photos/${it.id}.webp?v=${v}"
                   muted loop playsinline preload="none"
                   aria-label="${escapeHtml(it.label)}">
              <source src="photos/${it.id}.mp4?v=${v}" type="video/mp4">

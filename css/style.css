@@ -415,7 +415,12 @@ p  { margin: 0 0 1em; }
   position: relative; margin-top: 6px; font-size: .64rem; letter-spacing: .14em;
   text-transform: uppercase; color: var(--ink-4);
 }
-.ph img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+/* <picture> is a wrapper with no box of its own — the rules that used to size
+   the img directly must not be broken by it sitting in between. */
+.ph picture { display: contents; }
+.ph img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;
+          max-width: none; }   /* the width/height attrs are hints for CLS, not a size */
+.logo picture { display: contents; }
 .ph.has-photo::before, .ph.has-photo .ph__label, .ph.has-photo .ph__note { display: none; }
 
 /* Thumbnails are too small to carry the label — gradient only. */
@@ -1672,3 +1677,7 @@ a.press__item:hover { opacity: 1; color: var(--brand-500); }
    name block carries itself without a date beside it. */
 .review .stars:empty { display: none; }
 .review__who > div > span:empty { display: none; }
+
+/* The slide's picture is mounted into this when the slide is reached, so it
+   has to occupy the frame the way the .ph inside it expects. */
+.slide__media { position: absolute; inset: 0; }

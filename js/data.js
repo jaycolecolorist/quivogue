@@ -45,7 +45,7 @@
 
 const CONFIG = {
   // Bumped on every deploy so updated photos are not served from cache.
-  assetVersion: '202610111030',
+  assetVersion: '202610111052',
 
   brand: 'QV fits',
   // The lockup only — set solid, no space, to sit with the logo mark. Page
@@ -92,6 +92,18 @@ const CONFIG = {
     greeting: "Hey! Looking for your fit? I know every piece in the studio — tell me what you train in."
   }
 };
+
+/* -------------------------------------------------------------------------
+   PHOTO_DIMS — generated, do not hand-edit.
+   --------------------------------------------------------------------------
+   id: [full width, full height, [widths that exist as -NNN.webp]]
+
+   media() needs these for two things: an accurate srcset (a wrong `w`
+   descriptor makes the browser pick the wrong file) and real width/height
+   attributes so a card holds its space before the photo arrives.
+   Regenerate whenever photos change.
+   ------------------------------------------------------------------------- */
+const PHOTO_DIMS = {"about":[1000,1250,[400,800]],"banner-campaign":[1600,1000,[400,800]],"collection-bottoms":[700,933,[400]],"collection-bottoms-2":[700,933,[400]],"collection-bras":[700,933,[400]],"collection-bras-2":[700,933,[400]],"collection-lounge":[700,933,[400]],"collection-lounge-2":[700,933,[400]],"collection-sets":[700,933,[400]],"collection-skorts":[700,933,[400]],"collection-skorts-2":[700,933,[400]],"collection-swim":[700,933,[400]],"collection-swim-2":[700,933,[400]],"crossback-sports-bra":[750,1000,[400]],"crossback-sports-bra-2":[750,1000,[400]],"flare-lounge-legging":[750,1000,[400]],"flare-lounge-legging-2":[750,1000,[400]],"golf-tennis-skort-dress":[750,1000,[400]],"golf-tennis-skort-dress-2":[750,1000,[400]],"hero-1":[1600,1022,[400,800]],"hero-2":[1600,1022,[400,800]],"hero-3":[1600,1022,[400,800]],"hero-4":[1600,1022,[400,800]],"highwaist-sculpt-legging":[750,1000,[400]],"highwaist-sculpt-legging-2":[750,1000,[400]],"look-course-to-lunch":[800,1067,[400]],"look-course-to-lunch-2":[800,1067,[400]],"look-lift-day":[800,1067,[400]],"look-lift-day-2":[800,1067,[400]],"look-long-haul":[800,1067,[400]],"look-long-haul-2":[800,1067,[400]],"look-off-duty":[800,1067,[400]],"look-off-duty-2":[800,1067,[400]],"movement-gym":[1000,1250,[400,800]],"movement-lifestyle":[760,950,[400]],"movement-pilates":[1000,1250,[400,800]],"movement-swim-lounge":[1000,1250,[400,800]],"movement-tennis":[1000,1250,[400,800]],"oversized-lounge-hoodie":[750,1000,[400]],"oversized-lounge-hoodie-2":[750,1000,[400]],"pleated-tennis-skort":[750,1000,[400]],"pleated-tennis-skort-2":[750,1000,[400]],"reel-class":[540,960,[400]],"reel-offduty":[540,960,[400]],"reel-pilates":[540,960,[400]],"reel-studio":[540,960,[400]],"rib-seamless-set":[750,1000,[400]],"rib-seamless-set-2":[750,1000,[400]],"ribbed-bikini-set":[750,1000,[400]],"ribbed-bikini-set-2":[750,1000,[400]],"ribbed-lounge-set":[750,1000,[400]],"ribbed-lounge-set-2":[750,1000,[400]],"ribbed-scoop-bra":[750,1000,[400]],"ribbed-scoop-bra-2":[750,1000,[400]],"sculpt-one-piece":[750,1000,[400]],"sculpt-one-piece-2":[750,1000,[400]],"sculpt-seamless-set":[750,1000,[400]],"sculpt-seamless-set-2":[750,1000,[400]],"seamless-longline-bra":[750,1000,[400]],"seamless-longline-bra-2":[750,1000,[400]],"seamless-longsleeve-set":[750,1000,[400]],"seamless-longsleeve-set-2":[750,1000,[400]],"studio-two-piece":[750,1000,[400]],"studio-two-piece-2":[750,1000,[400]],"wideleg-lounge-pant":[750,1000,[400]],"wideleg-lounge-pant-2":[750,1000,[400]]};
 
 /* -------------------------------------------------------------------------
    CURRENCIES

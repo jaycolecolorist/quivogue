@@ -194,19 +194,50 @@ function toast(text) {
 /* ---------------------------------------------------------------- media */
 /* Renders a photo slot. Shows photos/<id>.jpg when it exists, otherwise a
    soft gradient placeholder carrying the product name. */
-function media(id, label, variant = '') {
+/* `eager` is for an image that is on screen the moment the page opens — the
+   first hero slide. `wide` is for anything that spans the page (hero, campaign,
+   about, the product gallery); everything else is a card or a tile and never
+   needs more than a few hundred pixels.
+
+   Widths come from PHOTO_DIMS so the srcset descriptors are the files' real
+   widths and only variants that exist are offered. The width/height attributes
+   come from the same place, so a card holds its shape before the photo lands
+   instead of shoving the page down when it does. */
+function media(id, label, variant = '', eager = false, wide = false) {
   // Version query busts the browser cache when a photo is swapped — the file
   // name stays the same, so without this an old image keeps being served.
   const v = (typeof CONFIG !== 'undefined' && CONFIG.assetVersion) ? `?v=${CONFIG.assetVersion}` : '';
-  const src = `photos/${id}${variant}.jpg${v}`;
+  const key  = `${id}${variant}`;
+  const base = `photos/${key}`;
+  const dim  = (typeof PHOTO_DIMS !== 'undefined' && PHOTO_DIMS[key]) || null;
+
+  let srcset = '', sizes = '', dimAttr = '';
+  if (dim) {
+    const [w, h, have] = dim;
+    const cand = have.map(n => `${base}-${n}.webp${v} ${n}w`);
+    cand.push(`${base}.webp${v} ${w}w`);
+    srcset = cand.join(', ');
+    // A card is half the screen on a phone and about 300px on a desktop; a wide
+    // image is the content column, which the wrap caps at 1200.
+    sizes = wide ? '(max-width: 1240px) 100vw, 1200px'
+                 : '(max-width: 700px) 50vw, 300px';
+    dimAttr = `width="${w}" height="${h}"`;
+  }
+
   return `<div class="ph">
-    <img src="${src}" alt="${escapeHtml(label)}" loading="lazy"
-         onload="this.parentNode.classList.add('has-photo')"
-         onerror="this.remove()">
+    <picture>
+      <source type="image/webp" ${srcset ? `srcset="${srcset}" sizes="${sizes}"` : `srcset="${base}.webp${v}"`}>
+      <img src="${base}.jpg${v}" alt="${escapeHtml(label)}" ${dimAttr}
+           loading="${eager ? 'eager' : 'lazy'}" decoding="async"
+           ${eager ? 'fetchpriority="high"' : ''}
+           onload="this.closest('.ph').classList.add('has-photo')"
+           onerror="this.closest('picture').remove()">
+    </picture>
     <div class="ph__label">${escapeHtml(label)}</div>
     <div class="ph__note">photo coming</div>
   </div>`;
 }
+
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => (
@@ -316,7 +347,7 @@ function buildChrome() {
   hdr.innerHTML = `
     <div class="hdr__inner">
       <a class="logo" href="index.html" aria-label="${CONFIG.brand} home">
-        <img class="logo__mark" src="brand/logo.png" alt="" width="44" height="44">
+        <picture><source type="image/webp" srcset="brand/logo.webp"><img class="logo__mark" src="brand/logo.png" alt="" width="44" height="44" decoding="async"></picture>
         <span class="logo__text">
           <span class="logo__name">${CONFIG.wordmark || CONFIG.brand}</span>
           <span class="logo__sub">${CONFIG.tagline}</span>
@@ -379,7 +410,7 @@ function buildChrome() {
       <div class="ftr__grid">
         <div>
           <a class="logo" href="index.html" style="margin-bottom:14px">
-            <img class="logo__mark" src="brand/logo.png" alt="" width="48" height="48">
+            <picture><source type="image/webp" srcset="brand/logo.webp"><img class="logo__mark" src="brand/logo.png" alt="" width="48" height="48" decoding="async"></picture>
             <span class="logo__text">
               <span class="logo__name">${CONFIG.wordmark || CONFIG.brand}</span>
               <span class="logo__sub">${CONFIG.tagline}</span>
