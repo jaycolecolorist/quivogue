@@ -216,7 +216,10 @@ p  { margin: 0 0 1em; }
 .unit-toggle button,
 table.size td a,
 .asst__close,
-.asst__send { position: relative; }
+.asst__send,
+.swatch-btn,
+.size-btn,
+.opt__head a { position: relative; }
 
 .heart::after,
 .card__add::after,
@@ -232,7 +235,10 @@ table.size td a,
 .unit-toggle button::after,
 table.size td a::after,
 .asst__close::after,
-.asst__send::after {
+.asst__send::after,
+.swatch-btn::after,
+.size-btn::after,
+.opt__head a::after {
   content: '';
   position: absolute; top: 50%; left: 50%;
   width: max(100%, 44px); height: max(100%, 44px);
@@ -241,6 +247,10 @@ table.size td a::after,
 /* The dots sit 9px apart. A flat 44px width would overlap the next dot and
    steal its taps, so each area grows to exactly meet its neighbour instead. */
 .slideshow__dot::after { width: calc(100% + 9px); }
+/* "Size guide" sits on the same line as the Size heading with the size
+   buttons right below it, so a centred 44px area would reach into theirs.
+   Grow it upward instead, over the heading, which nothing can tap. */
+.opt__head a::after { top: auto; bottom: 0; transform: translateX(-50%); }
 
 .link-arrow {
   font-family: var(--display); font-weight: 700; color: var(--brand-600);
@@ -328,6 +338,12 @@ table.size td a::after,
   transition: background .2s, color .2s;
 }
 .nav a:hover { background: var(--brand-100); color: var(--brand-600); }
+/* On a touch tablet the inline nav is still shown and its links are only 31px
+   tall. Give them the full 44 where a thumb is doing the pointing; a mouse
+   keeps the tighter bar. */
+@media (hover: none) and (pointer: coarse) {
+  .nav a { min-height: 44px; display: inline-flex; align-items: center; }
+}
 .nav a.is-active { background: var(--brand-100); color: var(--brand-600); font-weight: 600; }
 .nav__close { display: none; }
 
@@ -640,7 +656,7 @@ table.size td a::after,
 /* ---------------------------------------------------------------- footer */
 .ftr { background: var(--white); border-top: 1px solid var(--line); padding-block: clamp(44px, 6vw, 70px) 28px; margin-top: clamp(40px, 6vw, 80px); }
 .ftr__grid { display: grid; gap: 34px; grid-template-columns: 1.4fr repeat(3, 1fr); }
-.ftr h4 { font-size: .86rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-family: var(--body); font-weight: 600; margin-bottom: 14px; }
+.ftr__title { font-size: .86rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-family: var(--body); font-weight: 600; margin-bottom: 14px; }
 .ftr ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .ftr a { color: var(--ink-2); font-size: .9rem; transition: color .2s; }
 /* These rows were 15px tall. Give each link a real box to be tapped in —
@@ -666,7 +682,7 @@ table.size td a::after,
   box-shadow: var(--sh-1); position: sticky; top: 96px;
 }
 .filters__group + .filters__group { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line); }
-.filters h4 { font-family: var(--display); font-size: .95rem; margin-bottom: 12px; }
+.filters__title { font-family: var(--display); font-size: .95rem; margin-bottom: 12px; }
 .chips { display: flex; flex-wrap: wrap; gap: 7px; }
 .chip {
   padding: .42em .85em; border-radius: var(--r-pill);
@@ -728,6 +744,14 @@ table.size td a::after,
   border-radius: var(--r-lg); box-shadow: var(--sh-1);
 }
 
+/* A heading promoted for structure should not change size on screen. These
+   sit at h2 in the outline but are drawn at the h3 scale they always were. */
+.sub-h, .empty h1, .empty h2 {
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+}
+#shopTitle { font-size: clamp(1.75rem, 3.6vw, 2.7rem); }
+.sub-h { margin-bottom: 14px; }
+
 /* ---------------------------------------------------------------- product page */
 .pdp { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(26px, 4vw, 56px); align-items: start; }
 .gallery { display: grid; gap: 12px; }
@@ -743,7 +767,7 @@ table.size td a::after,
 .pdp__price { font-family: var(--display); font-weight: 700; font-size: 1.7rem; margin: 6px 0 14px; }
 .opt { margin-top: 22px; }
 .opt__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-.opt__head h4 { font-family: var(--display); font-size: .95rem; }
+.opt__head h2 { font-family: var(--display); font-size: .95rem; }
 .opt__head span { font-size: .84rem; color: var(--ink-3); }
 .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .swatch-btn {

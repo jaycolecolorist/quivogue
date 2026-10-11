@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261011114025">
+<link rel="stylesheet" href="css/style.css?v=20261011120126">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -30,9 +30,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20261011114025"></script>
-<script src="js/app.js?v=20261011114025"></script>
-<script src="js/assistant.js?v=20261011114025"></script>
+<script src="js/data.js?v=20261011120126"></script>
+<script src="js/app.js?v=20261011120126"></script>
+<script src="js/assistant.js?v=20261011120126"></script>
 <script>
 let P = null, chosenSize = null, chosenColor = null;
 
@@ -43,7 +43,7 @@ function pageInit() {
 
   if (!P) {
     root.innerHTML = `<div class="empty">
-      <h3>We can't find that piece</h3>
+      <h1>We can't find that piece</h1>
       <p class="lede center" style="margin-top:8px">It may have sold out and come off the rail.</p>
       <a class="btn btn--primary" href="shop.html">Back to the shop</a>
     </div>`;
@@ -93,7 +93,7 @@ function renderPdp() {
       <!-- colour -->
       <div class="opt">
         <div class="opt__head">
-          <h4>Colour</h4><span id="colorLabel">${chosenColor}</span>
+          <h2>Colour</h2><span id="colorLabel">${chosenColor}</span>
         </div>
         <div class="swatch-row" id="colorRow">
           ${P.colors.map(c => `
@@ -105,7 +105,7 @@ function renderPdp() {
       <!-- size -->
       <div class="opt">
         <div class="opt__head">
-          <h4>Size</h4>
+          <h2>Size</h2>
           <a href="size-guide.html" style="font-size:.84rem;color:var(--brand-600);text-decoration:underline">Size guide</a>
         </div>
         <div class="size-row" id="sizeRow">

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261011114025">
+<link rel="stylesheet" href="css/style.css?v=20261011120126">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -28,7 +28,7 @@
     <p class="crumbs"><a href="index.html">Home</a> / Shop</p>
     <div class="section-head">
       <span class="kicker">The full range</span>
-      <h2 id="shopTitle">Shop everything</h2>
+      <h1 id="shopTitle">Shop everything</h1>
       <p class="lede">Every piece we have in the shop right now. Sold-out sizes are marked honestly — no surprises at checkout.</p>
     </div>
 
@@ -36,23 +36,23 @@
       <!-- ------------------------------------------------ filters -->
       <aside class="filters" id="filters" aria-label="Filters">
         <div class="filters__group">
-          <h4>Category</h4>
+          <h2 class="filters__title">Category</h2>
           <div class="chips" id="fCat"></div>
         </div>
         <div class="filters__group">
-          <h4>Size</h4>
+          <h2 class="filters__title">Size</h2>
           <div class="chips" id="fSize"></div>
         </div>
         <div class="filters__group">
-          <h4>Colour</h4>
+          <h2 class="filters__title">Colour</h2>
           <div class="chips" id="fColor"></div>
         </div>
         <div class="filters__group">
-          <h4>Activity</h4>
+          <h2 class="filters__title">Activity</h2>
           <div class="chips" id="fOcc"></div>
         </div>
         <div class="filters__group">
-          <h4>Max price</h4>
+          <h2 class="filters__title">Max price</h2>
           <input class="range" type="range" id="fPrice" min="0" max="100" value="100" aria-label="Maximum price">
           <div class="range-vals"><span id="priceMin"></span><span id="priceMax"></span></div>
         </div>
@@ -81,7 +81,7 @@
         </div>
         <div class="grid-products" id="grid"></div>
         <div class="empty" id="empty" hidden>
-          <h3 id="emptyTitle">Nothing matches that combination</h3>
+          <h2 id="emptyTitle">Nothing matches that combination</h2>
           <p class="lede center" id="emptyText" style="margin-top:8px">Try loosening a filter — or ask Vee and she'll find the closest thing on the rail.</p>
           <a class="btn btn--primary" id="emptyShopAll" href="shop.html" hidden>Shop everything</a>
           <button class="btn btn--ghost" id="emptyAsk" onclick="askVee('Help me find something')">Ask Vee ✨</button>
@@ -92,8 +92,9 @@
 </section>
 
 <!-- Offers and kits also moved here from the home page. -->
-<section class="section section--tight" id="dealsSection">
+<section class="section section--tight" id="dealsSection" aria-labelledby="dealsTitle">
   <div class="wrap">
+    <h2 class="sr-only" id="dealsTitle">Current offers</h2>
     <div class="deals" id="deals"></div>
   </div>
 </section>
@@ -109,9 +110,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20261011114025"></script>
-<script src="js/app.js?v=20261011114025"></script>
-<script src="js/assistant.js?v=20261011114025"></script>
+<script src="js/data.js?v=20261011120126"></script>
+<script src="js/app.js?v=20261011120126"></script>
+<script src="js/assistant.js?v=20261011120126"></script>
 <script>
 const state = { cats: [], sizes: [], colors: [], occs: [], maxPrice: null, inStock: false, sort: 'featured', query: '', badge: '', sale: false };
 const PRICE_MIN = Math.min(...PRODUCTS.map(p => p.price));

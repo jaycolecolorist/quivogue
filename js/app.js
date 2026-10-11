@@ -394,7 +394,7 @@ function buildChrome() {
   drawer.setAttribute('aria-hidden', 'true');
   drawer.innerHTML = `
     <div class="drawer__head">
-      <h3 id="drawerTitle">Your bag</h3>
+      <h2 id="drawerTitle">Your bag</h2>
       <button class="icon-btn" id="drawerClose" aria-label="Close">${ICON.close}</button>
     </div>
     <div class="drawer__body" id="drawerBody"></div>
@@ -425,14 +425,14 @@ function buildChrome() {
           </p>` : ''}
         </div>
         <div>
-          <h4>Shop</h4>
+          <h2 class="ftr__title">Shop</h2>
           <ul>
             ${[...new Set(PRODUCTS.map(p => p.category))].map(c =>
               `<li><a href="shop.html?c=${encodeURIComponent(c)}">${c}</a></li>`).join('')}
           </ul>
         </div>
         <div>
-          <h4>Help</h4>
+          <h2 class="ftr__title">Help</h2>
           <ul>
             <li><a href="size-guide.html">Size guide</a></li>
             <li><a href="contact.html#faq">Delivery &amp; returns</a></li>
@@ -441,7 +441,7 @@ function buildChrome() {
           </ul>
         </div>
         <div>
-          <h4>Visit</h4>
+          <h2 class="ftr__title">Visit</h2>
           <ul>
             <li><a href="${CONFIG.mapsUrl}" target="_blank" rel="noopener">${CONFIG.address}</a></li>
             ${CONFIG.addressNote ? `<li><span style="font-size:.85rem;color:var(--ink-4)">${CONFIG.addressNote}</span></li>` : ''}

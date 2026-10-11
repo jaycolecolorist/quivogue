@@ -69,8 +69,15 @@ the review blocks stop being hidden.
    product-name link (24px, with the photo above it a much larger link to the
    same page) and the slideshow dots (43×44, because a full 44 would overlap the
    next dot and steal its taps).
-8. **No h1 on shop.html or cart.html**; heading levels skip on shop, product and
-   contact. *(still open)*
+8. ~~**No h1 on shop.html or cart.html**; heading levels skip~~ — **FIXED**
+   (commit pending). Every page now has exactly **one h1 and no skipped levels**,
+   checked in every state the pages have: all three checkout steps, both drawers,
+   the shop's no-results state and the product not-found state. The home page's
+   h1 used to be slide 1's headline, so it vanished whenever the slideshow moved
+   on; there is now one fixed h1 that names the shop, read aloud but never drawn.
+   The footer's column labels were `h4` straight after an `h2`, which put the
+   same skip on all eight pages. Nothing changed size on screen — the promoted
+   headings keep the scale they were drawn at.
 9. ~~**17 of 19 images have no width/height**~~ — **FIXED** (commit 9109039).
    Every image now carries its real dimensions, so cards hold their shape.
 

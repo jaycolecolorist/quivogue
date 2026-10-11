@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261011114025">
+<link rel="stylesheet" href="css/style.css?v=20261011120126">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
@@ -17,6 +17,7 @@
 <section class="section section--tight">
   <div class="wrap">
     <p class="crumbs"><a href="index.html">Home</a> / Your bag</p>
+    <h1 class="sr-only">Your bag</h1>
 
     <div class="steps" id="steps">
       <div class="step is-on" data-step="1"><b>1</b> Your bag</div>
@@ -28,9 +29,9 @@
   </div>
 </section>
 
-<script src="js/data.js?v=20261011114025"></script>
-<script src="js/app.js?v=20261011114025"></script>
-<script src="js/assistant.js?v=20261011114025"></script>
+<script src="js/data.js?v=20261011120126"></script>
+<script src="js/app.js?v=20261011120126"></script>
+<script src="js/assistant.js?v=20261011120126"></script>
 <script>
 let step = 1;
 const order = { name: '', phone: '', region: 'kampala', address: '', note: '', pay: 'Mobile money' };
@@ -76,7 +77,7 @@ function summaryHtml() {
   const pct = Math.min(100, (sub / CONFIG.freeShippingOver) * 100);
 
   return `<div class="summary">
-    <h3 style="margin-bottom:14px">Order summary</h3>
+    <h2 class="sub-h">Order summary</h2>
     <div class="ship-bar"><div class="ship-bar__fill" style="width:${pct}%"></div></div>
     <p style="font-size:.82rem;color:${left > 0 ? 'var(--ink-3)' : 'var(--success)'};font-weight:${left > 0 ? 400 : 600}">
       ${left > 0 ? `${money(left)} away from free delivery ✨` : 'Free delivery unlocked 🎀'}
@@ -94,7 +95,7 @@ function render() {
   if (!Store.cart.length && step < 4) {
     root.innerHTML = `<div class="empty">
       <div style="color:var(--brand-300);display:flex;justify-content:center;margin-bottom:10px">${ICON.bag}</div>
-      <h3>Your bag is empty</h3>
+      <h2>Your bag is empty</h2>
       <p class="lede center" style="margin-top:8px">Let's find your fit — the range is this way.</p>
       <a class="btn btn--primary" href="shop.html">Shop new in</a>
     </div>`;
@@ -129,7 +130,7 @@ function render() {
     root.innerHTML = `
       <div class="cart-layout">
         <div class="info-card">
-          <h3 style="margin-bottom:14px">Where's it going?</h3>
+          <h2 class="sub-h">Where's it going?</h2>
           <div class="field">
             <label for="oName">Your name</label>
             <input id="oName" value="${escapeHtml(order.name)}" autocomplete="name" required>
@@ -236,7 +237,7 @@ Total: ${moneyBase(sub + ship)}${seenIn}`;
     root.innerHTML = `
       <div class="cart-layout">
         <div class="info-card">
-          <h3 style="margin-bottom:6px">One last look</h3>
+          <h2 class="sub-h" style="margin-bottom:6px">One last look</h2>
           <p style="font-size:.9rem;color:var(--ink-3)">
             We don't take payment on this site, so nothing is charged here. Send your order to the team and
             they'll confirm stock, total and payment with you directly.
