@@ -1,3 +1,4 @@
-.DS_Store
-._*
-photos-original/
+# Internal notes — kept out of the published repository.
+private/
+dist/
+*.zip
