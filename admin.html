@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop admin — QV fits</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fbf8f3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="favicon.ico" sizes="any">
+<style>
+  /* The console borrows the shop's colours and type so it feels like the same
+     thing, but none of the shop's layout — this is a tool, not a page. */
+  body { background: var(--cream-2); }
+  .ahdr {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 12px clamp(14px, 3vw, 28px);
+    background: var(--white); border-bottom: 1px solid var(--line);
+    box-shadow: var(--sh-1);
+  }
+  .ahdr__name { font-family: var(--display); font-weight: 700; font-size: 1.05rem; margin-right: auto; }
+  .ahdr__name small { display: block; font-family: var(--body); font-weight: 400;
+                      font-size: .76rem; color: var(--ink-3); letter-spacing: 0; }
+  .awrap { max-width: 920px; margin: 0 auto; padding: clamp(16px, 3vw, 28px) clamp(14px, 3vw, 28px) 90px; }
+
+  .atabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .atab {
+    min-height: 44px; padding: .5em 1.1em; border-radius: var(--r-pill);
+    font-weight: 600; font-size: .9rem; color: var(--ink-2);
+    background: var(--white); box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .atab.is-on { background: var(--brand-grad); color: #fff; box-shadow: none; }
+
+  .acard { background: var(--white); border-radius: var(--r-md); margin-bottom: 10px;
+           box-shadow: var(--sh-1); overflow: hidden; }
+  .acard__head {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    padding: 10px 14px; min-height: 60px; list-style: none;
+  }
+  .acard__head::-webkit-details-marker { display: none; }
+  .acard__thumb { width: 42px; height: 54px; object-fit: cover; border-radius: 6px;
+                  background: var(--brand-50); flex: none; }
+  .acard__name { font-weight: 600; flex: 1; min-width: 0; }
+  .acard__cat { font-size: .74rem; letter-spacing: .1em; text-transform: uppercase;
+                color: var(--ink-3); }
+  .acard__price { font-family: var(--display); font-weight: 700; white-space: nowrap; }
+  .acard[open] .acard__head { border-bottom: 1px solid var(--line); }
+  .acard__body { padding: 16px 14px 20px; display: grid; gap: 14px; }
+
+  .arow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .arow { grid-template-columns: 1fr; } }
+
+  .afield { display: grid; gap: 5px; }
+  .afield > span { font-size: .8rem; font-weight: 600; color: var(--ink-2); }
+  .afield > span em { font-style: normal; font-weight: 400; color: var(--ink-3); }
+  .afield small { font-size: .78rem; color: var(--ink-3); line-height: 1.45; }
+  .afield input, .afield select, .afield textarea {
+    width: 100%; min-height: 44px; padding: .6em .8em;
+    font-size: max(16px, .95rem);
+    border: 1.5px solid var(--line-2); border-radius: var(--r-sm);
+    background: var(--cream); outline: none;
+  }
+  .afield textarea { min-height: 84px; resize: vertical; line-height: 1.5; }
+  .afield input:focus, .afield select:focus, .afield textarea:focus { border-color: var(--brand-300); background: var(--white); }
+
+  .astock { display: flex; gap: 8px; flex-wrap: wrap; }
+  .astock label { display: grid; gap: 3px; justify-items: center; }
+  .astock b { font-size: .74rem; color: var(--ink-3); }
+  .astock input { width: 62px; min-height: 44px; text-align: center;
+                  font-size: max(16px, .95rem);
+                  border: 1.5px solid var(--line-2); border-radius: var(--r-sm);
+                  background: var(--cream); }
+
+  .aphoto { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .aphoto input[type=file] { font-size: .86rem; }
+  .aphoto__msg { font-size: .84rem; color: var(--brand-600); font-weight: 600; }
+
+  .apanel { display: grid; gap: 14px; }
+  #aSettings { display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+               background: var(--white); padding: 18px; border-radius: var(--r-md); box-shadow: var(--sh-1); }
+  @media (max-width: 560px) { #aSettings { grid-template-columns: 1fr; } }
+  #aOffers { background: var(--white); padding: 18px; border-radius: var(--r-md);
+             box-shadow: var(--sh-1); display: grid; gap: 14px; }
+
+  .atoggle { display: flex; align-items: center; gap: 10px; min-height: 44px;
+             font-weight: 600; cursor: pointer; }
+  .atoggle input { width: 20px; height: 20px; accent-color: var(--brand-500); }
+  .anote { font-size: .84rem; color: var(--ink-3); line-height: 1.5; margin: 0; }
+  .arule { border: 0; border-top: 1px solid var(--line); margin: 4px 0; }
+
+  .asavebar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 10px clamp(14px, 3vw, 28px) calc(10px + env(safe-area-inset-bottom));
+    background: var(--white); border-top: 1px solid var(--line); box-shadow: 0 -6px 20px rgba(23,33,31,.07);
+  }
+  .asavebar small { color: var(--ink-3); font-size: .8rem; margin-right: auto; }
+  #aDirty { color: var(--warn); font-weight: 600; font-size: .84rem; }
+
+  .atoast {
+    position: fixed; left: 50%; bottom: 84px; transform: translate(-50%, 14px);
+    max-width: min(520px, calc(100vw - 28px));
+    background: var(--ink); color: #fff; padding: 12px 18px; border-radius: var(--r-pill);
+    font-size: .9rem; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s;
+    z-index: 60; text-align: center; line-height: 1.45;
+  }
+  .atoast.is-on { opacity: 1; transform: translate(-50%, 0); }
+  .atoast--bad { background: var(--warn); border-radius: var(--r-md); }
+
+  .alogin { max-width: 380px; margin: 12vh auto; background: var(--white);
+            padding: 28px 24px; border-radius: var(--r-lg); box-shadow: var(--sh-2); display: grid; gap: 14px; }
+  #aLoginMsg { color: var(--warn); font-size: .86rem; font-weight: 600; margin: 0; }
+  #aBoot { max-width: 620px; margin: 10vh auto; padding: 0 20px; }
+</style>
+</head>
+<body>
+
+<!-- booting / not set up -->
+<div id="aBoot" hidden></div>
+
+<!-- sign in -->
+<div id="aLogin" hidden>
+  <form class="alogin" id="aLoginForm">
+    <h1 style="font-size:1.5rem">QV fits</h1>
+    <p class="lede" style="font-size:.92rem;margin:0">Sign in to edit the shop.</p>
+    <label class="afield"><span>Email</span>
+      <input id="aEmail" type="email" autocomplete="username" required></label>
+    <label class="afield"><span>Password</span>
+      <input id="aPass" type="password" autocomplete="current-password" required></label>
+    <p id="aLoginMsg" hidden></p>
+    <button class="btn btn--primary btn--block" id="aSignIn" type="submit">Sign in</button>
+  </form>
+</div>
+
+<!-- the console -->
+<div id="aApp" hidden>
+  <header class="ahdr">
+    <div class="ahdr__name">QV fits — shop admin
+      <small id="aUpdated"></small>
+    </div>
+    <small id="aWho" style="color:var(--ink-3);font-size:.82rem"></small>
+    <button class="btn btn--ghost" id="aSignOut" type="button" style="min-height:44px;padding:.5em 1.1em;font-size:.86rem">Sign out</button>
+  </header>
+
+  <main class="awrap">
+    <div class="atabs" role="tablist">
+      <button class="atab is-on" data-tab="products" type="button">Products &amp; prices</button>
+      <button class="atab" data-tab="settings" type="button">Delivery &amp; shop details</button>
+      <button class="atab" data-tab="offers" type="button">Offers</button>
+    </div>
+
+    <section class="apanel" id="panel-products">
+      <p class="anote">Tap a piece to open it. Changes are only live once you press Save.</p>
+      <div id="aProducts"></div>
+    </section>
+
+    <section class="apanel" id="panel-settings" hidden>
+      <p class="anote">These show on the product pages, the bag and the contact page.</p>
+      <div id="aSettings"></div>
+    </section>
+
+    <section class="apanel" id="panel-offers" hidden>
+      <div id="aOffers"></div>
+    </section>
+  </main>
+
+  <div class="asavebar">
+    <small id="aDirty" hidden>Unsaved changes</small>
+    <small>Changes go live the moment you save.</small>
+    <button class="btn btn--primary" id="aSave" type="button" disabled>Save changes</button>
+  </div>
+</div>
+
+<div class="atoast" id="aToast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/admin-config.js"></script>
+<script src="js/vendor/supabase.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

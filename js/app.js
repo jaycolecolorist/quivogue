@@ -208,8 +208,13 @@ function media(id, label, variant = '', eager = false, wide = false) {
   // name stays the same, so without this an old image keeps being served.
   const v = (typeof CONFIG !== 'undefined' && CONFIG.assetVersion) ? `?v=${CONFIG.assetVersion}` : '';
   const key  = `${id}${variant}`;
-  const base = `photos/${key}`;
-  const dim  = (typeof PHOTO_DIMS !== 'undefined' && PHOTO_DIMS[key]) || null;
+  // A photo swapped through the admin console lives on the backend rather than
+  // in photos/, and carries its own measured size and variant ladder.
+  const up   = (window.QV_MEDIA && window.QV_MEDIA[key]) || null;
+  const base = up ? up.base : `photos/${key}`;
+  const dim  = up
+    ? [up.w, up.h, up.have || []]
+    : ((typeof PHOTO_DIMS !== 'undefined' && PHOTO_DIMS[key]) || null);
 
   let srcset = '', sizes = '', dimAttr = '';
   if (dim) {
@@ -224,10 +229,12 @@ function media(id, label, variant = '', eager = false, wide = false) {
     dimAttr = `width="${w}" height="${h}"`;
   }
 
+  // The baked-in photos ship a JPEG twin for the fallback; a photo uploaded
+  // through the console is WebP only, so it is its own fallback.
   return `<div class="ph">
     <picture>
       <source type="image/webp" ${srcset ? `srcset="${srcset}" sizes="${sizes}"` : `srcset="${base}.webp${v}"`}>
-      <img src="${base}.jpg${v}" alt="${escapeHtml(label)}" ${dimAttr}
+      <img src="${base}.${up ? 'webp' : 'jpg'}${v}" alt="${escapeHtml(label)}" ${dimAttr}
            loading="${eager ? 'eager' : 'lazy'}" decoding="async"
            ${eager ? 'fetchpriority="high"' : ''}
            onload="this.closest('.ph').classList.add('has-photo')"
