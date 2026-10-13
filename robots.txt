@@ -1,0 +1,11 @@
+# QV fits — qvfits.com
+User-agent: *
+Allow: /
+
+# The bag holds nothing worth indexing and is private to each visitor.
+Disallow: /cart.html
+
+# product.html IS allowed: Googlebot renders JavaScript, so it sees the real
+# product. The page sets its own noindex when the ?id= matches nothing.
+
+Sitemap: https://qvfits.com/sitemap.xml

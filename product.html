@@ -5,6 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QV fits</title>
 <meta name="description" content="Product details at QV fits Kampala — sizes, colours, fit and fabric notes, and live stock.">
+<link rel="canonical" href="https://qvfits.com/product.html">
+
+<!-- Social preview. The shop's customers arrive from an Instagram bio link and
+     reshare it on WhatsApp, so a bare link with no card costs real traffic.
+     Note: product pages are built from ?id= in the browser, and link scrapers
+     do not run JavaScript — a shared product link shows this same card, not
+     that product's photo. Fixing that properly needs a page per product. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="QV fits">
+<meta property="og:locale" content="en_UG">
+<meta property="og:title" content="QV fits">
+<meta property="og:description" content="Product details at QV fits Kampala — sizes, colours, fit and fabric notes, and live stock.">
+<meta property="og:url" content="https://qvfits.com/product.html">
+<meta property="og:image" content="https://qvfits.com/share-card.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Three QV fits looks photographed in a gym — wine, navy and grey seamless sets.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QV fits">
+<meta name="twitter:description" content="Product details at QV fits Kampala — sizes, colours, fit and fabric notes, and live stock.">
+<meta name="twitter:image" content="https://qvfits.com/share-card.jpg">
+<meta name="theme-color" content="#fbf8f3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -36,12 +59,44 @@
 <script>
 let P = null, chosenSize = null, chosenColor = null;
 
+/* Link scrapers (WhatsApp, Instagram, Facebook) do not run JavaScript, so a
+   shared product link still shows the site-wide card from the <head>. Search
+   engines DO render, so these give the product its own title, description,
+   canonical and image once the page has run. */
+function setMeta(attr, key, val) {
+  let el = document.head.querySelector(`meta[${attr}="${key}"]`);
+  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
+  el.setAttribute('content', val);
+}
+
+function describeProduct(p) {
+  const url = `https://qvfits.com/product.html?id=${encodeURIComponent(p.id)}`;
+  const desc = `${p.name} — ${p.category} from QV fits, Kampala. ${(p.blurb || '').trim()}`.trim().slice(0, 300);
+  const img = `https://qvfits.com/photos/${p.id}.jpg`;
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
+  link.href = url;
+  setMeta('property', 'og:type', 'product');
+  setMeta('property', 'og:title', `${p.name} — QV fits`);
+  setMeta('property', 'og:description', desc);
+  setMeta('property', 'og:url', url);
+  setMeta('property', 'og:image', img);
+  setMeta('name', 'twitter:title', `${p.name} — QV fits`);
+  setMeta('name', 'twitter:description', desc);
+  setMeta('name', 'twitter:image', img);
+  setMeta('name', 'description', desc);
+}
+
 function pageInit() {
   const id = new URLSearchParams(location.search).get('id');
   P = getProduct(id);
   const root = document.getElementById('pdpRoot');
 
   if (!P) {
+    // Nothing to index on a page with no product — say so, rather than letting
+    // a thin "can't find that piece" page into search results. Googlebot runs
+    // JavaScript, so it sees this.
+    setMeta('name', 'robots', 'noindex');
     root.innerHTML = `<div class="empty">
       <h1>We can't find that piece</h1>
       <p class="lede center" style="margin-top:8px">It may have sold out and come off the rail.</p>
@@ -51,6 +106,7 @@ function pageInit() {
   }
 
   document.title = `${P.name} — QV fits`;
+  describeProduct(P);
   chosenColor = P.colors[0];
   chosenSize = productSizes(P).find(s => inStock(P, s)) || null;
 
