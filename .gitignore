@@ -2,3 +2,5 @@
 private/
 dist/
 *.zip
+build-handover.sh
+build-helpers.py
